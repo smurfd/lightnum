@@ -1,0 +1,3 @@
+.pytest_cache/
+lightnum/__pycache__
+test/__pycache__
