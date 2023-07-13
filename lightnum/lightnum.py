@@ -92,8 +92,7 @@ class helper():
   #              ^- # rows per box
   #            ^- # boxes
   def boxloop(self, x, fill=0, like=False):
-    ret = []
-    tmp = []
+    ret, tmp = [], []
     if type(x) is int: return [fill] * x
     if type(x) is list:
       if like and type(x[0]) is not list: return [fill] * len(x)
@@ -112,8 +111,7 @@ class helper():
     return ret.pop()
 
   def minmax(self, x, y, max=False, min=False):
-    ret = []
-    tmp = []
+    ret, tmp = [], []
     for i in range(len(x)):
       if type(x[i]) is list: tmp.append(self.minmax(self, x[i], y[i], max, min))
       else:
@@ -130,13 +128,9 @@ class random():
   def randn(*args, dtype=int32):
     ret=[]
     if type(args) is tuple and len(args) == 1:
-      if len(args[0]) != 1:
-        for j in range(len(args[0])):
-          for i in range(args[0][j]): ret.append(i)
-      else:
-        for i in range(len(args[0])): ret.append(i)
-    else:
-      for i in args: ret.append(i)
+      if len(args[0]) != 1: [ret.append(i) for j in range(len(args[0])) for i in range(args[0][j]) if i != j]
+      else: [ret.append(i) for i in range(len(args[0]))]
+    else: [ret.append(i) for i in args]
     return ndarray(helper.boxloop(helper, ret, fill=rnd.random()))
   def random(size, dtype=float32): return random.randn(size)
   def rand(*args, dtype=int32): return random.randn(args, dtype=dtype)
@@ -182,16 +176,13 @@ def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) 
 
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
-  r = []
-  diff = []
   r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
   for i in range(1,len(r),4):
     if (r[i] <= atol + rtol * r[i + 2]) == False: return False
   return True
 
 def reshape(l, shape): # Seems to work
-  ncols, nrows = 0, 0
-  ret = []
+  ncols, nrows, ret = 0, 0, []
   if shape == -1:
     if type(l) is not list and type(l) is not tuple: ncols, nrows = l, 1
     else: ncols, nrows = len(l), 1
@@ -219,10 +210,7 @@ class testing:
     if not builtins.all(helper.loopcheck(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values in array are not equal")
 
   def assert_allclose(x, y, rtol=1e-07, atol=0):
-    miss = 0
-    r = []
-    rdiff = []
-    adiff = []
+    miss, r, rdiff, adiff = 0, [], [], []
     if type(x) is int and type(y) is int:
       if x != y:
         miss = miss + 1
@@ -267,7 +255,6 @@ def broadcast_to(): pass
 def nonzero(): pass
 def unique(): pass
 def promote_types(): pass
-def multiply(): pass
 def triu(): pass
 def where(): pass
 def dtype(): pass

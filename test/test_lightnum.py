@@ -1,5 +1,5 @@
 import numpy as np
-import lightnum.lightnum as lp 
+import lightnum.lightnum as lp
 import random
 
 def test_zeros():
