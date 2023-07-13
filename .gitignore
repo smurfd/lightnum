@@ -1,3 +1,4 @@
 .pytest_cache/
+lightnum.egg-info/
 lightnum/__pycache__
 test/__pycache__
