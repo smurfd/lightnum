@@ -1,7 +1,5 @@
 import setuptools
-  
-#with open("README.md", "r") as fh:
-#  description = fh.read()
+
 description = open("README.md", "r").read()
 setuptools.setup(
   name="lightnum",

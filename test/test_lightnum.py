@@ -118,4 +118,3 @@ def test_cbrt():
   lp.testing.assert_equal(lp.cbrt([1,8,27]), np.cbrt([1,8,27]))
 
 print("OK!")
-
