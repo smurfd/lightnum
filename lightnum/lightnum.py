@@ -156,6 +156,7 @@ def mod(x, y, dtype=int32): # Seems to work
   if dtype == int32: return helper.loop(helper, x, helper.mod, y)
   else: helper.loop(helper, x, math.fmod, y)
 def prod(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
+def multiply(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
 def zeros(s, d=0, dtype=float32): return helper.boxloop(helper, s, fill=d)
 def zeros_like(s, d=0, dtype=int32): return empty(s, fill=0, like=True) # Seems to work
 def ones(s, d=1, dtype=int32): return zeros(s, d) # Seems to work # call the same function as zeros but set it to 1 instead
@@ -179,6 +180,7 @@ def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret, fill=
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 
+def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
   r = []
   diff = []
@@ -266,13 +268,11 @@ def nonzero(): pass
 def unique(): pass
 def promote_types(): pass
 def multiply(): pass
-def set_printoptions(): pass
 def triu(): pass
 def where(): pass
 def dtype(): pass
 def memmap(): pass
 def require(): pass
-def set_printoptions(): pass
 def split(): pass
 def moveaxis(): pass
 def transpose(): pass
