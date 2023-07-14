@@ -3,6 +3,7 @@ import ctypes
 import math
 import random as rnd
 import array as arr
+import copy as cp
 
 # types
 float16 = ctypes.c_float
@@ -173,6 +174,7 @@ def array_equal(x, y): return testing.assert_equal(x, y) # Seems to work
 def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret, fill=rnd.random()))
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
+def copy(x): return helper.loop(helper, x, cp.copy)
 
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
@@ -270,7 +272,6 @@ def newaxis(): pass
 def meshgrid(): pass
 def delete(): pass
 def vstack(): pass
-def copy(): pass
 def save(): pass
 def load(): pass
 def vstack(): pass
