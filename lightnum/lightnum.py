@@ -175,7 +175,8 @@ def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret, fill=
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
-
+def copyto(x, y):
+  for i in range(len(y)): x[i] = copy(y)[i];
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
   r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
@@ -279,4 +280,3 @@ def median(): pass
 def load(): pass
 def cumsum(): pass
 def flip(): pass
-def copyto(): pass
