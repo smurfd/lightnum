@@ -65,12 +65,12 @@ class helper():
     return ret
 
   # helper function to loop through multidimentional lists to make check
-  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False):
+  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False, add=False):
     if type(x) is bool: return x
     for i in range(len(x)):
-      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count)
-      elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count)
-      elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count)
+      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
+      elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
+      elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
       else:
         if ass:
           if round(x[i], 8) == round(y[i], 8): ret.append(True)
@@ -80,6 +80,7 @@ class helper():
             if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
             if cls: ret.append(abs(y[i]))
         if count and (x[i] != 0 and x[i] != False): ret = ret + 1
+        if add: ret = ret + x[i]
         if max and ret <= x[i]: ret = x[i]
         if min and ret >= x[i]: ret = x[i]
         if isin and x[i] == y[i]: ret.append(True)
@@ -175,6 +176,14 @@ def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret, fill=
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
+def median(x):
+  s, l, r = [], [], []
+  for i in range(len(x)):
+    s.append(helper.loopcheck(helper, x[i], add=True))
+    l.append(len(x[i]))
+    r.append(s[i] // l[i])
+  return [r[i] / r[i+1] for i in range(len(r)-1)].pop()
+
 def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i];
 def set_printoptions(): pass
@@ -276,7 +285,6 @@ def vstack(): pass
 def save(): pass
 def load(): pass
 def vstack(): pass
-def median(): pass
 def load(): pass
 def cumsum(): pass
 def flip(): pass
