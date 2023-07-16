@@ -64,6 +64,7 @@ class helper():
         else: ret.append(call(x[i]))
     return ret
 
+  def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
   # helper function to loop through multidimentional lists to make check
   def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False, add=False):
     if type(x) is bool: return x
@@ -86,8 +87,6 @@ class helper():
         if isin and x[i] == y[i]: ret.append(True)
         elif isin and x[i] != y[i]: ret.append(False)
     return ret
-
-  def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
 
   # tuple (1,2,3,4,5)
   #                ^- # per row
@@ -177,7 +176,7 @@ def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) 
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
 def median(x):
-  s, l, r = [], [], []
+  l, r, s = [], [], []
   for i in range(len(x)):
     s.append(helper.loopcheck(helper, x[i], add=True))
     l.append(len(x[i]))
