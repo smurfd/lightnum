@@ -64,14 +64,16 @@ class helper():
         else: ret.append(call(x[i]))
     return ret
 
+  # helper function to return a row of a list
   def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
-  # helper function to loop through multidimentional lists to make check
-  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False, add=False):
+
+  # helper function to loop through multidimentional lists to check
+  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False):
     if type(x) is bool: return x
     for i in range(len(x)):
-      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
-      elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
-      elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, add=add)
+      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
+      elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
+      elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       else:
         if ass:
           if round(x[i], 8) == round(y[i], 8): ret.append(True)
@@ -81,6 +83,7 @@ class helper():
             if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
             if cls: ret.append(abs(y[i]))
         if count and (x[i] != 0 and x[i] != False): ret = ret + 1
+        if countzero and (x[i] == 0): ret = ret + 1
         if add: ret = ret + x[i]
         if max and ret <= x[i]: ret = x[i]
         if min and ret >= x[i]: ret = x[i]
@@ -282,8 +285,6 @@ def meshgrid(): pass
 def delete(): pass
 def vstack(): pass
 def save(): pass
-def load(): pass
-def vstack(): pass
 def load(): pass
 def cumsum(): pass
 def flip(): pass
