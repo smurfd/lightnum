@@ -3,19 +3,19 @@ repos:
     hooks:
       - id: flake8
         name: flake8
-        entry: flake8 lightnum/ test/ --indent-size=2 --select=F,E112,E113,E203,E304,E502,E702,E703,E71,E72,E731,W191,W6 --extend-ignore=E702 --statistics -j4
+        entry: python3 -m flake8 lightnum/ test/ --indent-size=2 --select=F,E112,E113,E203,E304,E502,E702,E703,E71,E72,E731,W191,W6 --extend-ignore=E702 --statistics -j4
         language: system
         always_run: true
         pass_filenames: false
       - id: mypy
         name: mypy
-        entry: mypy lightnum/ test/
+        entry: python3 -m mypy lightnum/ test/
         language: system
         always_run: true
         pass_filenames: false
       - id: tests
         name: tests
-        entry: pytest test/
+        entry: python3 -m pytest test/
         language: system
         always_run: true
         pass_filenames: false
