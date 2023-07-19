@@ -16,5 +16,6 @@ setuptools.setup(
   install_requires=["wheel",],
   extras_require={
     'testing': ["pytest",],
+    'linting': ["flake8", "mypy",],
   },
 )

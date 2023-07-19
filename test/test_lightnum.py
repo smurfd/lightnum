@@ -1,6 +1,5 @@
 import numpy as np
 import lightnum.lightnum as lp
-import random
 
 def test_zeros(): lp.testing.assert_equal(lp.zeros([4]), np.zeros([4]))
 def test_zeros_big(): lp.testing.assert_equal(lp.zeros([3, 3, 3, 3]), np.zeros([3, 3, 3, 3]).ravel())
@@ -55,10 +54,10 @@ def test_show_randomusage():
 
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))
-  except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0")
+  except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
 def test_empty_tuple():
   try: lp.testing.assert_equal(lp.empty((6,6,6)), np.empty((6,6,6)).ravel())
-  except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0")
+  except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
 
 def test_assert_equal():
   lp.testing.assert_equal([3,6,9], [3,6,9])

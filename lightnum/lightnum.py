@@ -82,7 +82,7 @@ class helper():
             ret.append(abs(abs(x[i]) - abs(y[i])))
             if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
             if cls: ret.append(abs(y[i]))
-        if count and (x[i] != 0 and x[i] != False): ret = ret + 1
+        if count and (x[i] != 0 and x[i] is not False): ret = ret + 1
         if countzero and (x[i] == 0): ret = ret + 1
         if add: ret = ret + x[i]
         if max and ret <= x[i]: ret = x[i]
@@ -174,7 +174,7 @@ def ceil(x, dtype=int32): return helper.loop(helper, x, math.ceil) # Seems to wo
 def count_nonzero(x): return helper.loopcheck(helper, x, ret=0, count=True) # Seems to work
 def not_equal(x, y): return not testing.assert_equal(x, y) # Seems to work
 def array_equal(x, y): return testing.assert_equal(x, y) # Seems to work
-def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret, fill=rnd.random()))
+def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret=0, fill=rnd.random()))
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
@@ -187,12 +187,12 @@ def median(x):
   return [r[i] / r[i+1] for i in range(len(r)-1)].pop()
 
 def copyto(x, y):
-  for i in range(len(y)): x[i] = copy(y)[i];
+  for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
   r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
   for i in range(1,len(r),4):
-    if (r[i] <= atol + rtol * r[i + 2]) == False: return False
+    if (r[i] <= atol + rtol * r[i + 2]) is False: return False
   return True
 
 def reshape(l, shape): # Seems to work
@@ -233,7 +233,7 @@ class testing:
     else:
       r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True)
       for i in range(0,len(r),3):
-        if r[i] == False: miss = miss + 1
+        if r[i] is False: miss = miss + 1
       for i in range(1,len(r),3):
         if r[i] != 0 and r[i] > atol:
           if atol: adiff.append(r[i])
@@ -251,13 +251,12 @@ class testing:
 # TODO2
 class lib:
   class stride_tricks:
-    def as_strided(): pass
+    def as_strided(self): pass
 
 def concatenate(): pass
 def expand_dims(): pass
 def eye(): pass
 def frombuffer(): pass
-def arange(): pass
 def stack(): pass
 def tile(): pass
 def argmax(): pass
