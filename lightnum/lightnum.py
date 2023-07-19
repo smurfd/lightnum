@@ -60,7 +60,7 @@ class helper():
       elif type(x[i]) is list: ret.append(self.loop(self, x[i], call, y=y))
       else:
         if type(x) is tuple: return call(x)
-        if type(y) is tuple or type(y) is list: ret.append(call(x[i], y[i]))
+        elif type(y) is tuple or type(y) is list: ret.append(call(x[i], y[i]))
         else: ret.append(call(x[i]))
     return ret
 
@@ -68,10 +68,12 @@ class helper():
   def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
 
   # helper function to loop through multidimentional lists to check
-  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False):
+  def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False):
     if type(x) is bool: return x
+    if (mini or maxi): tmp=[]; ret=[]
     for i in range(len(x)):
-      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
+      if (maxi or mini) and type(x[i]) is list and type(y[i]) is list: tmp.append(self.loopcheck(self, x[i], ret, y[i], maxi=maxi, mini=mini))
+      elif type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.loopcheck(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       else:
@@ -83,12 +85,16 @@ class helper():
             if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
             if cls: ret.append(abs(y[i]))
         if count and (x[i] != 0 and x[i] is not False): ret = ret + 1
-        if countzero and (x[i] == 0): ret = ret + 1
-        if add: ret = ret + x[i]
-        if max and ret <= x[i]: ret = x[i]
-        if min and ret >= x[i]: ret = x[i]
-        if isin and x[i] == y[i]: ret.append(True)
+        elif countzero and (x[i] == 0): ret = ret + 1
+        elif add: ret = ret + x[i]
+        elif max and ret <= x[i]: ret = x[i]
+        elif min and ret >= x[i]: ret = x[i]
+        elif (mini or maxi) and y[i] >= x[i]: tmp.append(y[i])
+        elif (mini or maxi) and y[i] <= x[i]: tmp.append(y[i])
+        elif (mini or maxi): tmp.append(x[i])
+        elif isin and x[i] == y[i]: ret.append(True)
         elif isin and x[i] != y[i]: ret.append(False)
+      if (mini or maxi): ret.extend(tmp); tmp=[]
     return ret
 
   # tuple (1,2,3,4,5)
@@ -96,35 +102,14 @@ class helper():
   #              ^- # rows per box
   #            ^- # boxes
   def boxloop(self, x, fill=0, like=False):
-    ret, tmp = [], []
     if type(x) is int: return [fill] * x
     if type(x) is list:
       if like and type(x[0]) is not list: return [fill] * len(x)
-      elif like:
-        for a in range(len(x)):
-          for b in range(len(x[a])): tmp.append(fill)
-          ret.append(tmp)
-          tmp=[]
-        return ret
-      if len(x) == 1: return [fill] * x[0]
-      else: ret = [fill] * len(x)
+      elif like: return [fill for a in range(len(x)) for b in range(len(x[a]))]
+      elif len(x) == 1: return [fill] * x[0]
+      else: return [fill] * len(x)
     if len(x) <= 2: return self.box2x(self, x, fill) # if onedimentional [2, 4]
-    for l in range(len(x)-2,-1,-1): # len - 2 because we use the box2x for each row
-      for i in range(x[l]): tmp.append(self.box2x(self, x, fill))
-      ret.append(tmp)
-    return ret.pop()
-
-  def minmax(self, x, y, max=False, min=False):
-    ret, tmp = [], []
-    for i in range(len(x)):
-      if type(x[i]) is list: tmp.append(self.minmax(self, x[i], y[i], max, min))
-      else:
-        if max and y[i] >= x[i]: tmp.append(y[i])
-        elif min and y[i] <= x[i]: tmp.append(y[i])
-        else: tmp.append(x[i])
-      ret.extend(tmp)
-      tmp=[]
-    return ret
+    return [[self.box2x(self, x, fill) for i in range(x[l])] for l in range(len(x)-2,-1,-1)].pop()
 
 class random():
   def seed(x, dtype=int32): return rnd.seed(x)
@@ -161,8 +146,8 @@ def ones(s, d=1, dtype=int32): return zeros(s, d) # Seems to work # call the sam
 def ones_like(s, d=1, dtype=int32): return empty(s, fill=1, like=True) # Seems to work
 def max(x): return helper.loopcheck(helper, x, max=True) # Seems to work
 def min(x): return helper.loopcheck(helper, x, min=True) # Seems to work
-def maximum(x, y): return helper.minmax(helper, x, y, max=True) # Seems to work
-def minimum(x, y): return helper.minmax(helper, x, y, min=True) # Seems to work
+def maximum(x, y): return helper.loopcheck(helper, x, y=y, maxi=True)#helper.minmax(helper, x, y, max=True) # Seems to work
+def minimum(x, y): return helper.loopcheck(helper, x, y=y, mini=True)#helper.minmax(helper, x, y, min=True) # Seems to work
 def empty(x, fill=0, like=False): return helper.boxloop(helper, x, fill=fill, like=like) # Seems to work
 def full(x, fill): return helper.boxloop(helper, x, fill=fill) # Seems to work
 def cos(x, dtype=int32): return helper.loop(helper, x, math.cos) # Seems to work
@@ -179,11 +164,8 @@ def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) 
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
 def median(x):
-  l, r, s = [], [], []
-  for i in range(len(x)):
-    s.append(helper.loopcheck(helper, x[i], add=True))
-    l.append(len(x[i]))
-    r.append(s[i] // l[i])
+  r = []
+  for i in range(len(x)): r.append(helper.loopcheck(helper, x[i], add=True) // len(x[i]))
   return [r[i] / r[i+1] for i in range(len(r)-1)].pop()
 
 def copyto(x, y):
@@ -191,9 +173,7 @@ def copyto(x, y):
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
   r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
-  for i in range(1,len(r),4):
-    if (r[i] <= atol + rtol * r[i + 2]) is False: return False
-  return True
+  return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1,len(r),4))
 
 def reshape(l, shape): # Seems to work
   ncols, nrows, ret = 0, 0, []
