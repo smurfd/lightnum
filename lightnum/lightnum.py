@@ -58,10 +58,9 @@ class helper():
     for i in range(len(x)):
       if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret.append(self.loop(self, x[i], call, y[i]))
       elif type(x[i]) is list: ret.append(self.loop(self, x[i], call, y=y))
-      else:
-        if type(x) is tuple: return call(x)
-        elif type(y) is tuple or type(y) is list: ret.append(call(x[i], y[i]))
-        else: ret.append(call(x[i]))
+      elif type(x) is tuple: return call(x)
+      elif type(y) is tuple or type(y) is list: ret.append(call(x[i], y[i]))
+      else: ret.append(call(x[i]))
     return ret
 
   # helper function to return a row of a list
@@ -77,24 +76,18 @@ class helper():
       elif type(x[i]) is list and type(y) is not list: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       elif type(x[i]) is tuple: ret = self.loopcheck(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       else:
-        if ass:
-          if round(x[i], 8) == round(y[i], 8): ret.append(True)
-          else: ret.append(False)
-          if asscls:
-            ret.append(abs(abs(x[i]) - abs(y[i])))
-            if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
-            if cls: ret.append(abs(y[i]))
+        if ass and round(x[i], 8) == round(y[i], 8): ret.append(True)
+        elif ass: ret.append(False)
+        if ass and asscls: ret.append(abs(abs(x[i]) - abs(y[i])))
+        if ass and asscls and y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
+        if ass and asscls and cls: ret.append(abs(y[i]))
         if count and (x[i] != 0 and x[i] is not False): ret = ret + 1
         elif countzero and (x[i] == 0): ret = ret + 1
         elif add: ret = ret + x[i]
-        elif max and ret <= x[i]: ret = x[i]
-        elif min and ret >= x[i]: ret = x[i]
-        elif (mini or maxi) and y[i] >= x[i]: tmp.append(y[i])
-        elif (mini or maxi) and y[i] <= x[i]: tmp.append(y[i])
-        elif (mini or maxi): tmp.append(x[i])
+        elif (max and ret <= x[i]) or (min and ret >= x[i]): ret = x[i]
+        elif (mini or maxi): tmp.append(y[i]);tmp.append(x[i]); ret.extend(tmp); tmp = []
         elif isin and x[i] == y[i]: ret.append(True)
         elif isin and x[i] != y[i]: ret.append(False)
-      if (mini or maxi): ret.extend(tmp); tmp=[]
     return ret
 
   # tuple (1,2,3,4,5)
@@ -114,8 +107,7 @@ class helper():
 class random():
   def seed(x, dtype=int32): return rnd.seed(x)
   def randint(x, dtype=int32): return rnd.randint(x)
-  def randn(*args, dtype=int32):
-    ret=[]
+  def randn(*args, dtype=int32, ret=[]):
     if type(args) is tuple and len(args) == 1:
       if len(args[0]) != 1: [ret.append(i) for j in range(len(args[0])) for i in range(args[0][j]) if i != j]
       else: [ret.append(i) for i in range(len(args[0]))]
@@ -163,8 +155,7 @@ def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret=0, fil
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def copy(x): return helper.loop(helper, x, cp.copy)
-def median(x):
-  r = []
+def median(x, r=[]):
   for i in range(len(x)): r.append(helper.loopcheck(helper, x[i], add=True) // len(x[i]))
   return [r[i] / r[i+1] for i in range(len(r)-1)].pop()
 
