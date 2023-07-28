@@ -14,3 +14,8 @@ python3 -m pip install -e '.[testing, linting]'
 ```
 python3 -m pytest
 ```
+### Use in your project
+(from your projects root path)
+```
+python3 /path/to/lightnum/replace_np.py
+```
