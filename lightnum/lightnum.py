@@ -48,6 +48,7 @@ class ndarray(array):
     else: return [x(self.x[i]).value for i in range(len(self.x))]
 
 class helper():
+  def typ(x, t): return t(x)
   def sum(x,y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
