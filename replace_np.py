@@ -12,6 +12,6 @@ def replace(rwith, rfind):
       with open(entry) as f:
         content = f.readlines()
         content = [rwith if line.find(rfind) != -1 else line for line in content]
- 
+
 if __name__ == '__main__':
   replace('import lightnum.lightnum as np', 'import numpy as np')
