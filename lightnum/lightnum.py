@@ -17,6 +17,7 @@ uint8 = ctypes.c_uint8
 uint16 = ctypes.c_uint16
 uint32 = ctypes.c_uint32
 uint64 = ctypes.c_uint64
+bool_ = ctypes.c_bool
 
 # constants
 inf = math.inf
@@ -52,7 +53,7 @@ class helper():
   def sum(x,y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
-  def cbrt(x): return round(x**(1/3.),2)
+  def cbrt(x): return round(x**(1 / 3.), 2)
   # helper function to loop through multidimentional lists
   def loop(self, x, call, y=0):
     ret = []
@@ -103,7 +104,7 @@ class helper():
       elif len(x) == 1: return [fill] * x[0]
       else: return [fill] * len(x)
     if len(x) <= 2: return self.box2x(self, x, fill) # if onedimentional [2, 4]
-    return [[self.box2x(self, x, fill) for i in range(x[l])] for l in range(len(x)-2,-1,-1)].pop()
+    return [[self.box2x(self, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop()
 
 class random():
   def seed(x, dtype=int32): return rnd.seed(x)
@@ -158,14 +159,14 @@ def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) 
 def copy(x): return helper.loop(helper, x, cp.copy)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.loopcheck(helper, x[i], add=True) // len(x[i]))
-  return [r[i] / r[i+1] for i in range(len(r)-1)].pop()
+  return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
 
 def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
   r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
-  return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1,len(r),4))
+  return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 
 def reshape(l, shape): # Seems to work
   ncols, nrows, ret = 0, 0, []
@@ -204,13 +205,13 @@ class testing:
         rdiff.append(abs(abs(x) - abs(y)) / abs(y))
     else:
       r = helper.loopcheck(helper, x, y=y, ret=[], ass=True, asscls=True)
-      for i in range(0,len(r),3):
+      for i in range(0, len(r), 3):
         if r[i] is False: miss = miss + 1
       for i in range(1,len(r),3):
         if r[i] != 0 and r[i] > atol:
           if atol: adiff.append(r[i])
           else: adiff.append(0)
-      for i in range(2,len(r),3):
+      for i in range(2, len(r), 3):
         if r[i] != 0 and r[i] > rtol: rdiff.append(r[i])
     if miss != 0 and adiff!=[] and rdiff!=[]:
       if not r: print(f"Mismatched elements: {miss} / {1} ({round(miss / (1) * 100, 1)}%)")

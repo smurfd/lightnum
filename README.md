@@ -8,7 +8,7 @@ No dependencies, Python >= 3.8
 
 ### Install & install testing
 ```
-python3 -m pip install -e '.[testing, linting]'
+python3 -m pip install -e '.[testing, linting]' --user
 ```
 ### Test
 ```
