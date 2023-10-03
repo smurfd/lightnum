@@ -49,21 +49,19 @@ class ndarray(array):
     else: return [x(self.x[i]).value for i in range(len(self.x))]
 
 class helper():
-  def typ(x, t): return t(x)
-  def sum(x,y): return x + y
+  def typ(x, dtype=int32): print(x);return dtype(x).value
+  def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
+
   # helper function to loop through multidimentional lists
-  def loop(self, x, call, y=0):
-    ret = []
-    for i in range(len(x)):
-      if type(y) is list and type(x[i]) is list and type(y[i]) is list: ret.append(self.loop(self, x[i], call, y[i]))
-      elif type(x[i]) is list: ret.append(self.loop(self, x[i], call, y=y))
-      elif type(x) is tuple: return call(x)
-      elif type(y) is tuple or type(y) is list: ret.append(call(x[i], y[i]))
-      else: ret.append(call(x[i]))
-    return ret
+  def loop(self, x, call, dtype=int32, y=0):
+    if y and not isinstance(x, list) and not isinstance(x, tuple): return self.typ(call(x, y), dtype=dtype)
+    if y and not isinstance(x, list): return call(x, y)#self.typ(call(x), dtype=dtype)
+    if y: return [self.loop(self, i, call, y=j) for i, j in zip(x, y)]
+    if not isinstance(x, list): return call(x)#self.typ(call(x), dtype=dtype)
+    return [self.loop(self, i, call, y=y) for i in x]
 
   # helper function to return a row of a list
   def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
@@ -123,15 +121,16 @@ class random():
 
 # math
 def log(x, dtype=int32): return helper.loop(helper, x, math.log) # Seems to work
-def exp(x, dtype=int32): return helper.loop(helper, x, math.exp) # Seems to work
+def exp(x, dtype=float32): return helper.loop(helper, x, math.exp) # Seems to work
 def exp2(x, dtype=int32): return helper.loop(helper, x, helper.exp2) # Seems to work
 def cbrt(x, dtype=int32): return helper.loop(helper, x, helper.cbrt) # Seems to work
-def sum(x, y=0, dtype=int32): # Seems to work
-  if dtype == int32: return helper.loop(helper, x, builtins.sum, y=y)
-  else: return helper.loop(helper, x, math.fsum, y=y)
-def mod(x, y, dtype=int32): # Seems to work
-  if dtype == int32: return helper.loop(helper, x, helper.mod, y)
-  else: helper.loop(helper, x, math.fmod, y)
+def sum(x, dtype=int32): # Seems to work
+  if dtype == int32: return helper.loop(helper, x, builtins.sum)
+  else: return helper.loop(helper, x, math.fsum)
+def mod(x, y, dtype=float32): # Seems to work
+  return helper.loop(helper, x, helper.mod, y=y)
+  #if dtype == int32: return helper.loop(helper, x, helper.mod, y)
+  #else: helper.loop(helper, x, math.fmod, y)
 def prod(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
 def multiply(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
 def zeros(s, d=0, dtype=float32): return helper.boxloop(helper, s, fill=d)
@@ -146,7 +145,7 @@ def empty(x, fill=0, like=False): return helper.boxloop(helper, x, fill=fill, li
 def full(x, fill): return helper.boxloop(helper, x, fill=fill) # Seems to work
 def cos(x, dtype=int32): return helper.loop(helper, x, math.cos) # Seems to work
 def sqrt(x, dtype=int32): return helper.loop(helper, x, math.sqrt) # Seems to work
-def arctan2(x, y, dtype=int32): return helper.loop(helper, x, math.atan2, y) # Seems to work
+def arctan2(x, y, dtype=int32): return helper.loop(helper, x, math.atan2, y=y) # Seems to work
 def amax(x, dtype=int32): return helper.loopcheck(helper, x, max=True) # Kinda works
 def isin(x, y, dtype=int32): return helper.loopcheck(helper, x, y=y, ret=[], isin=True) # Seems to work
 def ceil(x, dtype=int32): return helper.loop(helper, x, math.ceil) # Seems to work
