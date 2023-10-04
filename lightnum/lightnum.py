@@ -49,7 +49,7 @@ class ndarray(array):
     else: return [x(self.x[i]).value for i in range(len(self.x))]
 
 class helper():
-  def typ(x, dtype=int32): print(x);return dtype(x).value
+  def typ(x, dtype=int32): return dtype(x).value
   def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
@@ -57,14 +57,13 @@ class helper():
 
   # helper function to loop through multidimentional lists
   def loop(self, x, call, dtype=int32, y=0):
-    if y and not isinstance(x, list) and not isinstance(x, tuple): return self.typ(call(x, y), dtype=dtype)
-    if y and not isinstance(x, list): return call(x, y)#self.typ(call(x), dtype=dtype)
+    if y and not isinstance(x, list) and not isinstance(x, tuple): return call(x, y)
     if y: return [self.loop(self, i, call, y=j) for i, j in zip(x, y)]
-    if not isinstance(x, list): return call(x)#self.typ(call(x), dtype=dtype)
+    if not isinstance(x, list): return call(x)
     return [self.loop(self, i, call, y=y) for i in x]
 
   # helper function to return a row of a list
-  def box2x(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
+  def getrow(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
 
   # helper function to loop through multidimentional lists to check
   def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False):
@@ -101,8 +100,8 @@ class helper():
       elif like: return [fill for a in range(len(x)) for b in range(len(x[a]))]
       elif len(x) == 1: return [fill] * x[0]
       else: return [fill] * len(x)
-    if len(x) <= 2: return self.box2x(self, x, fill) # if onedimentional [2, 4]
-    return [[self.box2x(self, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop()
+    if len(x) <= 2: return self.getrow(self, x, fill) # if onedimentional [2, 4]
+    return [[self.getrow(self, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop()
 
 class random():
   def seed(x, dtype=int32): return rnd.seed(x)
@@ -124,13 +123,8 @@ def log(x, dtype=int32): return helper.loop(helper, x, math.log) # Seems to work
 def exp(x, dtype=float32): return helper.loop(helper, x, math.exp) # Seems to work
 def exp2(x, dtype=int32): return helper.loop(helper, x, helper.exp2) # Seems to work
 def cbrt(x, dtype=int32): return helper.loop(helper, x, helper.cbrt) # Seems to work
-def sum(x, dtype=int32): # Seems to work
-  if dtype == int32: return helper.loop(helper, x, builtins.sum)
-  else: return helper.loop(helper, x, math.fsum)
-def mod(x, y, dtype=float32): # Seems to work
-  return helper.loop(helper, x, helper.mod, y=y)
-  #if dtype == int32: return helper.loop(helper, x, helper.mod, y)
-  #else: helper.loop(helper, x, math.fmod, y)
+def sum(x, dtype=int32): return helper.loop(helper, x, builtins.sum) # Seems to work
+def mod(x, y, dtype=float32): return helper.loop(helper, x, helper.mod, y=y) # Seems to work
 def prod(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
 def multiply(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
 def zeros(s, d=0, dtype=float32): return helper.boxloop(helper, s, fill=d)
@@ -139,8 +133,8 @@ def ones(s, d=1, dtype=int32): return zeros(s, d) # Seems to work # call the sam
 def ones_like(s, d=1, dtype=int32): return empty(s, fill=1, like=True) # Seems to work
 def max(x): return helper.loopcheck(helper, x, max=True) # Seems to work
 def min(x): return helper.loopcheck(helper, x, min=True) # Seems to work
-def maximum(x, y): return helper.loopcheck(helper, x, y=y, maxi=True)#helper.minmax(helper, x, y, max=True) # Seems to work
-def minimum(x, y): return helper.loopcheck(helper, x, y=y, mini=True)#helper.minmax(helper, x, y, min=True) # Seems to work
+def maximum(x, y): return helper.loopcheck(helper, x, y=y, maxi=True) # Seems to work
+def minimum(x, y): return helper.loopcheck(helper, x, y=y, mini=True) # Seems to work
 def empty(x, fill=0, like=False): return helper.boxloop(helper, x, fill=fill, like=like) # Seems to work
 def full(x, fill): return helper.boxloop(helper, x, fill=fill) # Seems to work
 def cos(x, dtype=int32): return helper.loop(helper, x, math.cos) # Seems to work
