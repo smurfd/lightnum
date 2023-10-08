@@ -1,153 +1,46 @@
 import builtins
-import ctypes
 import math
-import random as rnd
 import array as arr
 import copy as cp
-
-# types
-float16 = ctypes.c_float
-float32 = ctypes.c_float
-float64 = ctypes.c_double
-int8 = ctypes.c_int8
-int16 = ctypes.c_int16
-int32 = ctypes.c_int32
-int64 = ctypes.c_int64
-uint8 = ctypes.c_uint8
-uint16 = ctypes.c_uint16
-uint32 = ctypes.c_uint32
-uint64 = ctypes.c_uint64
-bool_ = ctypes.c_bool
-
-# constants
-inf = math.inf
-nan = math.nan
-
-# TODO0: refactor helper functions to better names and maby squash into fewer functions
-# TODO1: make dtype=xxx do something
-class array(object):
-  def __init__(self, x=0): self.x = x
-  def __getattr__(self, name): return getattr(self.x, name)
-  def __repr__(self): return repr(self.x)
-  def __str__(self): return str(self.x)
-  def flatten(self, x): return reshape(x, -1)
-  def astype(self, x): return [x(self.x[i]).value for i in range(len(self.x))]
-  def tolist(self): return list(self.x)
-  def numpy(self): return list(self.x)
-
-class asarray(array): pass
-
-class ndarray(array):
-  def __init__(self, x=0):
-    if len(x) == 1:
-      if type(x) is not int and type(x[0]) is not list: self.x = [0 for _ in range(x[0])]
-      else: self.x = [0 for a in range(len(x)) for b in range(len(x[a])) if a != b]
-    else: self.x = [x[i] for i in range(len(x))]
-
-  def astype(self, x):
-    if len(self.x) == 1: return [0 for _ in range(self.x[0])]
-    else: return [x(self.x[i]).value for i in range(len(self.x))]
-
-class helper():
-  def typ(x, dtype=int32): return dtype(x).value
-  def sum(x, y): return x + y
-  def mod(x, y): return x % y
-  def exp2(x): return 2 ** x
-  def cbrt(x): return round(x**(1 / 3.), 2)
-
-  # helper function to return a row of a list
-  def getrow(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
-
-  # tuple (1,2,3,4,5)
-  #                ^- # per row
-  #              ^- # rows per box
-  #            ^- # boxes
-  # helper function to loop through multidimentional lists to check
-  def looper(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False, fill=0, like=False, noloop=False, loop=False, call=None, dtype=int32):
-    if loop:
-      if y and not isinstance(x, list) and not isinstance(x, tuple): return call(x, y)
-      if y: return [self.looper(self, i, call=call, y=j, loop=True) for i, j in zip(x, y)]
-      if not isinstance(x, list): return call(x)
-      return [self.looper(self, i, call=call, y=y, loop=True) for i in x]
-
-    if noloop:
-      if type(x) is int: return [fill] * x
-      if type(x) is list:
-        if like and type(x[0]) is not list: return [fill] * len(x)
-        elif like: return [fill for a in range(len(x)) for b in range(len(x[a]))]
-        elif len(x) == 1: return [fill] * x[0]
-        else: return [fill] * len(x)
-      if len(x) <= 2: return self.getrow(self, x, fill) # if onedimentional [2, 4]
-      return [[self.getrow(self, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop()
-
-    if type(x) is bool: return x
-    if (mini or maxi): tmp=[]; ret=[]
-    for i in range(len(x)):
-      if (maxi or mini) and type(x[i]) is list and type(y[i]) is list: tmp.append(self.looper(self, x[i], ret, y[i], maxi=maxi, mini=mini))
-      elif type(y) is list and type(x[i]) is list and type(y[i]) is list: ret = self.looper(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      elif type(x[i]) is list and type(y) is not list: ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      elif type(x[i]) is tuple: ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      else:
-        if ass and round(x[i], 8) == round(y[i], 8): ret.append(True)
-        elif ass: ret.append(False)
-        if ass and asscls: ret.append(abs(abs(x[i]) - abs(y[i])))
-        if ass and asscls and y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
-        if ass and asscls and cls: ret.append(abs(y[i]))
-        if count and (x[i] != 0 and x[i] is not False): ret = ret + 1
-        elif countzero and (x[i] == 0): ret = ret + 1
-        elif add: ret = ret + x[i]
-        elif (max and ret <= x[i]) or (min and ret >= x[i]): ret = x[i]
-        elif (mini or maxi): tmp.append(y[i]);tmp.append(x[i]); ret.extend(tmp); tmp = []
-        elif isin and x[i] == y[i]: ret.append(True)
-        elif isin and x[i] != y[i]: ret.append(False)
-    return ret
-
-class random():
-  def seed(x, dtype=int32): return rnd.seed(x)
-  def randint(x, dtype=int32): return rnd.randint(x)
-  def randn(*args, dtype=int32, ret=[]):
-    if type(args) is tuple and len(args) == 1:
-      if len(args[0]) != 1: [ret.append(i) for j in range(len(args[0])) for i in range(args[0][j]) if i != j]
-      else: [ret.append(i) for i in range(len(args[0]))]
-    else: [ret.append(i) for i in args]
-    return ndarray(helper.looper(helper, ret, fill=rnd.random(), noloop=True))#boxloop(helper, ret, fill=rnd.random()))
-  def random(size, dtype=float32): return random.randn(size)
-  def rand(*args, dtype=int32): return random.randn(args, dtype=dtype)
-  def choise(x, dtype=int32): return rnd.choise(x)
-  def RandomState(x, dtype=int32): return rnd.RandomState(x)
-  def default_rng(x, dtype=int32): return rnd.default_rng(x)
+from lightnum.array import array, ndarray, asarray
+from lightnum.random import random
+from lightnum.testing import testing
+from lightnum.helper import *
+# TODO: make dtype=xxx do something
+# TODO: class lib
+# TODO: add functionallity to functions with pass
 
 # math
-def log(x, dtype=int32): return helper.looper(helper, x, call=math.log, dtype=dtype, loop=True) # Seems to work
-def exp(x, dtype=float32): return helper.looper(helper, x, call=math.exp, dtype=dtype, loop=True) # Seems to work
-def exp2(x, dtype=int32): return helper.looper(helper, x, call=helper.exp2, dtype=dtype, loop=True) # Seems to work
-def cbrt(x, dtype=int32): return helper.looper(helper, x, call=helper.cbrt, dtype=dtype, loop=True) # Seems to work
-def sum(x, dtype=int32): return helper.looper(helper, x, call=builtins.sum, dtype=dtype, loop=True) # Seems to work
-def mod(x, y, dtype=float32): return helper.looper(helper, x, call=helper.mod, y=y, dtype=dtype, loop=True) # Seems to work
+def log(x, dtype=int32): return helper.looper(helper, x, call=math.log, dtype=dtype, loop=True)
+def exp(x, dtype=float32): return helper.looper(helper, x, call=math.exp, dtype=dtype, loop=True)
+def exp2(x, dtype=int32): return helper.looper(helper, x, call=helper.exp2, dtype=dtype, loop=True)
+def cbrt(x, dtype=int32): return helper.looper(helper, x, call=helper.cbrt, dtype=dtype, loop=True)
+def sum(x, dtype=int32): return helper.looper(helper, x, call=builtins.sum, dtype=dtype, loop=True)
+def mod(x, y, dtype=float32): return helper.looper(helper, x, call=helper.mod, y=y, dtype=dtype, loop=True)
 def prod(x, y=0, dtype=int32): return helper.looper(helper, x, call=math.prod, dtype=dtype, loop=True)
 def multiply(x, y=0, dtype=int32): return helper.looper(helper, x, call=math.prod, dtype=dtype, loop=True)
-def zeros(s, d=0, dtype=float32): return helper.looper(helper, s, fill=d, noloop=True)#boxloop(helper, s, fill=d)
-def zeros_like(s, d=0, dtype=int32): return empty(s, fill=0, like=True) # Seems to work
-def ones(s, d=1, dtype=int32): return zeros(s, d) # Seems to work # call the same function as zeros but set it to 1 instead
-def ones_like(s, d=1, dtype=int32): return empty(s, fill=1, like=True) # Seems to work
-def max(x): return helper.looper(helper, x, max=True) # Seems to work
-def min(x): return helper.looper(helper, x, min=True) # Seems to work
-def maximum(x, y): return helper.looper(helper, x, y=y, maxi=True) # Seems to work
-def minimum(x, y): return helper.looper(helper, x, y=y, mini=True) # Seems to work
-def empty(x, fill=0, like=False): return helper.looper(helper, x, fill=fill, like=like, noloop=True)#boxloop(helper, x, fill=fill, like=like) # Seems to work
-def full(x, fill): return helper.looper(helper, x, fill=fill, noloop=True)#boxloop(helper, x, fill=fill) # Seems to work
-def cos(x, dtype=int32): return helper.looper(helper, x, call=math.cos, dtype=dtype, loop=True) # Seems to work
-def sqrt(x, dtype=int32): return helper.looper(helper, x, call=math.sqrt, dtype=dtype, loop=True) # Seems to work
-def arctan2(x, y, dtype=int32): return helper.looper(helper, x, call=math.atan2, y=y, dtype=dtype, loop=True) # Seems to work
+def zeros(s, d=0, dtype=float32): return helper.looper(helper, s, fill=d, noloop=True)
+def zeros_like(s, d=0, dtype=int32): return empty(s, fill=0, like=True)
+def ones(s, d=1, dtype=int32): return zeros(s, d) # call the same function as zeros but set it to 1 instead
+def ones_like(s, d=1, dtype=int32): return empty(s, fill=1, like=True)
+def max(x): return helper.looper(helper, x, max=True)
+def min(x): return helper.looper(helper, x, min=True)
+def maximum(x, y): return helper.looper(helper, x, y=y, maxi=True)
+def minimum(x, y): return helper.looper(helper, x, y=y, mini=True)
+def empty(x, fill=0, like=False): return helper.looper(helper, x, fill=fill, like=like, noloop=True)
+def full(x, fill): return helper.looper(helper, x, fill=fill, noloop=True)
+def cos(x, dtype=int32): return helper.looper(helper, x, call=math.cos, dtype=dtype, loop=True)
+def sqrt(x, dtype=int32): return helper.looper(helper, x, call=math.sqrt, dtype=dtype, loop=True)
+def arctan2(x, y, dtype=int32): return helper.looper(helper, x, call=math.atan2, y=y, dtype=dtype, loop=True)
 def amax(x, dtype=int32): return helper.looper(helper, x, max=True) # Kinda works
-def isin(x, y, dtype=int32): return helper.looper(helper, x, y=y, ret=[], isin=True) # Seems to work
-def ceil(x, dtype=int32): return helper.looper(helper, x, call=math.ceil, dtype=dtype, loop=True) # Seems to work
-def count_nonzero(x): return helper.looper(helper, x, ret=0, count=True) # Seems to work
-def not_equal(x, y): return not testing.assert_equal(x, y) # Seems to work
-def array_equal(x, y): return testing.assert_equal(x, y) # Seems to work
-def arange(x,y,z, dtype=int32): return ndarray(helper.looper(helper, ret=0, fill=rnd.random(), noloop=True))#boxloop(helper, ret=0, fill=rnd.random()))
-def any(x): return builtins.any(helper.looper(helper, x, ret=0, count=True)) # Seems to work
-def all(x): return builtins.all(helper.looper(helper, x, ret=0, count=True)) # Seems to work
+def isin(x, y, dtype=int32): return helper.looper(helper, x, y=y, ret=[], isin=True)
+def ceil(x, dtype=int32): return helper.looper(helper, x, call=math.ceil, dtype=dtype, loop=True)
+def count_nonzero(x): return helper.looper(helper, x, ret=0, count=True)
+def not_equal(x, y): return not testing.assert_equal(x, y)
+def array_equal(x, y): return testing.assert_equal(x, y)
+def arange(x,y,z, dtype=int32): return ndarray(helper.looper(helper, ret=0, fill=rnd.random(), noloop=True))
+def any(x): return builtins.any(helper.looper(helper, x, ret=0, count=True))
+def all(x): return builtins.all(helper.looper(helper, x, ret=0, count=True))
 def copy(x): return helper.looper(helper, x, call=cp.copy, dtype=dtype, loop=True)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper(helper, x[i], add=True) // len(x[i]))
@@ -156,64 +49,13 @@ def median(x, r=[]):
 def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
-def allclose(x, y, rtol=1e-05, atol=1e-08): # Seems to work
+def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
-
-def reshape(l, shape): # Seems to work
-  ncols, nrows, ret = 0, 0, []
-  if shape == -1:
-    if type(l) is not list and type(l) is not tuple: ncols, nrows = l, 1
-    else: ncols, nrows = len(l), 1
-  elif type(shape) is tuple: nrows, ncols = shape
-  else: ncols, nrows = len(l), 1
-  for r in range(nrows):
-    row = []
-    for c in range(ncols):
-      if shape == -1 and type(l) is list and type(l[c]) is not float and type(l[c]) is not int: row.extend(reshape(l[c], -1))
-      elif shape == -1: row.extend(l); break
-      else: row.append(l[ncols * r + c])
-    if shape == -1: ret.extend(row)
-    else: ret.append(row)
-  return ret
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 
-class testing:
-  def assert_equal(x, y):
-    if type(x) is not tuple and type(y) is not tuple and type(x) is not list and type(y) is not list: assert(x == y) # meaning either int or float
-    elif not builtins.all(helper.looper(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values are not equal")
-
-  def assert_array_equal(x, y):
-    if not builtins.all(helper.looper(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values in array are not equal")
-
-  def assert_allclose(x, y, rtol=1e-07, atol=0):
-    miss, r, rdiff, adiff = 0, [], [], []
-    if type(x) is int and type(y) is int:
-      if x != y:
-        miss = miss + 1
-        if atol: adiff.append(abs(abs(x) - abs(y)))
-        rdiff.append(abs(abs(x) - abs(y)) / abs(y))
-    else:
-      r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True)
-      for i in range(0, len(r), 3):
-        if r[i] is False: miss = miss + 1
-      for i in range(1,len(r),3):
-        if r[i] != 0 and r[i] > atol:
-          if atol: adiff.append(r[i])
-          else: adiff.append(0)
-      for i in range(2, len(r), 3):
-        if r[i] != 0 and r[i] > rtol: rdiff.append(r[i])
-    if miss != 0 and adiff!=[] and rdiff!=[]:
-      if not r: print(f"Mismatched elements: {miss} / {1} ({round(miss / (1) * 100, 1)}%)")
-      else: print(f"Mismatched elements: {miss} / {len(r)//3} ({round(miss / (len(r)//3) * 100, 1)}%)")
-      print("Max absolute difference:", round(max(adiff), 10))
-      print("Max relative difference:", round(max(rdiff), 10))
-      raise AssertionError(f"Not equal to tolerance rtol={rtol}, atol={atol}")
-    return True
-
-# TODO2
 class lib:
   class stride_tricks:
     def as_strided(self): pass
