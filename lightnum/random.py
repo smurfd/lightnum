@@ -6,7 +6,7 @@ class random():
   def seed(x, dtype=int32): return rnd.seed(x)
   def randint(x, dtype=int32): return rnd.randint(x)
   def randn(*args, dtype=int32, ret=[]):
-    if type(args) is tuple and len(args) == 1:
+    if isinstance(args, tuple) and len(args) == 1:
       if len(args[0]) != 1: [ret.append(i) for j in range(len(args[0])) for i in range(args[0][j]) if i != j]
       else: [ret.append(i) for i in range(len(args[0]))]
     else: [ret.append(i) for i in args]

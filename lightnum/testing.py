@@ -4,7 +4,7 @@ from lightnum.helper import *
 
 class testing:
   def assert_equal(x, y):
-    if type(x) is not tuple and type(y) is not tuple and type(x) is not list and type(y) is not list: assert(x == y) # meaning either int or float
+    if not builtins.any(isinstance(i, (tuple,list)) for i in [x,y]): assert(x == y)
     elif not builtins.all(helper.looper(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values are not equal")
 
   def assert_array_equal(x, y):
@@ -12,7 +12,7 @@ class testing:
 
   def assert_allclose(x, y, rtol=1e-07, atol=0):
     miss, r, rdiff, adiff = 0, [], [], []
-    if type(x) is int and type(y) is int:
+    if builtins.all(isinstance(i, int) for i in [x,y]):
       if x != y:
         miss = miss + 1
         if atol: adiff.append(abs(abs(x) - abs(y)))
