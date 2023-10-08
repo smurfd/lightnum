@@ -55,15 +55,15 @@ class helper():
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
 
+  # helper function to return a row of a list
+  def getrow(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
+
   # helper function to loop through multidimentional lists
   def loop(self, x, call, dtype=int32, y=0):
     if y and not isinstance(x, list) and not isinstance(x, tuple): return call(x, y)
     if y: return [self.loop(self, i, call, y=j) for i, j in zip(x, y)]
     if not isinstance(x, list): return call(x)
     return [self.loop(self, i, call, y=y) for i in x]
-
-  # helper function to return a row of a list
-  def getrow(self, x, fill=0): return [empty(x[-1], fill) for _ in range(x[len(x) - 2])]
 
   # helper function to loop through multidimentional lists to check
   def loopcheck(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False):
@@ -119,14 +119,14 @@ class random():
   def default_rng(x, dtype=int32): return rnd.default_rng(x)
 
 # math
-def log(x, dtype=int32): return helper.loop(helper, x, math.log) # Seems to work
-def exp(x, dtype=float32): return helper.loop(helper, x, math.exp) # Seems to work
-def exp2(x, dtype=int32): return helper.loop(helper, x, helper.exp2) # Seems to work
-def cbrt(x, dtype=int32): return helper.loop(helper, x, helper.cbrt) # Seems to work
-def sum(x, dtype=int32): return helper.loop(helper, x, builtins.sum) # Seems to work
-def mod(x, y, dtype=float32): return helper.loop(helper, x, helper.mod, y=y) # Seems to work
-def prod(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
-def multiply(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod)
+def log(x, dtype=int32): return helper.loop(helper, x, math.log, dtype=dtype) # Seems to work
+def exp(x, dtype=float32): return helper.loop(helper, x, math.exp, dtype=dtype) # Seems to work
+def exp2(x, dtype=int32): return helper.loop(helper, x, helper.exp2, dtype=dtype) # Seems to work
+def cbrt(x, dtype=int32): return helper.loop(helper, x, helper.cbrt, dtype=dtype) # Seems to work
+def sum(x, dtype=int32): return helper.loop(helper, x, builtins.sum, dtype=dtype) # Seems to work
+def mod(x, y, dtype=float32): return helper.loop(helper, x, helper.mod, y=y, dtype=dtype) # Seems to work
+def prod(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod, dtype=dtype)
+def multiply(x, y=0, dtype=int32): return helper.loop(helper, x, math.prod, dtype=dtype)
 def zeros(s, d=0, dtype=float32): return helper.boxloop(helper, s, fill=d)
 def zeros_like(s, d=0, dtype=int32): return empty(s, fill=0, like=True) # Seems to work
 def ones(s, d=1, dtype=int32): return zeros(s, d) # Seems to work # call the same function as zeros but set it to 1 instead
@@ -137,19 +137,19 @@ def maximum(x, y): return helper.loopcheck(helper, x, y=y, maxi=True) # Seems to
 def minimum(x, y): return helper.loopcheck(helper, x, y=y, mini=True) # Seems to work
 def empty(x, fill=0, like=False): return helper.boxloop(helper, x, fill=fill, like=like) # Seems to work
 def full(x, fill): return helper.boxloop(helper, x, fill=fill) # Seems to work
-def cos(x, dtype=int32): return helper.loop(helper, x, math.cos) # Seems to work
-def sqrt(x, dtype=int32): return helper.loop(helper, x, math.sqrt) # Seems to work
-def arctan2(x, y, dtype=int32): return helper.loop(helper, x, math.atan2, y=y) # Seems to work
+def cos(x, dtype=int32): return helper.loop(helper, x, math.cos, dtype=dtype) # Seems to work
+def sqrt(x, dtype=int32): return helper.loop(helper, x, math.sqrt, dtype=dtype) # Seems to work
+def arctan2(x, y, dtype=int32): return helper.loop(helper, x, math.atan2, y=y, dtype=dtype) # Seems to work
 def amax(x, dtype=int32): return helper.loopcheck(helper, x, max=True) # Kinda works
 def isin(x, y, dtype=int32): return helper.loopcheck(helper, x, y=y, ret=[], isin=True) # Seems to work
-def ceil(x, dtype=int32): return helper.loop(helper, x, math.ceil) # Seems to work
+def ceil(x, dtype=int32): return helper.loop(helper, x, math.ceil, dtype=dtype) # Seems to work
 def count_nonzero(x): return helper.loopcheck(helper, x, ret=0, count=True) # Seems to work
 def not_equal(x, y): return not testing.assert_equal(x, y) # Seems to work
 def array_equal(x, y): return testing.assert_equal(x, y) # Seems to work
 def arange(x,y,z, dtype=int32): return ndarray(helper.boxloop(helper, ret=0, fill=rnd.random()))
 def any(x): return builtins.any(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
 def all(x): return builtins.all(helper.loopcheck(helper, x, ret=0, count=True)) # Seems to work
-def copy(x): return helper.loop(helper, x, cp.copy)
+def copy(x): return helper.loop(helper, x, cp.copy, dtype=dtype)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.loopcheck(helper, x[i], add=True) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
