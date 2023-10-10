@@ -1,11 +1,13 @@
-import builtins
-import math
-import array as arr
-import copy as cp
 from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing
-from lightnum.helper import *
+from lightnum.helper import helper
+from lightnum.dtypes import int32,float32
+import random as rnd
+import array as arr
+import copy as cp
+import builtins
+import math
 # TODO: make dtype=xxx do something
 # TODO: class lib
 # TODO: add functionallity to functions with pass
@@ -53,6 +55,24 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 
+def reshape(l, shape): return helper.reshape(l, shape)
+"""
+    ncols, nrows, ret = 0, 0, []
+    if shape == -1:
+      if not isinstance(l, (list, tuple)): ncols, nrows = l, 1
+      else: ncols, nrows = len(l), 1
+    elif isinstance(shape, tuple): nrows, ncols = shape
+    else: ncols, nrows = len(l), 1
+    for r in range(nrows):
+      row = []
+      for c in range(ncols):
+        if shape == -1 and isinstance(l, list) and not isinstance(l[c], (float, int)): row.extend(reshape(l[c], -1))
+        elif shape == -1: row.extend(l); break
+        else: row.append(l[ncols * r + c])
+      if shape == -1: ret.extend(row)
+      else: ret.append(row)
+    return ret
+"""
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 

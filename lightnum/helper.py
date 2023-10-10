@@ -1,24 +1,6 @@
+from lightnum.dtypes import int32,float32
 import builtins
-import ctypes
 import math
-
-# types
-float16 = ctypes.c_float
-float32 = ctypes.c_float
-float64 = ctypes.c_double
-int8 = ctypes.c_int8
-int16 = ctypes.c_int16
-int32 = ctypes.c_int32
-int64 = ctypes.c_int64
-uint8 = ctypes.c_uint8
-uint16 = ctypes.c_uint16
-uint32 = ctypes.c_uint32
-uint64 = ctypes.c_uint64
-bool_ = ctypes.c_bool
-
-# constants
-inf = math.inf
-nan = math.nan
 
 class helper():
   def typ(x, dtype=int32): return dtype(x).value
@@ -73,19 +55,19 @@ class helper():
         elif isin and x[i] != y[i]: ret.append(False)
     return ret
 
-def reshape(l, shape):
-    ncols, nrows, ret = 0, 0, []
-    if shape == -1:
-      if not isinstance(l, (list, tuple)): ncols, nrows = l, 1
+  def reshape(l, shape):
+      ncols, nrows, ret = 0, 0, []
+      if shape == -1:
+        if not isinstance(l, (list, tuple)): ncols, nrows = l, 1
+        else: ncols, nrows = len(l), 1
+      elif isinstance(shape, tuple): nrows, ncols = shape
       else: ncols, nrows = len(l), 1
-    elif isinstance(shape, tuple): nrows, ncols = shape
-    else: ncols, nrows = len(l), 1
-    for r in range(nrows):
-      row = []
-      for c in range(ncols):
-        if shape == -1 and isinstance(l, list) and not isinstance(l[c], (float, int)): row.extend(reshape(l[c], -1))
-        elif shape == -1: row.extend(l); break
-        else: row.append(l[ncols * r + c])
-      if shape == -1: ret.extend(row)
-      else: ret.append(row)
-    return ret
+      for r in range(nrows):
+        row = []
+        for c in range(ncols):
+          if shape == -1 and isinstance(l, list) and not isinstance(l[c], (float, int)): row.extend(helper.reshape(l[c], -1))
+          elif shape == -1: row.extend(l); break
+          else: row.append(l[ncols * r + c])
+        if shape == -1: ret.extend(row)
+        else: ret.append(row)
+      return ret

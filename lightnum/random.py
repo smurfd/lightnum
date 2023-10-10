@@ -1,6 +1,7 @@
-import random as rnd
 from lightnum.array import array, ndarray, asarray
-from lightnum.helper import *
+from lightnum.helper import helper
+from lightnum.dtypes import int32,float32
+import random as rnd
 
 class random():
   def seed(x, dtype=int32): return rnd.seed(x)

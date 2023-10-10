@@ -1,6 +1,5 @@
+from lightnum.helper import helper
 import builtins
-from lightnum.helper import *
-
 
 class testing:
   def assert_equal(x, y):
@@ -14,13 +13,13 @@ class testing:
     miss, r, rdiff, adiff = 0, [], [], []
     if builtins.all(isinstance(i, int) for i in [x,y]):
       if x != y:
-        miss = miss + 1
+        miss += 1
         if atol: adiff.append(abs(abs(x) - abs(y)))
         rdiff.append(abs(abs(x) - abs(y)) / abs(y))
     else:
       r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True)
       for i in range(0, len(r), 3):
-        if r[i] is False: miss = miss + 1
+        if r[i] is False: miss += 1
       for i in range(1,len(r),3):
         if r[i] != 0 and r[i] > atol:
           if atol: adiff.append(r[i])
