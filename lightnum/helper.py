@@ -46,9 +46,9 @@ class helper():
         if ass and asscls: ret.append(abs(abs(x[i]) - abs(y[i])))
         if ass and asscls and y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
         if ass and asscls and cls: ret.append(abs(y[i]))
-        if count and (x[i] != 0 and x[i] is not False): ret = ret + 1
-        elif countzero and (x[i] == 0): ret = ret + 1
-        elif add: ret = ret + x[i]
+        if count and (x[i] != 0 and x[i] is not False): ret += 1
+        elif countzero and (x[i] == 0): ret += 1
+        elif add: ret += x[i]
         elif (max and ret <= x[i]) or (min and ret >= x[i]): ret = x[i]
         elif (mini or maxi): tmp.append(y[i]);tmp.append(x[i]); ret.extend(tmp); tmp = []
         elif isin and x[i] == y[i]: ret.append(True)

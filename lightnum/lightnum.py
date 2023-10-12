@@ -44,6 +44,7 @@ def arange(x,y,z, dtype=int32): return ndarray(helper.looper(helper, ret=0, fill
 def any(x): return builtins.any(helper.looper(helper, x, ret=0, count=True))
 def all(x): return builtins.all(helper.looper(helper, x, ret=0, count=True))
 def copy(x): return helper.looper(helper, x, call=cp.copy, dtype=dtype, loop=True)
+def reshape(l, shape): return helper.reshape(l, shape)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper(helper, x[i], add=True) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -55,24 +56,6 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 
-def reshape(l, shape): return helper.reshape(l, shape)
-"""
-    ncols, nrows, ret = 0, 0, []
-    if shape == -1:
-      if not isinstance(l, (list, tuple)): ncols, nrows = l, 1
-      else: ncols, nrows = len(l), 1
-    elif isinstance(shape, tuple): nrows, ncols = shape
-    else: ncols, nrows = len(l), 1
-    for r in range(nrows):
-      row = []
-      for c in range(ncols):
-        if shape == -1 and isinstance(l, list) and not isinstance(l[c], (float, int)): row.extend(reshape(l[c], -1))
-        elif shape == -1: row.extend(l); break
-        else: row.append(l[ncols * r + c])
-      if shape == -1: ret.extend(row)
-      else: ret.append(row)
-    return ret
-"""
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 
