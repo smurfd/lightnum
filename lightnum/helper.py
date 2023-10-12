@@ -41,12 +41,14 @@ class helper():
       elif isinstance(x[i], list) and not isinstance(y, list): ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       elif isinstance(x[i], tuple): ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
       else:
-        if ass and round(x[i], 8) == round(y[i], 8): ret.append(True)
-        elif ass: ret.append(False)
-        if ass and asscls: ret.append(abs(abs(x[i]) - abs(y[i])))
-        if ass and asscls and y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
-        if ass and asscls and cls: ret.append(abs(y[i]))
-        if count and (x[i] != 0 and x[i] is not False): ret += 1
+        if ass:
+          if round(x[i], 8) == round(y[i], 8): ret.append(True)
+          else: ret.append(False)
+          if asscls:
+            ret.append(abs(abs(x[i]) - abs(y[i])))
+            if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
+            if cls: ret.append(abs(y[i]))
+        if count and (x[i] != 0 and x[i] is not False): ret += 1#
         elif countzero and (x[i] == 0): ret += 1
         elif add: ret += x[i]
         elif (max and ret <= x[i]) or (min and ret >= x[i]): ret = x[i]
@@ -55,19 +57,18 @@ class helper():
         elif isin and x[i] != y[i]: ret.append(False)
     return ret
 
-  def reshape(l, shape):
-      ncols, nrows, ret = 0, 0, []
-      if shape == -1:
-        if not isinstance(l, (list, tuple)): ncols, nrows = l, 1
-        else: ncols, nrows = len(l), 1
-      elif isinstance(shape, tuple): nrows, ncols = shape
-      else: ncols, nrows = len(l), 1
-      for r in range(nrows):
-        row = []
-        for c in range(ncols):
-          if shape == -1 and isinstance(l, list) and not isinstance(l[c], (float, int)): row.extend(helper.reshape(l[c], -1))
-          elif shape == -1: row.extend(l); break
-          else: row.append(l[ncols * r + c])
-        if shape == -1: ret.extend(row)
-        else: ret.append(row)
-      return ret
+  def reshape(col, shape):
+    ncols, nrows, ret, row = 0, 0, [], []
+    if shape == -1:
+      if not isinstance(col, (list, tuple)): ncols, nrows = col, 1
+      else: ncols, nrows = len(col), 1
+    elif isinstance(shape, tuple): nrows, ncols = shape
+    else: ncols, nrows = len(col), 1
+    for r in range(nrows):
+      for c in range(ncols):
+        if shape == -1 and isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(helper.reshape(col[c], -1))
+        elif shape == -1: row.extend(col); break
+        else: row.append(col[ncols * r + c])
+      if shape == -1: ret.extend(row)
+      else: ret.append(row); row=[]
+    return ret

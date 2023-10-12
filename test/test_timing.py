@@ -12,3 +12,6 @@ def test_timing():
   for _ in range(10000): lp.mod([1, 2, 3, 4], [1, 2, 6, 4])
   time_elapsed = datetime.now() - start_time
   print('LP Time elapsed (hh:mm:ss.ms) {}'.format(time_elapsed))
+
+test_timing()
+print("OK!")
