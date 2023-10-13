@@ -27,29 +27,30 @@ def arctan2(x, y, dtype=int32): return helper.looper_atan2(x, y=y, dtype=dtype)
 def ceil(x, dtype=int32): return helper.looper_ceil(x, dtype=dtype)
 def copy(x, dtype=int32): return helper.looper_cp(x, dtype=dtype)
 
-def empty(x, fill=0, like=False): return helper.looper(helper, x, fill=fill, like=like, noloop=True)
-def full(x, fill): return helper.looper(helper, x, fill=fill, noloop=True)
-def zeros(s, d=0, dtype=float32): return helper.looper(helper, s, fill=d, noloop=True)
-def zeros_like(s, d=0, dtype=int32): return empty(s, fill=0, like=True)
-def ones(s, d=1, dtype=int32): return zeros(s, d) # call the same function as zeros but set it to 1 instead
-def ones_like(s, d=1, dtype=int32): return empty(s, fill=1, like=True)
-def max(x): return helper.looper(helper, x, max=True)
-def min(x): return helper.looper(helper, x, min=True)
-def maximum(x, y): return helper.looper(helper, x, y=y, maxi=True)
-def minimum(x, y): return helper.looper(helper, x, y=y, mini=True)
+def empty(x, fill=0): return helper.looper_empty(x, fill=fill)
+def full(x, fill): return helper.looper_empty(x, fill=fill)
+def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill)
+def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0)
+def ones(x, fill=1, dtype=int32): return zeros(x, fill)
+def ones_like(x, fill=1, dtype=int32): return helper.looper_empty_like(x, fill=1)
+def arange(x,y,z, dtype=int32): return ndarray(helper.looper_empty(fill=rnd.random())) # not working
 
+def max(x): return helper.looper_max(x)
+def min(x): return helper.looper_min(x)
+def maximum(x, y): return helper.looper_maxi(x, y=y)
+def minimum(x, y): return helper.looper_mini(x, y=y)
+def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
 
-def amax(x, dtype=int32): return helper.looper(helper, x, max=True) # Kinda works
-def isin(x, y, dtype=int32): return helper.looper(helper, x, y=y, ret=[], isin=True)
-def count_nonzero(x): return helper.looper(helper, x, ret=0, count=True)
+def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
+def count_nonzero(x): return helper.looper_count(x, ret=0)
+def any(x): return builtins.any(helper.looper_count(x, ret=0))
+def all(x): return builtins.all(helper.looper_count(x, ret=0))
+
 def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
-def arange(x,y,z, dtype=int32): return ndarray(helper.looper(helper, ret=0, fill=rnd.random(), noloop=True))
-def any(x): return builtins.any(helper.looper(helper, x, ret=0, count=True))
-def all(x): return builtins.all(helper.looper(helper, x, ret=0, count=True))
 def reshape(l, shape): return helper.reshape(l, shape)
 def median(x, r=[]):
-  for i in range(len(x)): r.append(helper.looper(helper, x[i], add=True) // len(x[i]))
+  for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
 
 def copyto(x, y):
