@@ -1,4 +1,5 @@
 from lightnum.dtypes import int32,float32
+import copy as cp
 import builtins
 import math
 
@@ -16,12 +17,12 @@ class helper():
   #            ^- # boxes
   # helper function to loop through multidimentional lists to check
   def looper(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False, fill=0, like=False, noloop=False, loop=False, call=None, dtype=int32):
-    if loop:
-      if y:
-        if not isinstance(x, (list, tuple)): return call(x, y)
-        return [self.looper(self, i, call=call, y=j, loop=True) for i, j in zip(x, y)]
-      if not isinstance(x, list): return call(x)
-      return [self.looper(self, i, call=call, y=y, loop=True) for i in x]
+    #if loop:
+    #  if y:
+    #    if not isinstance(x, (list, tuple)): return call(x, y)
+    #    return [self.looper(self, i, call=call, y=j, loop=True) for i, j in zip(x, y)]
+    #  if not isinstance(x, list): return call(x)
+    #  return [self.looper(self, i, call=call, y=y, loop=True) for i in x]
 
     if noloop:
       if isinstance(x, int): return [fill] * x
@@ -56,6 +57,54 @@ class helper():
         elif isin and x[i] == y[i]: ret.append(True)
         elif isin and x[i] != y[i]: ret.append(False)
     return ret
+
+  def looper_log(x, dtype=int32):
+    if not isinstance(x, list): return math.log(x)
+    return [helper.looper_log(i) for i in x]
+
+  def looper_exp(x, dtype=int32):
+    if not isinstance(x, list): return math.exp(x)
+    return [helper.looper_exp(i) for i in x]
+
+  def looper_exp2(x, dtype=int32):
+    if not isinstance(x, list): return helper.exp2(x)
+    return [helper.looper_exp2(i) for i in x]
+
+  def looper_cbrt(x, dtype=int32):
+    if not isinstance(x, list): return helper.cbrt(x)
+    return [helper.looper_cbrt(i) for i in x]
+
+  def looper_sum(x, dtype=int32):
+    if not isinstance(x, list): return builtins.sum(x)
+    return [helper.looper_sum(i) for i in x]
+
+  def looper_mod(x, y, dtype=int32):
+    if not isinstance(x, (list, tuple)): return helper.mod(x, y)
+    return [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
+
+  def looper_mul(x, dtype=int32):
+    if not isinstance(x, list): return math.prod(x)
+    return [helper.looper_mul(i) for i in x]
+
+  def looper_cos(x, dtype=int32):
+    if not isinstance(x, list): return math.cos(x)
+    return [helper.looper_cos(i) for i in x]
+
+  def looper_sqrt(x, dtype=int32):
+    if not isinstance(x, list): return math.sqrt(x)
+    return [helper.looper_sqrt(i) for i in x]
+
+  def looper_atan2(x, y, dtype=int32):
+    if not isinstance(x, (list, tuple)): return math.atan2(x, y)
+    return [helper.looper_atan2(i, y=j) for i, j in zip(x, y)]
+
+  def looper_ceil(x, dtype=int32):
+    if not isinstance(x, list): return math.ceil(x)
+    return [helper.looper_ceil(i) for i in x]
+
+  def looper_cp(x, dtype=int32):
+    if not isinstance(x, list): return cp.copy(x)
+    return [helper.looper_cp(i) for i in x]
 
   def reshape(col, shape):
     ncols, nrows, ret, row = 0, 0, [], []
