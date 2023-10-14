@@ -4,10 +4,10 @@ import builtins
 class testing:
   def assert_equal(x, y):
     if not builtins.any(isinstance(i, (tuple,list)) for i in [x,y]): assert(x == y)
-    elif not builtins.all(helper.looper(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values are not equal")
+    elif not builtins.all(helper.looper_assert(x, y)): raise AssertionError("Values are not equal")
 
   def assert_array_equal(x, y):
-    if not builtins.all(helper.looper(helper, x, y=y, ret=[], ass=True)): raise AssertionError("Values in array are not equal")
+    if not builtins.all(helper.looper_assert(x, y)): raise AssertionError("Values in array are not equal")
 
   def assert_allclose(x, y, rtol=1e-07, atol=0):
     miss, r, rdiff, adiff = 0, [], [], []
@@ -17,7 +17,7 @@ class testing:
         if atol: adiff.append(abs(abs(x) - abs(y)))
         rdiff.append(abs(abs(x) - abs(y)) / abs(y))
     else:
-      r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True)
+      r = helper.looper_assert_close(x, y)
       for i in range(0, len(r), 3):
         if r[i] is False: miss += 1
       for i in range(1,len(r),3):

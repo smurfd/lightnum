@@ -15,32 +15,7 @@ class helper():
   #                ^- # per row
   #              ^- # rows per box
   #            ^- # boxes
-  # helper function to loop through multidimentional lists to check
-  def looper(self, x, ret = 0, y = 0, max=False, min=False, maxi=False, mini=False, isin=False, ass=False, asscls=False, cls=False, count=False, countzero=False, add=False, fill=0, like=False, noloop=False, loop=False, call=None, dtype=int32):
-    if isinstance(x, bool): return x
-    if (mini or maxi): tmp=[]; ret=[]
-    for i in range(len(x)):
-      if (maxi or mini) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(self.looper(self, x[i], ret, y[i], maxi=maxi, mini=mini))
-      elif isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = self.looper(self, x[i], ret, y[i], max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      elif isinstance(x[i], list) and not isinstance(y, list): ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      elif isinstance(x[i], tuple): ret = self.looper(self, x[i], ret, y, max=max, min=min, isin=isin, ass=ass, asscls=asscls, count=count, countzero=countzero, add=add)
-      else:
-        if ass:
-          if round(x[i], 8) == round(y[i], 8): ret.append(True)
-          else: ret.append(False)
-          if asscls:
-            ret.append(abs(abs(x[i]) - abs(y[i])))
-            if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
-            if cls: ret.append(abs(y[i]))
-        if count and (x[i] != 0 and x[i] is not False): ret += 1
-        elif countzero and (x[i] == 0): ret += 1
-        elif add: ret += x[i]
-        elif (max and ret <= x[i]) or (min and ret >= x[i]): ret = x[i]
-        elif (mini or maxi): tmp.append(y[i]);tmp.append(x[i]); ret.extend(tmp); tmp = []
-        elif isin and x[i] == y[i]: ret.append(True)
-        elif isin and x[i] != y[i]: ret.append(False)
-    return ret
-
+  # helper functions to loop through multidimentional lists/tuples
   def looper_log(x, dtype=int32):
     if not isinstance(x, list): return math.log(x)
     return [helper.looper_log(i) for i in x]
@@ -155,6 +130,44 @@ class helper():
     for i in range(len(x)):
       if isinstance(x[i], (list, tuple)): ret = helper.looper_count(x[i], ret)
       elif (x[i] != 0 and x[i] is not False): ret += 1
+    return ret
+
+  def looper_assert(x, y):
+    ret=[]
+    for i in range(len(x)):
+      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
+      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)
+      elif isinstance(x[i], tuple): ret = helper.looper_assert(x[i], y)
+      else:
+        if round(x[i], 8) == round(y[i], 8): ret.append(True)
+        else: ret.append(False)
+    return ret
+
+  def looper_assert_close(x, y):
+    ret=[]
+    for i in range(len(x)):
+      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close(x[i], y[i])
+      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close(x[i], y)
+      elif isinstance(x[i], tuple): ret = helper.looper_assert_close(x[i], y)
+      else:
+        if round(x[i], 8) == round(y[i], 8): ret.append(True)
+        else: ret.append(False)
+        ret.append(abs(abs(x[i]) - abs(y[i])))
+        if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
+    return ret
+
+  def looper_assert_close_cls(x, y):
+    ret=[]
+    for i in range(len(x)):
+      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close_cls(x[i], y[i])
+      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close_cls(x[i], y)
+      elif isinstance(x[i], tuple): ret = helper.looper_assert_close_cls(x[i], y)
+      else:
+        if round(x[i], 8) == round(y[i], 8): ret.append(True)
+        else: ret.append(False)
+        ret.append(abs(abs(x[i]) - abs(y[i])))
+        if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
+        ret.append(abs(y[i]))
     return ret
 
   def reshape(col, shape):

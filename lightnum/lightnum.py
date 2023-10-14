@@ -57,7 +57,7 @@ def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08):
-  r = helper.looper(helper, x, y=y, ret=[], ass=True, asscls=True, cls=True)
+  r = helper.looper_assert_close_cls(x, y)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 
 class ctypeslib: # kindof
