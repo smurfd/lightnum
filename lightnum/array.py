@@ -1,4 +1,5 @@
 from lightnum.helper import helper
+
 class array(object):
   def __init__(self, x=0): self.x = x
   def __getattr__(self, name): return getattr(self.x, name)

@@ -47,10 +47,13 @@ def test_cbrt(): lp.testing.assert_equal(lp.cbrt([1,8,27]), np.cbrt([1,8,27]))
 def test_copy(): lp.testing.assert_equal(lp.copy([[1,2,3,4],[5,6,7,8]]), np.copy([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_copyto(): b=[[0,0,0,0],[0,0,0,0]]; c=[[1, 2, 3, 4],[2,2,2,2]]; a=np.array(c); np.copyto(a, c); lp.copyto(b, c); lp.testing.assert_equal(b, a.tolist())
 def test_median(): lp.testing.assert_equal(lp.median([[10, 7, 4], [3, 2, 1]]), np.median([[10, 7, 4], [3, 2, 1]]))
+def test_arange(): lp.testing.assert_equal(lp.arange(3, 7).tolist(), np.arange(3, 7).tolist())
+def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,4,5,6]))
 def test_show_randomusage():
   np.random.seed(1337)
   lp.random.seed(1337)
   np.random.randn(2,4)
+  lp.random.randn(2,4)
   lp.random.randn(2,4, dtype=lp.float32)
   lp.random.randn((2,4), dtype=lp.float32)
 

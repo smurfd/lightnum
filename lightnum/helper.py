@@ -1,4 +1,4 @@
-from lightnum.dtypes import int32,float32
+from lightnum.dtypes import int32, float32
 import copy as cp
 import builtins
 import math
@@ -69,6 +69,10 @@ class helper():
       if isinstance(x[i], (list, tuple)): ret = helper.looper_add(x[i], ret)
       else: ret += x[i]
     return ret
+
+  def looper_flip(x, dtype=int32):
+    if isinstance(x[0], list): return [helper.looper_flip(i) for i in x]
+    return x[::-1]
 
   def looper_empty(x, fill):
     if isinstance(x, int): return [fill] * x

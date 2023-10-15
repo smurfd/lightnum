@@ -2,7 +2,7 @@ from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing
 from lightnum.helper import helper
-from lightnum.dtypes import int32,float32
+from lightnum.dtypes import int32, float32
 import random as rnd
 import array as arr
 import copy as cp
@@ -33,14 +33,15 @@ def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill)
 def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0)
 def ones(x, fill=1, dtype=int32): return zeros(x, fill)
 def ones_like(x, fill=1, dtype=int32): return helper.looper_empty_like(x, fill=1)
-def arange(x,y,z, dtype=int32): return ndarray(helper.looper_empty(fill=rnd.random())) # not working
-
+def arange(start,stop=0,step=1, dtype=int32):
+  if stop: return ndarray([i for i in range(start, stop, step)])
+  return ndarray([i for i in range(0, start, step)])
 def max(x): return helper.looper_max(x)
 def min(x): return helper.looper_min(x)
 def maximum(x, y): return helper.looper_maxi(x, y=y)
 def minimum(x, y): return helper.looper_mini(x, y=y)
 def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
-
+def flip(x, dtype=int32): return helper.looper_flip(x)
 def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
 def count_nonzero(x): return helper.looper_count(x, ret=0)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
@@ -100,4 +101,3 @@ def vstack(): pass
 def save(): pass
 def load(): pass
 def cumsum(): pass
-def flip(): pass

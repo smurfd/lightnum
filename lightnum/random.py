@@ -1,6 +1,6 @@
 from lightnum.array import array, ndarray, asarray
 from lightnum.helper import helper
-from lightnum.dtypes import int32,float32
+from lightnum.dtypes import int32, float32
 import random as rnd
 
 class random():
