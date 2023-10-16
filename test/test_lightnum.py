@@ -51,6 +51,7 @@ def test_arange(): lp.testing.assert_equal(lp.arange(3, 7).tolist(), np.arange(3
 def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,4,5,6]))
 def test_split(): lp.testing.assert_equal(lp.split(lp.arange(6), 2), np.split(np.arange(6), 2))
 def test_tile(): lp.testing.assert_equal(lp.tile([0,1,2,3,4,5], 2).tolist(), np.tile([0,1,2,3,4,5], 2).tolist())
+def test_concatenate(): lp.testing.assert_equal(lp.concatenate(([1,2,3,4],[4,5,6])), np.concatenate(([1,2,3,4],[4,5,6])))
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.float32); lp.random.randn((2,4), dtype=lp.float32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))

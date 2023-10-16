@@ -92,6 +92,12 @@ class helper():
       tmp.append(tmp2); tmp2=[]
     return tmp
 
+  def looper_concatenate(x, dtype=int32):
+    tmp = []
+    for i in x:
+      tmp.extend(i)
+    return tmp
+
   def looper_empty(x, fill):
     if isinstance(x, int): return [fill] * x
     if isinstance(x, list):

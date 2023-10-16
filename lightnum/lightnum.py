@@ -55,7 +55,7 @@ def reshape(l, shape): return helper.reshape(l, shape)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
-
+def concatenate(x): return helper.looper_concatenate(x)
 def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
@@ -70,7 +70,6 @@ class lib:
   class stride_tricks:
     def as_strided(self): pass
 
-def concatenate(): pass
 def expand_dims(): pass
 def eye(): pass
 def frombuffer(): pass
