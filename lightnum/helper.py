@@ -80,6 +80,18 @@ class helper():
     elif not isinstance(y, list): return [ndarray(x[i:i+(len(x)//y)]) for i in range(0, len(x), len(x)//y)]
     return [helper.looper_split(i, y) for i in x]
 
+  def looper_tile(x, y, dtype=int32):
+    from lightnum.array import array, ndarray
+    tmp, tmp2=[], []
+    if not isinstance(y, tuple):
+      for _ in range(y): tmp.extend(x)
+      return ndarray(tmp)
+    a,b = y
+    for a1 in range(a):
+      for b1 in range(b): tmp2.extend(x)
+      tmp.append(tmp2); tmp2=[]
+    return tmp
+
   def looper_empty(x, fill):
     if isinstance(x, int): return [fill] * x
     if isinstance(x, list):

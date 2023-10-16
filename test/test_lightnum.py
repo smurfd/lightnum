@@ -49,22 +49,15 @@ def test_copyto(): b=[[0,0,0,0],[0,0,0,0]]; c=[[1, 2, 3, 4],[2,2,2,2]]; a=np.arr
 def test_median(): lp.testing.assert_equal(lp.median([[10, 7, 4], [3, 2, 1]]), np.median([[10, 7, 4], [3, 2, 1]]))
 def test_arange(): lp.testing.assert_equal(lp.arange(3, 7).tolist(), np.arange(3, 7).tolist())
 def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,4,5,6]))
-def test_split(): lp.testing.assert_equal(lp.split([0,1,2,3,4,5], 2), lp.split([0,1,2,3,4,5], 2))
-def test_show_randomusage():
-  np.random.seed(1337)
-  lp.random.seed(1337)
-  np.random.randn(2,4)
-  lp.random.randn(2,4)
-  lp.random.randn(2,4, dtype=lp.float32)
-  lp.random.randn((2,4), dtype=lp.float32)
-
+def test_split(): lp.testing.assert_equal(lp.split(lp.arange(6), 2), np.split(np.arange(6), 2))
+def test_tile(): lp.testing.assert_equal(lp.tile([0,1,2,3,4,5], 2).tolist(), np.tile([0,1,2,3,4,5], 2).tolist())
+def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.float32); lp.random.randn((2,4), dtype=lp.float32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))
   except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
 def test_empty_tuple():
   try: lp.testing.assert_equal(lp.empty((6,6,6)), np.empty((6,6,6)).ravel())
   except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
-
 def test_assert_equal():
   lp.testing.assert_equal([3,6,9], [3,6,9])
   try: lp.testing.assert_equal([3,5,9], [3,6,9]) # Assert failure

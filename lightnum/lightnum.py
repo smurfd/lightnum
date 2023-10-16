@@ -43,6 +43,7 @@ def minimum(x, y): return helper.looper_mini(x, y=y)
 def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
 def flip(x, dtype=int32): return helper.looper_flip(x)
 def split(x, y, dtype=int32): return helper.looper_split(x, y)
+def tile(x, y, dtype=int32): return helper.looper_tile(x, y)
 def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
 def count_nonzero(x): return helper.looper_count(x, ret=0)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
@@ -74,7 +75,6 @@ def expand_dims(): pass
 def eye(): pass
 def frombuffer(): pass
 def stack(): pass
-def tile(): pass
 def argmax(): pass
 def outer(): pass
 def clip(): pass
@@ -89,7 +89,6 @@ def where(): pass
 def dtype(): pass
 def memmap(): pass
 def require(): pass
-#def split(): pass
 def moveaxis(): pass
 def transpose(): pass
 def rollaxis(): pass
