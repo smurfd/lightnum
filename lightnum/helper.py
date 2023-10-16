@@ -74,6 +74,12 @@ class helper():
     if isinstance(x[0], list): return [helper.looper_flip(i) for i in x]
     return x[::-1]
 
+  def looper_split(x, y, dtype=int32):
+    from lightnum.array import array, ndarray
+    if not isinstance(y, list) and not isinstance(x, list): return [ndarray(x.tolist()[i:i+len(x.tolist())//y]) for i in range(0, len(x.tolist()), len(x.tolist())//y)]
+    elif not isinstance(y, list): return [ndarray(x[i:i+(len(x)//y)]) for i in range(0, len(x), len(x)//y)]
+    return [helper.looper_split(i, y) for i in x]
+
   def looper_empty(x, fill):
     if isinstance(x, int): return [fill] * x
     if isinstance(x, list):
@@ -137,11 +143,13 @@ class helper():
     return ret
 
   def looper_assert(x, y):
+    from lightnum.array import array, ndarray
     ret=[]
     for i in range(len(x)):
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)
       elif isinstance(x[i], tuple): ret = helper.looper_assert(x[i], y)
+      elif isinstance(x[i], ndarray): ret = helper.looper_assert(x[i].tolist(), y[i].tolist())
       else:
         if round(x[i], 8) == round(y[i], 8): ret.append(True)
         else: ret.append(False)

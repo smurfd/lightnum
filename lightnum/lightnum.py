@@ -42,6 +42,7 @@ def maximum(x, y): return helper.looper_maxi(x, y=y)
 def minimum(x, y): return helper.looper_mini(x, y=y)
 def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
 def flip(x, dtype=int32): return helper.looper_flip(x)
+def split(x, y, dtype=int32): return helper.looper_split(x, y)
 def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
 def count_nonzero(x): return helper.looper_count(x, ret=0)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
@@ -88,7 +89,7 @@ def where(): pass
 def dtype(): pass
 def memmap(): pass
 def require(): pass
-def split(): pass
+#def split(): pass
 def moveaxis(): pass
 def transpose(): pass
 def rollaxis(): pass

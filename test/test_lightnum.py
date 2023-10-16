@@ -49,6 +49,7 @@ def test_copyto(): b=[[0,0,0,0],[0,0,0,0]]; c=[[1, 2, 3, 4],[2,2,2,2]]; a=np.arr
 def test_median(): lp.testing.assert_equal(lp.median([[10, 7, 4], [3, 2, 1]]), np.median([[10, 7, 4], [3, 2, 1]]))
 def test_arange(): lp.testing.assert_equal(lp.arange(3, 7).tolist(), np.arange(3, 7).tolist())
 def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,4,5,6]))
+def test_split(): lp.testing.assert_equal(lp.split([0,1,2,3,4,5], 2), lp.split([0,1,2,3,4,5], 2))
 def test_show_randomusage():
   np.random.seed(1337)
   lp.random.seed(1337)
