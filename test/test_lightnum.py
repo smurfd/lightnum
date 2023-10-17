@@ -52,6 +52,8 @@ def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,
 def test_split(): lp.testing.assert_equal(lp.split(lp.arange(6), 2), np.split(np.arange(6), 2))
 def test_tile(): lp.testing.assert_equal(lp.tile([0,1,2,3,4,5], 2).tolist(), np.tile([0,1,2,3,4,5], 2).tolist())
 def test_concatenate(): lp.testing.assert_equal(lp.concatenate(([1,2,3,4],[4,5,6])), np.concatenate(([1,2,3,4],[4,5,6])))
+def test_where(): lp.testing.assert_equal(lp.where([True, True, True, True, True, False, False, False, False, False], lp.arange(10), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90]), np.where(np.arange(10) < 5, np.arange(10), 10*np.arange(10)))
+def test_cumsum(): lp.testing.assert_equal(lp.cumsum([[1,2,3], [4,5,6]]), np.cumsum([[1,2,3], [4,5,6]]))
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.float32); lp.random.randn((2,4), dtype=lp.float32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))

@@ -48,10 +48,11 @@ def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
 def count_nonzero(x): return helper.looper_count(x, ret=0)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
 def all(x): return builtins.all(helper.looper_count(x, ret=0))
-
+def where(condition, x, y): return helper.looper_where(condition, x, y)
 def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
+def cumsum(x, dtype=int32): return helper.looper_cumsum(x)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -84,7 +85,6 @@ def nonzero(): pass
 def unique(): pass
 def promote_types(): pass
 def triu(): pass
-def where(): pass
 def dtype(): pass
 def memmap(): pass
 def require(): pass
@@ -99,4 +99,3 @@ def delete(): pass
 def vstack(): pass
 def save(): pass
 def load(): pass
-def cumsum(): pass
