@@ -168,6 +168,15 @@ class helper():
       elif (x[i] != 0 and x[i] is not False): ret += 1
     return ret
 
+  def looper_matmul(x, y, dtype=int32):
+    from lightnum.lightnum import reshape
+    if not isinstance(x, (list, tuple)):
+      if x and y: return x * y
+      elif x and not y: return x
+      else: return y
+    ret = [helper.looper_matmul(i, y=j) for i, j in zip(x, y)]
+    return reshape(ret, -1)
+
   def looper_assert(x, y):
     from lightnum.array import array, ndarray
     ret=[]

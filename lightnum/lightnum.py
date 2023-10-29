@@ -26,6 +26,7 @@ def sqrt(x, dtype=int32): return helper.looper_sqrt(x, dtype=dtype)
 def arctan2(x, y, dtype=int32): return helper.looper_atan2(x, y=y, dtype=dtype)
 def ceil(x, dtype=int32): return helper.looper_ceil(x, dtype=dtype)
 def copy(x, dtype=int32): return helper.looper_cp(x, dtype=dtype)
+def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype)
 
 def empty(x, fill=0): return helper.looper_empty(x, fill=fill)
 def full(x, fill): return helper.looper_empty(x, fill=fill)
@@ -91,7 +92,6 @@ def require(): pass
 def moveaxis(): pass
 def transpose(): pass
 def rollaxis(): pass
-def matmul(): pass
 def argsort(): pass
 def newaxis(): pass
 def meshgrid(): pass
