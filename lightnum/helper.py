@@ -68,6 +68,10 @@ class helper():
     if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)]
     return [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
 
+  def looper_broadcast_to(x, y):
+    if len(y) == 1: return x
+    return [x for i in range(y[0])]
+
   def looper_cumsum(x, s=0,dtype=int32):
     a = helper.reshape(x, -1)
     return [sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]

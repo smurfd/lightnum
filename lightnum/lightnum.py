@@ -47,6 +47,7 @@ def split(x, y, dtype=int32): return helper.looper_split(x, y)
 def tile(x, y, dtype=int32): return helper.looper_tile(x, y)
 def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
 def count_nonzero(x): return helper.looper_count(x, ret=0)
+def broadcast_to(x, y): return helper.looper_broadcast_to(x, y)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
 def all(x): return builtins.all(helper.looper_count(x, ret=0))
 def where(condition, x, y): return helper.looper_where(condition, x, y)
@@ -81,7 +82,6 @@ def outer(): pass
 def clip(): pass
 def pad(): pass
 def squeeze(): pass
-def broadcast_to(): pass
 def nonzero(): pass
 def unique(): pass
 def promote_types(): pass
