@@ -55,6 +55,7 @@ def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
 def cumsum(x, dtype=int32): return helper.looper_cumsum(x)
+def outer(x, y): x = reshape(x, -1); y = reshape(y, -1);return helper.looper_outer(x, y=y)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -78,7 +79,7 @@ def eye(): pass
 def frombuffer(): pass
 def stack(): pass
 def argmax(): pass
-def outer(): pass
+#def outer(): pass
 def clip(): pass
 def pad(): pass
 def squeeze(): pass

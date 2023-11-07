@@ -172,6 +172,15 @@ class helper():
       elif (x[i] != 0 and x[i] is not False): ret += 1
     return ret
 
+  def looper_outer(x, y):
+    out=[]
+    for x1 in x:
+      out2=[]
+      for y1 in y:
+        out2.append(x1*y1)
+      out.append(out2)
+    return out
+
   def looper_matmul(x, y, dtype=int32):
     from lightnum.lightnum import reshape
     if not isinstance(x, (list, tuple)):
