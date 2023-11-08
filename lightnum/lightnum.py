@@ -19,15 +19,14 @@ def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype)
 def sum(x, dtype=int32): return helper.looper_sum(x, dtype=dtype)
 def mod(x, y, dtype=float32): return helper.looper_mod(x, y=y, dtype=dtype)
-def prod(x, dtype=int32): return helper.looper_mul(x, dtype=dtype)
-def multiply(x, dtype=int32): return helper.looper_mul(x, dtype=dtype)
+def prod(x, dtype=int32): return helper.looper_prod(x, dtype=dtype)
+def multiply(x, dtype=int32): return helper.looper_prod(x, dtype=dtype)
 def cos(x, dtype=int32): return helper.looper_cos(x, dtype=dtype)
 def sqrt(x, dtype=int32): return helper.looper_sqrt(x, dtype=dtype)
-def arctan2(x, y, dtype=int32): return helper.looper_atan2(x, y=y, dtype=dtype)
+def arctan2(x, y, dtype=int32): return helper.looper_arctan2(x, y=y, dtype=dtype)
 def ceil(x, dtype=int32): return helper.looper_ceil(x, dtype=dtype)
-def copy(x, dtype=int32): return helper.looper_cp(x, dtype=dtype)
+def copy(x, dtype=int32): return helper.looper_copy(x, dtype=dtype)
 def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype)
-
 def empty(x, fill=0): return helper.looper_empty(x, fill=fill)
 def full(x, fill): return helper.looper_empty(x, fill=fill)
 def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill)
@@ -39,8 +38,8 @@ def arange(start,stop=0,step=1, dtype=int32):
   return ndarray([i for i in range(0, start, step)])
 def max(x): return helper.looper_max(x)
 def min(x): return helper.looper_min(x)
-def maximum(x, y): return helper.looper_maxi(x, y=y)
-def minimum(x, y): return helper.looper_mini(x, y=y)
+def maximum(x, y): return helper.looper_maximum(x, y=y)
+def minimum(x, y): return helper.looper_minimum(x, y=y)
 def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
 def flip(x, dtype=int32): return helper.looper_flip(x)
 def split(x, y, dtype=int32): return helper.looper_split(x, y)
@@ -79,7 +78,6 @@ def eye(): pass
 def frombuffer(): pass
 def stack(): pass
 def argmax(): pass
-#def outer(): pass
 def clip(): pass
 def pad(): pass
 def squeeze(): pass

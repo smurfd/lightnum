@@ -40,9 +40,9 @@ class helper():
     if not isinstance(x, (list, tuple)): return helper.mod(x, y)
     return [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
 
-  def looper_mul(x, dtype=int32):
+  def looper_prod(x, dtype=int32):
     if not isinstance(x, list): return math.prod(x)
-    return [helper.looper_mul(i) for i in x]
+    return [helper.looper_prod(i) for i in x]
 
   def looper_cos(x, dtype=int32):
     if not isinstance(x, list): return math.cos(x)
@@ -52,17 +52,17 @@ class helper():
     if not isinstance(x, list): return math.sqrt(x)
     return [helper.looper_sqrt(i) for i in x]
 
-  def looper_atan2(x, y, dtype=int32):
+  def looper_arctan2(x, y, dtype=int32):
     if not isinstance(x, (list, tuple)): return math.atan2(x, y)
-    return [helper.looper_atan2(i, y=j) for i, j in zip(x, y)]
+    return [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
 
   def looper_ceil(x, dtype=int32):
     if not isinstance(x, list): return math.ceil(x)
     return [helper.looper_ceil(i) for i in x]
 
-  def looper_cp(x, dtype=int32):
+  def looper_copy(x, dtype=int32):
     if not isinstance(x, list): return cp.copy(x)
-    return [helper.looper_cp(i) for i in x]
+    return [helper.looper_copy(i) for i in x]
 
   def looper_where(condition, x, y, dtype=int32):
     if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)]
@@ -142,17 +142,17 @@ class helper():
       elif ret >= x[i]: ret = x[i]
     return ret
 
-  def looper_maxi(x, y, ret=0):
+  def looper_maximum(x, y, ret=0):
     tmp=[]; ret=[]
     for i in range(len(x)):
-      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maxi(x[i], y[i], ret))
+      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maximum(x[i], y[i], ret))
       else: tmp.append(y[i]); tmp.append(x[i]); ret.extend(tmp); tmp = []
     return ret
 
-  def looper_mini(x, y, ret=0):
+  def looper_minimum(x, y, ret=0):
     tmp=[]; ret=[]
     for i in range(len(x)):
-      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_mini(x[i], y[i], ret))
+      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_minimum(x[i], y[i], ret))
       else: tmp.append(y[i]); tmp.append(x[i]); ret.extend(tmp); tmp = []
     return ret
 
