@@ -74,7 +74,7 @@ class helper():
 
   def looper_cumsum(x, s=0,dtype=int32):
     a = helper.reshape(x, -1)
-    return [sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]
+    return [builtins.sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]
 
   def looper_add(x, dtype=int32, ret=0):
     for i in range(len(x)):
