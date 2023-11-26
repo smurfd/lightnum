@@ -17,6 +17,7 @@ def create_portable_writedata(fn, data):
     else: dat.append(d)
   imp = list(set(imp)) # hack to get unique list
   for i, u in enumerate(imp): dat.insert(i, u)
+  dat.insert(0, "# Created from https://github.com/smurfd/lightnum/lightnum/*.py\n")
   with open(fn, "w") as f:
     for d in dat: f.write(str(d))
 
