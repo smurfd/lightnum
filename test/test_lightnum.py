@@ -57,6 +57,7 @@ def test_cumsum(): lp.testing.assert_equal(lp.cumsum([[1,2,3], [4,5,6]]), np.cum
 def test_matmul(): lp.testing.assert_equal(lp.matmul([[1, 0], [0, 1]], [[4, 1], [2, 2]]), np.matmul([[1, 0], [0, 1]], [[4, 1], [2, 2]]).ravel())
 def test_broadcast_to(): lp.testing.assert_equal(lp.broadcast_to([1, 2, 3], (3, 3)), np.broadcast_to([1, 2, 3], (3, 3)).ravel())
 def test_outer(): lp.testing.assert_equal(lp.outer([[1,2,3,4],[5,6,7,8]], [[9,10,11,12],[13,14,15,16]]), np.outer([[1,2,3,4],[5,6,7,8]], [[9,10,11,12],[13,14,15,16]]).tolist())
+def test_eye(): lp.testing.assert_equal(lp.eye(4,4,k=-1), np.eye(4,4,k=-1).tolist())
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.float32); lp.random.randn((2,4), dtype=lp.float32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))

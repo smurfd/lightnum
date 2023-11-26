@@ -65,6 +65,7 @@ def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper_assert_close_cls(x, y)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
+def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
@@ -74,7 +75,6 @@ class lib:
     def as_strided(self): pass
 
 def expand_dims(): pass
-def eye(): pass
 def frombuffer(): pass
 def stack(): pass
 def argmax(): pass
