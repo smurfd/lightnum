@@ -82,6 +82,11 @@ class helper():
       else: ret += x[i]
     return ret
 
+  def looper_expand_dims(x, axis, axisco=0):
+    if axisco == axis: return [x]
+    axisco+=1
+    return [helper.looper_expand_dims(x[i], axis, axisco) for i in range(len(x))]
+
   def looper_flip(x, dtype=int32):
     if isinstance(x[0], list): return [helper.looper_flip(i) for i in x]
     return x[::-1]

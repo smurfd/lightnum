@@ -54,7 +54,8 @@ def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
 def cumsum(x, dtype=int32): return helper.looper_cumsum(x)
-def outer(x, y): x = reshape(x, -1); y = reshape(y, -1);return helper.looper_outer(x, y=y)
+def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return helper.looper_outer(x, y=y)
+def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -74,7 +75,6 @@ class lib:
   class stride_tricks:
     def as_strided(self): pass
 
-def expand_dims(): pass
 def frombuffer(): pass
 def stack(): pass
 def argmax(): pass
