@@ -68,6 +68,11 @@ class helper():
     if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)]
     return [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
 
+  def looper_arange(start, stop=0, step=1, dtype=int32):
+    from lightnum.array import array, ndarray
+    if stop: return ndarray([i for i in range(start, stop, step)])
+    return ndarray([i for i in range(0, start, step)])
+
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x
     return [x for i in range(y[0])]
@@ -177,14 +182,7 @@ class helper():
       elif (x[i] != 0 and x[i] is not False): ret += 1
     return ret
 
-  def looper_outer(x, y):
-    out=[]
-    for x1 in x:
-      out2=[]
-      for y1 in y:
-        out2.append(x1*y1)
-      out.append(out2)
-    return out
+  def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
 
   def looper_matmul(x, y, dtype=int32):
     from lightnum.lightnum import reshape
