@@ -11,10 +11,6 @@ class helper():
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
 
-  # tuple (1,2,3,4,5)
-  #                ^- # per row
-  #              ^- # rows per box
-  #            ^- # boxes
   # helper functions to loop through multidimentional lists/tuples
   def looper_log(x, dtype=int32):
     if not isinstance(x, list): return math.log(x)
@@ -114,11 +110,7 @@ class helper():
       tmp.append(tmp2); tmp2=[]
     return tmp
 
-  def looper_concatenate(x, dtype=int32):
-    tmp = []
-    for i in x:
-      tmp.extend(i)
-    return tmp
+  def looper_concatenate(x, dtype=int32): return [i for j in range(len(x)) for i in x[j]]
 
   def looper_empty(x, fill):
     if isinstance(x, int): return [fill] * x
