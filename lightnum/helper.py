@@ -76,7 +76,7 @@ class helper():
     if not isinstance(x[0], list): return x.index(max(x))
     return [helper.looper_argmax(y, axis) for y in x]
 
-  def looper_transpose(x, axis=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axis
+  def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
 
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x
@@ -94,8 +94,7 @@ class helper():
 
   def looper_expand_dims(x, axis, axisco=0):
     if axisco == axis: return [x]
-    axisco+=1
-    return [helper.looper_expand_dims(x[i], axis, axisco) for i in range(len(x))]
+    return [helper.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
 
   def looper_flip(x, dtype=int32):
     if isinstance(x[0], list): return [helper.looper_flip(i) for i in x]
