@@ -76,6 +76,8 @@ class helper():
     if not isinstance(x[0], list): return x.index(max(x))
     return [helper.looper_argmax(y, axis) for y in x]
 
+  def looper_transpose(x, axis=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axis
+
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x
     return [x for i in range(y[0])]

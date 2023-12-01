@@ -55,6 +55,7 @@ def cumsum(x, dtype=int32): return helper.looper_cumsum(x)
 def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return helper.looper_outer(x, y=y)
 def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
+def transpose(x, axis=None): return helper.looper_transpose(x, axis)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -87,7 +88,6 @@ def dtype(): pass
 def memmap(): pass
 def require(): pass
 def moveaxis(): pass
-def transpose(): pass
 def rollaxis(): pass
 def argsort(): pass
 def newaxis(): pass

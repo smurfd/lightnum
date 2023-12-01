@@ -61,6 +61,7 @@ def test_eye(): lp.testing.assert_equal(lp.eye(4,4,k=-1), np.eye(4,4,k=-1).tolis
 def test_expand_dims(): lp.testing.assert_equal(lp.expand_dims([[1,2,3,4],[5,6,7,8]], 2), np.expand_dims([[1,2,3,4],[5,6,7,8]], 2).tolist())
 def test_argmax(): lp.testing.assert_equal(lp.argmax([[1,2,3,4],[5,6,7,8]]), np.argmax([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_argmax_axis(): lp.testing.assert_equal(lp.argmax([[1,2,3,4],[5,6,7,8]], axis=1), np.argmax([[1,2,3,4],[5,6,7,8]], axis=1).tolist())
+def test_transpose(): lp.testing.assert_equal(lp.transpose([[1,2,3,4],[5,6,7,8]]), np.transpose([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.float32); lp.random.randn((2,4), dtype=lp.float32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6), np.empty(6))
