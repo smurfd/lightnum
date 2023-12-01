@@ -69,6 +69,13 @@ class helper():
     if stop: return ndarray([i for i in range(start, stop, step)])
     return ndarray([i for i in range(0, start, step)])
 
+  def looper_argmax(x, axis=None):
+    if not axis:
+      y = helper.reshape(x, -1)
+      return y.index(max(y))
+    if not isinstance(x[0], list): return x.index(max(x))
+    return [helper.looper_argmax(y, axis) for y in x]
+
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x
     return [x for i in range(y[0])]
