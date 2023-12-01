@@ -56,6 +56,7 @@ def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return helper.looper_ou
 def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
 def transpose(x, axes=None): return helper.looper_transpose(x, axes)
+def stack(x, axis=0): return helper.looper_stack(x, axis)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -76,7 +77,6 @@ class lib:
     def as_strided(self): pass
 
 def frombuffer(): pass
-def stack(): pass
 def clip(): pass
 def pad(): pass
 def squeeze(): pass
