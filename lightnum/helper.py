@@ -82,6 +82,15 @@ class helper():
     if not isinstance(x[0][0], list): return x
     return [helper.looper_squeeze(y, axis) for y in x].pop()
 
+  def looper_clip(x, x_min, x_max):
+    if not isinstance(x, list):
+      if x < x_min: x = x_min
+      if x > x_max: x = x_max
+      return x
+    return [helper.looper_clip(y, x_min, x_max) for y in x]
+
+  def looper_unique(x): return list(set(sorted(helper.reshape(x, -1))))
+
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x
     return [x for i in range(y[0])]
