@@ -78,6 +78,9 @@ class helper():
 
   def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
   def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
+  def looper_squeeze(x, axis=0): #TODO: axis
+    if not isinstance(x[0][0], list): return x
+    return [helper.looper_squeeze(y, axis) for y in x].pop()
 
   def looper_broadcast_to(x, y):
     if len(y) == 1: return x

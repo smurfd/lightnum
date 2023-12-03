@@ -57,6 +57,8 @@ def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
 def transpose(x, axes=None): return helper.looper_transpose(x, axes)
 def stack(x, axis=0): return helper.looper_stack(x, axis)
+def squeeze(x, axis=0): return helper.looper_squeeze(x, axis)
+
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -79,7 +81,6 @@ class lib:
 def frombuffer(): pass
 def clip(): pass
 def pad(): pass
-def squeeze(): pass
 def nonzero(): pass
 def unique(): pass
 def promote_types(): pass
