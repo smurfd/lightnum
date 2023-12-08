@@ -83,5 +83,5 @@ def test_assert_equal():
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
 print("OK!")
-print(np.nonzero([[1,2,3,4],[5,6,7,8]]))
-print(lp.nonzero([[1,2,3,4],[5,6,7,8]]))
+#print(np.nonzero([[1,2,3,4],[5,6,7,8]]))
+#print(lp.nonzero([[1,2,3,4],[5,6,7,8]]))
