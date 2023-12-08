@@ -60,6 +60,8 @@ def stack(x, axis=0): return helper.looper_stack(x, axis)
 def squeeze(x, axis=0): return helper.looper_squeeze(x, axis)
 def clip(x, x_min, x_max): return helper.looper_clip(x, x_min, x_max)
 def unique(x): return helper.looper_unique(x)
+def vstack(x): return helper.looper_vstack(x)
+def nonzero(x): return helper.looper_nonzero(x)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -81,7 +83,6 @@ class lib:
 
 def frombuffer(): pass
 def pad(): pass
-def nonzero(): pass
 def promote_types(): pass
 def triu(): pass
 def dtype(): pass
@@ -93,6 +94,5 @@ def argsort(): pass
 def newaxis(): pass
 def meshgrid(): pass
 def delete(): pass
-def vstack(): pass
 def save(): pass
 def load(): pass

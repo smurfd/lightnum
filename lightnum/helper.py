@@ -64,6 +64,16 @@ class helper():
     if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)]
     return [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
 
+  def looper_nonzero(x):#, x, y=[], dtype=int32):
+    cc = [not x1 for x1 in x[0]]
+    cc.extend([not x1 for x1 in x[1]])
+    print(x[0])
+    print(x[1])
+    print(cc)
+    #return helper.looper_where(c, x, x)
+    if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(cc, x, x)]
+    return [helper.looper_where(cc, i, j) for i,j in zip(x, x)]
+
   def looper_arange(start, stop=0, step=1, dtype=int32):
     from lightnum.array import array, ndarray
     if stop: return ndarray([i for i in range(start, stop, step)])
@@ -78,6 +88,7 @@ class helper():
 
   def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
   def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
+  def looper_vstack(x): return [i for i in x]
   def looper_squeeze(x, axis=0): #TODO: axis
     if not isinstance(x[0][0], list): return x
     return [helper.looper_squeeze(y, axis) for y in x].pop()

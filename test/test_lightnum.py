@@ -63,6 +63,8 @@ def test_argmax(): lp.testing.assert_equal(lp.argmax([[1,2,3,4],[5,6,7,8]]), np.
 def test_argmax_axis(): lp.testing.assert_equal(lp.argmax([[1,2,3,4],[5,6,7,8]], axis=1), np.argmax([[1,2,3,4],[5,6,7,8]], axis=1).tolist())
 def test_transpose(): lp.testing.assert_equal(lp.transpose([[1,2,3,4],[5,6,7,8]]), np.transpose([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_stack(): lp.testing.assert_equal(lp.stack([[1,2,3,4],[5,6,7,8]]), np.stack([[1,2,3,4],[5,6,7,8]]).tolist())
+def test_vstack(): lp.testing.assert_equal(lp.vstack([[1,2,3,4],[5,6,7,8]]), np.vstack([[1,2,3,4],[5,6,7,8]]).tolist())
+#def test_nonzero(): lp.testing.assert_equal(lp.nonzero([[1,2,3,4],[5,6,7,8]]), np.nonzero([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_squeeze(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 2], [3, 4, 5], [6, 7, 8]]]), np.squeeze([[[0, 1, 2], [3, 4, 5], [6, 7, 8]]]).tolist())
 def test_clip(): lp.testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5), np.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5).tolist())
 def test_unique(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
@@ -81,3 +83,5 @@ def test_assert_equal():
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
 print("OK!")
+print(np.nonzero([[1,2,3,4],[5,6,7,8]]))
+print(lp.nonzero([[1,2,3,4],[5,6,7,8]]))
