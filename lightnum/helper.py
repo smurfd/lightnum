@@ -1,10 +1,11 @@
-from lightnum.dtypes import int32, float32
+from lightnum.dtypes import int32, float32, uint8
 import copy as cp
 import builtins
 import math
 
 class helper():
   def typ(x, dtype=int32): return dtype(x).value
+  def dtype(type): return dtype(type)
   def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
@@ -212,6 +213,8 @@ class helper():
     return ret
 
   def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
+
+  def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
 
   def looper_matmul(x, y, dtype=int32):
     from lightnum.lightnum import reshape

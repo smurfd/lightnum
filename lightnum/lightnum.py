@@ -2,7 +2,7 @@ from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing
 from lightnum.helper import helper
-from lightnum.dtypes import int32, float32
+from lightnum.dtypes import int32, float32, uint8
 import random as rnd
 import array as arr
 import copy as cp
@@ -73,6 +73,7 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper_assert_close_cls(x, y)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
+def frombuffer(buf, dtype=int32): return helper.looper_frombuffer(buf, dtype)
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
@@ -81,11 +82,9 @@ class lib:
   class stride_tricks:
     def as_strided(self): pass
 
-def frombuffer(): pass
 def pad(): pass
 def promote_types(): pass
 def triu(): pass
-def dtype(): pass
 def memmap(): pass
 def require(): pass
 def moveaxis(): pass
