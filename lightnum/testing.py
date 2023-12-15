@@ -20,12 +20,8 @@ class testing:
       r = helper.looper_assert_close(x, y)
       for i in range(0, len(r), 3):
         if r[i] is False: miss += 1
-        i += 1
-        if r[i] != 0 and r[i] > atol:
-          if atol: adiff.append(r[i])
-          else: adiff.append(0)
-        i += 1
-        if r[i] != 0 and r[i] > rtol: rdiff.append(r[i])
+        if r[(i:=i+1)] != 0 and r[i] > atol: adiff.append(r[i]) if atol else adiff.append(0)
+        if r[(i:=i+1)] != 0 and r[i] > rtol: rdiff.append(r[i])
     if miss != 0 and adiff != [] and rdiff != []:
       if not r: print("Mismatched elements: {} / {} ({}%)".format(miss, 1, round(miss / (1) * 100, 1)))
       else: print("Mismatched elements: {} / {} ({}%)".format(miss, len(r) // 3, round(miss / (len(r)//3) * 100, 1)))

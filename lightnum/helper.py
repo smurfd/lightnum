@@ -65,14 +65,22 @@ class helper():
     return [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
 
   def looper_nonzero(x):#, x, y=[], dtype=int32):
-    cc = [not x1 for x1 in x[0]]
-    cc.extend([not x1 for x1 in x[1]])
-    print(x[0])
-    print(x[1])
-    print(cc)
-    #return helper.looper_where(c, x, x)
-    if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(cc, x, x)]
-    return [helper.looper_where(cc, i, j) for i,j in zip(x, x)]
+    from lightnum.array import array, ndarray
+    # return tuple, length of arrays is nonzero values in x
+    # [[1,0,2,0],[3, 0, 4, 6]]
+    # [0,0,1,1,1], [0,2, 0, 2, 3]
+    ret = []
+    ret2 = []
+    if isinstance(x[0], list):
+      for i in range(len(x)):
+        if isinstance(x[i], list):
+          for ii in range(len(x[i])):
+            if x[i][ii]: ret.append(i); ret2.append(ii)
+    r = []
+    r += [ndarray(ret)]
+    r += [ndarray(ret2)]
+    return tuple(r)
+
 
   def looper_arange(start, stop=0, step=1, dtype=int32):
     from lightnum.array import array, ndarray
@@ -94,10 +102,7 @@ class helper():
     return [helper.looper_squeeze(y, axis) for y in x].pop()
 
   def looper_clip(x, x_min, x_max):
-    if not isinstance(x, list):
-      if x < x_min: x = x_min
-      if x > x_max: x = x_max
-      return x
+    if not isinstance(x, list): return x_min if x < x_min else x_max
     return [helper.looper_clip(y, x_min, x_max) for y in x]
 
   def looper_unique(x): return list(set(sorted(helper.reshape(x, -1))))
