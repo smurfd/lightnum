@@ -2,7 +2,7 @@ from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing
 from lightnum.helper import helper
-from lightnum.dtypes import int32, float32, uint8
+from lightnum.dtypes import *#int32, float32, uint8, uint32
 import random as rnd
 import array as arr
 import copy as cp
@@ -62,6 +62,7 @@ def clip(x, x_min, x_max): return helper.looper_clip(x, x_min, x_max)
 def unique(x): return helper.looper_unique(x)
 def vstack(x): return helper.looper_vstack(x)
 def nonzero(x): return helper.looper_nonzero(x)
+def promote_types(x, y): return dtype(x) if dtype(x) >= dtype(y) else dtype(y)
 def median(x, r=[]):
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
@@ -83,7 +84,6 @@ class lib:
     def as_strided(self): pass
 
 def pad(): pass
-def promote_types(): pass
 def triu(): pass
 def memmap(): pass
 def require(): pass

@@ -1,11 +1,10 @@
-from lightnum.dtypes import int32, float32, uint8
+from lightnum.dtypes import int32, float32, uint8, dtype
 import copy as cp
 import builtins
 import math
 
 class helper():
   def typ(x, dtype=int32): return dtype(x).value
-  def dtype(type): return dtype(type)
   def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
