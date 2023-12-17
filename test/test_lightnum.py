@@ -84,4 +84,6 @@ def test_assert_equal():
   lp.testing.assert_equal([[1, 2, 3, 4], [5, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]])
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
-print("OK!")
+
+if __name__ == '__main__':
+  print("OK!")
