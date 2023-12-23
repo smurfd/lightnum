@@ -10,7 +10,7 @@ class helper():
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
-
+  def cast(self, x, ct_fr, ct_to): ctypes.cast((ct_fr*1)(x), ctypes.POINTER(ct_to)).contents
   # helper functions to loop through multidimentional lists/tuples
   def looper_log(x, dtype=int32):
     if not isinstance(x, list): return math.log(x)
