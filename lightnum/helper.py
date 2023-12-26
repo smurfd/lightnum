@@ -11,13 +11,14 @@ class helper():
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
-  def cast(x, ct_to):
-    if not isinstance(x, float): return helper.looper_cast(x, ct_to, dtype=dtype)
+  def cast(x, ct_fr, dtype=float32):
+    if ct_fr is dtype: return x # no need to cast, from and dtype are equal
+    if not isinstance(x, float): return helper.looper_cast(x, ct_fr, dtype=dtype)
 
   # helper functions to loop through multidimentional lists/tuples
-  def looper_cast(x, ct_to, dtype=int32):
-    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(ct_to(x)), ctypes.POINTER(ct_to)).contents.value
-    return [helper.looper_cast(i, ct_to, dtype) for i in x]
+  def looper_cast(x, ct_fr, dtype=float32):
+    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(ct_fr(x)), ctypes.POINTER(dtype)).contents.value
+    return [helper.looper_cast(i, ct_fr, dtype) for i in x]
 
   def looper_log(x, dtype=int32):
     if not isinstance(x, list): return math.log(x)
@@ -164,7 +165,7 @@ class helper():
     if len(x) <= 2: return helper.cast(helper.getrow(helper, x, fill), dtype) # if onedimentional [2, 4]
     return helper.cast([[helper.getrow(helper, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop(), dtype)
 
-  def looper_empty_like(x, fill):
+  def looper_empty_like(x, fill, dtype=int32):
     if isinstance(x, int): return [fill] * x
     if isinstance(x, list):
       if not isinstance(x[0], list): return [fill] * len(x)
