@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import ctypes as ct
 import math
 
@@ -83,3 +85,14 @@ class dtype(ctstruct):
   def value(self):
     if not isinstance(tuple(self._fields_), tuple(cts)): return self._fields_[0]
     return self._fields_[1]
+
+cunt16 = "ct.c_uint16"
+cunt32 = "ct.c_uint32"
+class dtype2(ctstruct):
+  _fields_ = []
+  def __init__(self, dtype=ct.c_uint8): self._fields_ = [dtype, dtype]
+  def __repr__(self): return repr(types[str(self._fields_[1])]).replace("'", "")
+  #def __repr__(self): print("rep");return repr(types[self._fields_[1]]).replace("'", "")
+
+cunt18 = dtype2(dtype=cunt16)
+cunt19 = dtype2(dtype=cunt32)

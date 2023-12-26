@@ -1,6 +1,7 @@
-from lightnum.dtypes import int32, float32, uint8, dtype
+from lightnum.dtypes import int32, uint32, float32, uint8, dtype
 import copy as cp
 import builtins
+import ctypes
 import math
 
 class helper():
@@ -10,8 +11,14 @@ class helper():
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
-  def cast(self, x, ct_fr, ct_to): ctypes.cast((ct_fr*1)(x), ctypes.POINTER(ct_to)).contents
+  def cast(x, ct_to): return helper.looper_cast(x, ct_to, dtype=dtype)
+
   # helper functions to loop through multidimentional lists/tuples
+  def looper_cast(x, ct_to, dtype=uint32):
+    print("CAST:", ct_to, dtype, x)
+    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(ct_to(x)), ctypes.POINTER(ct_to)).contents.value
+    return [helper.looper_cast(i, ct_to, dtype) for i in x]
+
   def looper_log(x, dtype=int32):
     if not isinstance(x, list): return math.log(x)
     return [helper.looper_log(i) for i in x]
@@ -149,13 +156,13 @@ class helper():
 
   def looper_concatenate(x, dtype=int32): return [i for j in range(len(x)) for i in x[j]]
 
-  def looper_empty(x, fill):
-    if isinstance(x, int): return [fill] * x
+  def looper_empty(x, fill, dtype=int32):
+    if isinstance(x, int): return helper.cast([fill] * x, dtype)
     if isinstance(x, list):
-      if len(x) == 1: return [fill] * x[0]
-      return [fill] * len(x)
-    if len(x) <= 2: return helper.getrow(helper, x, fill) # if onedimentional [2, 4]
-    return [[helper.getrow(helper, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop()
+      if len(x) == 1: return helper.cast([fill] * x[0], dtype)
+      return helper.cast([fill] * len(x), dtype)
+    if len(x) <= 2: return helper.cast(helper.getrow(helper, x, fill), dtype) # if onedimentional [2, 4]
+    return helper.cast([[helper.getrow(helper, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop(), dtype)
 
   def looper_empty_like(x, fill):
     if isinstance(x, int): return [fill] * x
