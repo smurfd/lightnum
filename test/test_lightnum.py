@@ -69,7 +69,7 @@ def test_squeeze(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 2], [3, 4, 5], [
 def test_clip(): lp.testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5), np.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5).tolist())
 def test_unique(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
 def test_frombuffer(): lp.testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
-#def test_promote_types(): lp.testing.assert_equal(lp.promote_types(lp.uint8, lp.uint32), np.promote_types(np.uint8, np.uint32))
+#def test_promote_types(): assert(str(lp.promote_types(lp.uint8, lp.uint32)) == np.promote_types(np.uint8, np.uint32))
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.int32); lp.random.randn((2,4), dtype=lp.int32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6, dtype=lp.int32), np.empty(6, dtype=np.int32))
@@ -87,47 +87,3 @@ def test_assert_equal():
 
 if __name__ == '__main__':
   print("OK!")
-  print(lp.uint8)
-  print(lp.uint32)
-  print(lp.uint8 != lp.uint32)
-  print(lp.cunt18)
-  print(lp.cunt19)
-  print(lp.cunt18 < lp.cunt19)
-  #print(lp.promote_types(lp.uint8, lp.uint32))
-  print(lp.promote_types(lp.cunt18, lp.cunt19))
-  print(lp.cunt19)
-  print(type(lp.cunt19))
-  print(np.promote_types(np.uint8, np.uint32) == str(lp.cunt19))
-  #print(str(lp.cunt19).replace("'", ""))
-
-  x = lp.ones((5,5), dtype=lp.float32)
-  print(x)
-  print(lp.helper.cast(x, lp.float32))
-  print(np.ones((5,5), dtype=np.float32))
-
-  import ctypes
-  print(ctypes.cast((ctypes.c_int*1)(1), ctypes.POINTER(ctypes.c_float)).contents)#.contents)
-  xx = ctypes.cast((ctypes.c_int*1)(1), ctypes.POINTER(ctypes.c_double)).contents
-  print(xx)
-  print(ctypes.cast((ctypes.c_byte*4)(1), ctypes.POINTER(ctypes.c_uint)).contents)
-  print(np.double(1))
-  xy = ctypes.cast((ctypes.c_int*10)(1), ctypes.POINTER(ctypes.c_float)).contents.value
-  import decimal
-  dec = decimal.Decimal(xy)
-  decimal.getcontext().prec = 7
-
-  print(decimal.getcontext().create_decimal(xy))
-  print("xy=", xy)
-  yy=1
-  print(ctypes.cast(ctypes.pointer(ctypes.c_float(yy)), ctypes.POINTER(ctypes.c_float)).contents.value)
-  #zz=1.6177528569514706
-  #zz=1.401298464324817e-45
-  zz=float(1.01234)
-  print(ctypes.cast(ctypes.pointer(ctypes.c_float(zz)), ctypes.POINTER(ctypes.c_int64)).contents.value)
-  zz=1065456731
-  print(ctypes.cast(ctypes.pointer(ctypes.c_int64(zz)), ctypes.POINTER(ctypes.c_float)).contents.value)
-
-  # not work
-  # ctypes.cast(ctypes.pointer(ct_to(x)), ctypes.POINTER(ct_to)).contents.value
-  # work
-  # ctypes.cast(ctypes.pointer(ctypes.c_float(yy)), ctypes.POINTER(ctypes.c_float)).contents.value

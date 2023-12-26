@@ -1,11 +1,13 @@
-from lightnum.dtypes import int32, uint32, float32, uint8, dtype
+from lightnum.dtypes import int32, uint32, float32, uint8, dtype, types
 import copy as cp
 import builtins
 import ctypes
 import math
 
 class helper():
-  def typ(x, dtype=int32): return dtype(x).value
+  def typ(x, dtype=int32):
+    if not isinstance(x, int): return dtype(x).value
+    else: return x
   def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
@@ -17,7 +19,9 @@ class helper():
 
   # helper functions to loop through multidimentional lists/tuples
   def looper_cast(x, ct_fr, dtype=float32):
-    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(ct_fr(x)), ctypes.POINTER(dtype)).contents.value
+    f = dtype(ct_fr)
+    if isinstance(x, (int, float)): return x
+    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(f(x)), ctypes.POINTER(dtype)).contents.value
     return [helper.looper_cast(i, ct_fr, dtype) for i in x]
 
   def looper_log(x, dtype=int32):
