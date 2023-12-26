@@ -11,11 +11,11 @@ class helper():
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
-  def cast(x, ct_to): return helper.looper_cast(x, ct_to, dtype=dtype)
+  def cast(x, ct_to):
+    if not isinstance(x, float): return helper.looper_cast(x, ct_to, dtype=dtype)
 
   # helper functions to loop through multidimentional lists/tuples
-  def looper_cast(x, ct_to, dtype=uint32):
-    print("CAST:", ct_to, dtype, x)
+  def looper_cast(x, ct_to, dtype=int32):
     if not isinstance(x, list): return ctypes.cast(ctypes.pointer(ct_to(x)), ctypes.POINTER(ct_to)).contents.value
     return [helper.looper_cast(i, ct_to, dtype) for i in x]
 

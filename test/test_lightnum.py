@@ -70,12 +70,12 @@ def test_clip(): lp.testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2
 def test_unique(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
 def test_frombuffer(): lp.testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
 #def test_promote_types(): lp.testing.assert_equal(lp.promote_types(lp.uint8, lp.uint32), np.promote_types(np.uint8, np.uint32))
-def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.uint32); lp.random.randn((2,4), dtype=lp.uint32)
+def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.int32); lp.random.randn((2,4), dtype=lp.int32)
 def test_empty():
-  try: lp.testing.assert_equal(lp.empty(6), np.empty(6))
+  try: lp.testing.assert_equal(lp.empty(6, dtype=lp.int32), np.empty(6, dtype=np.int32))
   except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
 def test_empty_tuple():
-  try: lp.testing.assert_equal(lp.empty((6,6,6)), np.empty((6,6,6)).ravel())
+  try: lp.testing.assert_equal(lp.empty((6,6,6), dtype=lp.int32), np.empty((6,6,6), dtype=np.int32).ravel())
   except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
 def test_assert_equal():
   lp.testing.assert_equal([3,6,9], [3,6,9])
