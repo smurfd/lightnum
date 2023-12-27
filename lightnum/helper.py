@@ -1,4 +1,4 @@
-from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, dtype, types
+from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, types
 import copy as cp
 import builtins
 import ctypes

@@ -54,7 +54,7 @@ class ctstruct(ctypes.Structure):
     return False
 
 class dtype(ctstruct):
-  _fields_ = []
+  _fields_: list = []
   def __init__(self, dtype=ctypes.c_uint8): self._fields_ = [dtype, dtype]
   def __repr__(self): return repr(types[self._fields_[1]]).replace("'", "")
   def __call__(self, x): return self._fields_[1]
@@ -75,14 +75,10 @@ uint16 = dtype(dtype=ctypes.c_uint16)
 uint32 = dtype(dtype=ctypes.c_uint32)
 uint64 = dtype(dtype=ctypes.c_uint64)
 bool_ = dtype(dtype=ctypes.c_bool)
-types = {
-  'float16': 'ctypes.c_float', 'float32': 'ctypes.c_float', 'float64': 'ctypes.c_double', 'int8': 'ctypes.c_int8', 'int16': 'ctypes.c_int16',
-  'int32': 'ctypes.c_int32', 'int32': 'ctypes.c_int', 'int64': 'ctypes.c_int64', 'uint8': 'ctypes.c_uint8', 'uint16': 'ctypes.c_uint16', 'uint32': 'ctypes.c_uint32',
-  'uint64': 'ctypes.c_uint64', 'bool_': 'ctypes.c_bool',
-  ctypes.c_float: 'float16', ctypes.c_float: 'float32', ctypes.c_double: 'float64',
-  ctypes.c_int8: 'int8', ctypes.c_int16: 'int16', ctypes.c_int32: 'int32', ctypes.c_int64: 'int64', ctypes.c_uint8: 'uint8',
-  ctypes.c_uint16: 'uint16', ctypes.c_uint32: 'uint32', ctypes.c_int: 'int32', ctypes.c_uint64: 'uint64', ctypes.c_bool: 'bool_',
-  ctypes.c_ubyte: 'uint8',
+types = {'float16': 'ctypes.c_float', 'float32': 'ctypes.c_float', 'float64': 'ctypes.c_double', 'int8': 'ctypes.c_int8', 'int16': 'ctypes.c_int16', 'int32': 'ctypes.c_int',
+  'int64': 'ctypes.c_int64', 'uint8': 'ctypes.c_uint8', 'uint16': 'ctypes.c_uint16', 'uint32': 'ctypes.c_uint32', 'uint64': 'ctypes.c_uint64', 'bool_': 'ctypes.c_bool',
+  ctypes.c_float: 'float16', ctypes.c_float: 'float32', ctypes.c_double: 'float64', ctypes.c_int8: 'int8', ctypes.c_int16: 'int16', ctypes.c_int32: 'int32', ctypes.c_int64: 'int64',
+  ctypes.c_uint8: 'uint8', ctypes.c_uint16: 'uint16', ctypes.c_uint32: 'uint32', ctypes.c_int: 'int32', ctypes.c_uint64: 'uint64', ctypes.c_bool: 'bool_', ctypes.c_ubyte: 'uint8',
 }
 
 # constants

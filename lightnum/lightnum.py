@@ -2,7 +2,7 @@ from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing
 from lightnum.helper import helper
-from lightnum.dtypes import *#int32, float32, uint8, uint32
+from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, dtype, types
 import random as rnd
 import array as arr
 import copy as cp
