@@ -1,33 +1,27 @@
-from lightnum.dtypes import int32, uint32, float32, uint8, dtype, types
+from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, dtype, types
 import copy as cp
 import builtins
 import ctypes
 import math
 
 class helper():
-  def typ(x, dtype=int32):
-    if not isinstance(x, int): return dtype(x).value
-    else: return x
+  def typ(x, dtype=int32): return dtype(x).value if not isinstance(x, int) else x
   def sum(x, y): return x + y
   def mod(x, y): return x % y
   def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
-  def cast(x, ct_fr, dtype=float32):
-    if ct_fr is dtype: return x # no need to cast, from and dtype are equal
-    if not isinstance(x, (float, int)): return helper.looper_cast(x, ct_fr, dtype=dtype)
+  def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
+  def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if not dtype(x) is dtype else dtype(x)
 
   # helper functions to loop through multidimentional lists/tuples
-  def looper_cast(x, ct_fr, dtype=float32):
-    f = dtype(ct_fr)
-    if isinstance(x, (int, float)): return x
-    if not isinstance(x, list): return ctypes.cast(ctypes.pointer(f(x)), ctypes.POINTER(dtype)).contents.value
-    return [helper.looper_cast(i, ct_fr, dtype) for i in x]
+  def looper_cast(x, dtype=float64):
+    if not isinstance(x, list):
+      if dtype in [float16, float32, float64]: return ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value if x != float(int(x)) else int(ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))),ctypes.POINTER(dtype(x))).contents.value)
+      return ctypes.cast(ctypes.pointer(dtype(x)(x)), ctypes.POINTER(dtype(x))).contents.value
+    return [helper.looper_cast(i, dtype) for i in x]
 
-  def looper_log(x, dtype=float32):
-    if not isinstance(x, list): return helper.cast(math.log(x), dtype)
-    return [helper.looper_log(i) for i in x]
-
+  def looper_log(x, dtype=float64): return helper.cast(math.log(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
   def looper_exp(x, dtype=int32):
     if not isinstance(x, list): return math.exp(x)
     return [helper.looper_exp(i) for i in x]

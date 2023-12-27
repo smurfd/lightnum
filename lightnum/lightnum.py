@@ -13,7 +13,7 @@ import math
 # TODO: add functionallity to functions with pass
 
 # math
-def log(x, dtype=float32): return helper.looper_log(x, dtype=dtype)
+def log(x, dtype=float64): return helper.looper_log(x, dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype)
 def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype)
@@ -28,10 +28,10 @@ def ceil(x, dtype=int32): return helper.looper_ceil(x, dtype=dtype)
 def copy(x, dtype=int32): return helper.looper_copy(x, dtype=dtype)
 def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype)
 def empty(x, fill=0, dtype=int32): return helper.looper_empty(x, fill=fill, dtype=dtype)
-def full(x, fill, dtype=float32): return helper.looper_empty(x, fill=fill, dtype=dtype)
+def full(x, fill, dtype=float64): return helper.looper_empty(x, fill=fill, dtype=dtype)
 def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill, dtype=dtype)
 def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0)
-def ones(x, fill=1, dtype=float32): return zeros(x, fill, dtype=dtype)
+def ones(x, fill=1, dtype=float64): return zeros(x, fill, dtype=dtype)
 def ones_like(x, fill=1, dtype=float32): return helper.looper_empty_like(x, fill=1, dtype=dtype)
 def arange(start, stop=0, step=1, dtype=int32): return helper.looper_arange(start, stop, step, dtype)
 def max(x): return helper.looper_max(x)
