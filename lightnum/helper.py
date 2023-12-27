@@ -22,18 +22,9 @@ class helper():
     return [helper.looper_cast(i, dtype) for i in x]
 
   def looper_log(x, dtype=float64): return helper.cast(math.log(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
-  def looper_exp(x, dtype=int32):
-    if not isinstance(x, list): return math.exp(x)
-    return [helper.looper_exp(i) for i in x]
-
-  def looper_exp2(x, dtype=int32):
-    if not isinstance(x, list): return helper.exp2(x)
-    return [helper.looper_exp2(i) for i in x]
-
-  def looper_cbrt(x, dtype=int32):
-    if not isinstance(x, list): return helper.cbrt(x)
-    return [helper.looper_cbrt(i) for i in x]
-
+  def looper_exp(x, dtype=float64): return helper.cast(math.exp(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
+  def looper_exp2(x, dtype=float32): return helper.cast(helper.exp2(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
+  def looper_cbrt(x, dtype=float32): return helper.cast(helper.cbrt(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
   def looper_sum(x, dtype=int32):
     if not isinstance(x, list): return builtins.sum(x)
     return [helper.looper_sum(i) for i in x]
