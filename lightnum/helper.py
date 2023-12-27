@@ -15,7 +15,7 @@ class helper():
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
   def cast(x, ct_fr, dtype=float32):
     if ct_fr is dtype: return x # no need to cast, from and dtype are equal
-    if not isinstance(x, float): return helper.looper_cast(x, ct_fr, dtype=dtype)
+    if not isinstance(x, (float, int)): return helper.looper_cast(x, ct_fr, dtype=dtype)
 
   # helper functions to loop through multidimentional lists/tuples
   def looper_cast(x, ct_fr, dtype=float32):
@@ -24,8 +24,8 @@ class helper():
     if not isinstance(x, list): return ctypes.cast(ctypes.pointer(f(x)), ctypes.POINTER(dtype)).contents.value
     return [helper.looper_cast(i, ct_fr, dtype) for i in x]
 
-  def looper_log(x, dtype=int32):
-    if not isinstance(x, list): return math.log(x)
+  def looper_log(x, dtype=float32):
+    if not isinstance(x, list): return helper.cast(math.log(x), dtype)
     return [helper.looper_log(i) for i in x]
 
   def looper_exp(x, dtype=int32):

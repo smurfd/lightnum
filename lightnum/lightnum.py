@@ -13,7 +13,7 @@ import math
 # TODO: add functionallity to functions with pass
 
 # math
-def log(x, dtype=int32): return helper.looper_log(x, dtype=dtype)
+def log(x, dtype=float32): return helper.looper_log(x, dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype)
 def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype)
