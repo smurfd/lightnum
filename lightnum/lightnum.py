@@ -9,7 +9,6 @@ import copy as cp
 import builtins
 import math
 # TODO: make dtype=xxx do something
-# TODO: class lib
 # TODO: add functionallity to functions with pass
 
 # math
@@ -27,26 +26,24 @@ def copy(x, dtype=int32): return helper.looper_copy(x, dtype=dtype) if str(dtype
 def where(condition, x, y, dtype=int32): return helper.looper_where(condition, x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_where(condition, x, y), dtype=dtype)
 def sqrt(x, dtype=float32): return helper.looper_sqrt(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sqrt(x, dtype=dtype), dtype=dtype)
 def arctan2(x, y, dtype=float32): return helper.looper_arctan2(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_arctan2(x, y=y, dtype=dtype), dtype=dtype)
-
-def multiply(x, dtype=int32): return helper.looper_prod(x, dtype=dtype)
-
-def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype)
-def empty(x, fill=0, dtype=int32): return helper.looper_empty(x, fill=fill, dtype=dtype)
-def full(x, fill, dtype=float64): return helper.looper_empty(x, fill=fill, dtype=dtype)
-def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill, dtype=dtype)
-def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0)
-def ones(x, fill=1, dtype=float64): return zeros(x, fill, dtype=dtype)
-def ones_like(x, fill=1, dtype=float32): return helper.looper_empty_like(x, fill=1, dtype=dtype)
+def multiply(x, dtype=int32): return helper.looper_prod(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_prod(x, dtype=dtype), dtype=dtype)
+def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_matmul(x, y=y, dtype=dtype), dtype=dtype)
+def empty(x, fill=0, dtype=int32): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
+def full(x, fill, dtype=float64): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
+def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
+def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=0, dtype=dtype), dtype=dtype)
+def ones(x, fill=1, dtype=float64): return zeros(x, fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(zeros(x, fill, dtype=dtype), dtype=dtype)
+def ones_like(x, fill=1, dtype=float32): return helper.looper_empty_like(x, fill=1, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=1, dtype=dtype), dtype=dtype)
 def arange(start, stop=0, step=1, dtype=int32): return helper.looper_arange(start, stop, step, dtype)
 def max(x): return helper.looper_max(x)
 def min(x): return helper.looper_min(x)
 def maximum(x, y): return helper.looper_maximum(x, y=y)
 def minimum(x, y): return helper.looper_minimum(x, y=y)
-def amax(x, dtype=int32): return helper.looper_max(x)# Kinda works
-def flip(x, dtype=int32): return helper.looper_flip(x)
-def split(x, y, dtype=int32): return helper.looper_split(x, y)
-def tile(x, y, dtype=int32): return helper.looper_tile(x, y)
-def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[])
+def amax(x, dtype=int32): return helper.looper_max(x) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_max(x), dtype=dtype)# Kinda works
+def flip(x, dtype=int32): return helper.looper_flip(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_flip(x, dtype=dtype), dtype=dtype)
+def split(x, y, dtype=int32): return helper.looper_split(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_split(x, y, dtype=dtype), dtype=dtype)
+def tile(x, y, dtype=int32): return helper.looper_tile(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_tile(x, y, dtype=dtype), dtype=dtype)
+def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[]) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_isin(x, y=y, ret=[]), dtype=dtype)
 def count_nonzero(x): return helper.looper_count(x, ret=0)
 def broadcast_to(x, y): return helper.looper_broadcast_to(x, y)
 def any(x): return builtins.any(helper.looper_count(x, ret=0))
@@ -54,7 +51,7 @@ def all(x): return builtins.all(helper.looper_count(x, ret=0))
 def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
-def cumsum(x, dtype=int32): return helper.looper_cumsum(x)
+def cumsum(x, dtype=int32): return helper.looper_cumsum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cumsum(x, dtype=dtype), dtype=dtype)
 def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return helper.looper_outer(x, y=y)
 def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
