@@ -16,7 +16,4 @@ class ndarray(array):
       if not isinstance(x, int) and not isinstance(x[0], list): self.x = [0 for _ in range(x[0])]
       else: self.x = [0 for a in range(len(x)) for b in range(len(x[a])) if a != b]
     else: self.x = [x[i] for i in range(len(x))]
-
-  def astype(self, x):
-    if len(self.x) == 1: return [0 for _ in range(self.x[0])]
-    else: return [x(self.x[i]).value for i in range(len(self.x))]
+  def astype(self, x): return [0 for _ in range(self.x[0])] if len(self.x) == 1 else [x(self.x[i]).value for i in range(len(self.x))]

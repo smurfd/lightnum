@@ -34,6 +34,18 @@ class helper():
   def looper_where(condition, x, y, dtype=float32): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)] if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
   def looper_sqrt(x, dtype=float32): return math.sqrt(x) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
   def looper_arctan2(x, y, dtype=float32): return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
+  def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
+  def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
+  def looper_vstack(x): return [i for i in x]
+  def looper_unique(x): return list(set(sorted(helper.reshape(x, -1))))
+  def looper_concatenate(x, dtype=int32): return [i for j in range(len(x)) for i in x[j]]
+  def looper_expand_dims(x, axis, axisco=0): return [x] if axisco == axis else [helper.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
+  def looper_flip(x, dtype=int32): return [helper.looper_flip(i) for i in x] if isinstance(x[0], list) else x[::-1]
+  def looper_squeeze(x, axis=0): return x if not isinstance(x[0][0], list) else [helper.looper_squeeze(y, axis) for y in x].pop() #TODO: axis
+  def looper_clip(x, x_min, x_max): return (x_min if x < x_min else x_max) if not isinstance(x, list) else [helper.looper_clip(y, x_min, x_max) for y in x]
+  def looper_broadcast_to(x, y): return x if len(y) == 1 else [x for i in range(y[0])]
+  def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
+  def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
   def looper_nonzero(x):
     ret1, ret2 = [], []
     if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)]
@@ -49,23 +61,6 @@ class helper():
       return y.index(max(y))
     return x.index(max(x)) if not isinstance(x[0], list) else [helper.looper_argmax(y, axis) for y in x]
 
-  def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
-  def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
-  def looper_vstack(x): return [i for i in x]
-  def looper_squeeze(x, axis=0): #TODO: axis
-    if not isinstance(x[0][0], list): return x
-    return [helper.looper_squeeze(y, axis) for y in x].pop()
-
-  def looper_clip(x, x_min, x_max):
-    if not isinstance(x, list): return x_min if x < x_min else x_max
-    return [helper.looper_clip(y, x_min, x_max) for y in x]
-
-  def looper_unique(x): return list(set(sorted(helper.reshape(x, -1))))
-
-  def looper_broadcast_to(x, y):
-    if len(y) == 1: return x
-    return [x for i in range(y[0])]
-
   def looper_cumsum(x, s=0,dtype=int32):
     a = helper.reshape(x, -1)
     return [builtins.sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]
@@ -75,14 +70,6 @@ class helper():
       if isinstance(x[i], (list, tuple)): ret = helper.looper_add(x[i], ret)
       else: ret += x[i]
     return ret
-
-  def looper_expand_dims(x, axis, axisco=0):
-    if axisco == axis: return [x]
-    return [helper.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
-
-  def looper_flip(x, dtype=int32):
-    if isinstance(x[0], list): return [helper.looper_flip(i) for i in x]
-    return x[::-1]
 
   def looper_split(x, y, dtype=int32):
     if not isinstance(y, list) and not isinstance(x, list): return [ndarray(x.tolist()[i:i+len(x.tolist())//y]) for i in range(0, len(x.tolist()), len(x.tolist())//y)]
@@ -99,8 +86,6 @@ class helper():
       for b1 in range(b): tmp2.extend(x)
       tmp.append(tmp2); tmp2=[]
     return tmp
-
-  def looper_concatenate(x, dtype=int32): return [i for j in range(len(x)) for i in x[j]]
 
   def looper_empty(x, fill, dtype=int32):
     if isinstance(x, int): return helper.cast([fill] * x, dtype)
@@ -163,9 +148,6 @@ class helper():
       if isinstance(x[i], (list, tuple)): ret = helper.looper_count(x[i], ret)
       elif (x[i] != 0 and x[i] is not False): ret += 1
     return ret
-
-  def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
-  def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
 
   def looper_matmul(x, y, dtype=int32):
     if not isinstance(x, (list, tuple)):
