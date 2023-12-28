@@ -34,21 +34,10 @@ class helper():
   def looper_where(condition, x, y, dtype=float32): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)] if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
   def looper_sqrt(x, dtype=float32): return math.sqrt(x) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
   def looper_arctan2(x, y, dtype=float32): return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
-  def looper_nonzero(x):#, x, y=[], dtype=int32):
-    # return tuple, length of arrays is nonzero values in x
-    # [[1,0,2,0],[3, 0, 4, 6]]
-    # [0,0,1,1,1], [0,2, 0, 2, 3]
-    ret = []
-    ret2 = []
-    if isinstance(x[0], list):
-      for i in range(len(x)):
-        if isinstance(x[i], list):
-          for ii in range(len(x[i])):
-            if x[i][ii]: ret.append(i); ret2.append(ii)
-    r = []
-    r += [ndarray(ret)]
-    r += [ndarray(ret2)]
-    return tuple(r)
+  def looper_nonzero(x):
+    ret1, ret2 = [], []
+    if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)]
+    return tuple([ndarray(ret1)] + [ndarray(ret2)])
 
   def looper_arange(start, stop=0, step=1, dtype=int32):
     if stop: return ndarray([i for i in range(start, stop, step)])
@@ -58,8 +47,7 @@ class helper():
     if not axis:
       y = helper.reshape(x, -1)
       return y.index(max(y))
-    if not isinstance(x[0], list): return x.index(max(x))
-    return [helper.looper_argmax(y, axis) for y in x]
+    return x.index(max(x)) if not isinstance(x[0], list) else [helper.looper_argmax(y, axis) for y in x]
 
   def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
   def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
@@ -177,7 +165,6 @@ class helper():
     return ret
 
   def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
-
   def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
 
   def looper_matmul(x, y, dtype=int32):
