@@ -1,4 +1,5 @@
-from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, types
+from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types
+from lightnum.array import ndarray, array
 import copy as cp
 import builtins
 import ctypes
@@ -25,44 +26,29 @@ class helper():
   def looper_exp(x, dtype=float64): return helper.cast(math.exp(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
   def looper_exp2(x, dtype=float32): return helper.cast(helper.exp2(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
   def looper_cbrt(x, dtype=float32): return helper.cast(helper.cbrt(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
-  def looper_sum(x, dtype=int32):
+  def looper_prod(x, dtype=int32): return helper.cast(math.prod(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_prod(i) for i in x]
+  def looper_cos(x, dtype=float64): return helper.cast(math.cos(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_cos(i) for i in x]
+  def looper_ceil(x, dtype=float32): return helper.cast(math.ceil(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_ceil(i) for i in x]
+  def looper_copy(x, dtype=float32): return helper.cast(cp.copy(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_copy(i) for i in x]
+  def looper_where(condition, x, y, dtype=float32): return helper.cast([xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)], dtype=dtype) if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
+
+  def looper_sum(x, dtype=float32):# return helper.cast(builtins.sum(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
     if not isinstance(x, list): return builtins.sum(x)
     return [helper.looper_sum(i) for i in x]
 
-  def looper_mod(x, y, dtype=int32):
+  def looper_mod(x, y, dtype=float32):#return helper.cast(helper.mod(x, y), dtype=dtype) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
     if not isinstance(x, (list, tuple)): return helper.mod(x, y)
     return [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
 
-  def looper_prod(x, dtype=int32):
-    if not isinstance(x, list): return math.prod(x)
-    return [helper.looper_prod(i) for i in x]
-
-  def looper_cos(x, dtype=int32):
-    if not isinstance(x, list): return math.cos(x)
-    return [helper.looper_cos(i) for i in x]
-
-  def looper_sqrt(x, dtype=int32):
+  def looper_sqrt(x, dtype=float32):# return helper.cast(math.sqrt(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
     if not isinstance(x, list): return math.sqrt(x)
     return [helper.looper_sqrt(i) for i in x]
 
-  def looper_arctan2(x, y, dtype=int32):
+  def looper_arctan2(x, y, dtype=float32):# return helper.cast(math.atan2(x, y), dtype=dtype) if not isinstance(x, (list, tuple)) else [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
     if not isinstance(x, (list, tuple)): return math.atan2(x, y)
     return [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
 
-  def looper_ceil(x, dtype=int32):
-    if not isinstance(x, list): return math.ceil(x)
-    return [helper.looper_ceil(i) for i in x]
-
-  def looper_copy(x, dtype=int32):
-    if not isinstance(x, list): return cp.copy(x)
-    return [helper.looper_copy(i) for i in x]
-
-  def looper_where(condition, x, y, dtype=int32):
-    if not isinstance(x, list): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)]
-    return [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
-
   def looper_nonzero(x):#, x, y=[], dtype=int32):
-    from lightnum.array import array, ndarray
     # return tuple, length of arrays is nonzero values in x
     # [[1,0,2,0],[3, 0, 4, 6]]
     # [0,0,1,1,1], [0,2, 0, 2, 3]
@@ -80,7 +66,6 @@ class helper():
 
 
   def looper_arange(start, stop=0, step=1, dtype=int32):
-    from lightnum.array import array, ndarray
     if stop: return ndarray([i for i in range(start, stop, step)])
     return ndarray([i for i in range(0, start, step)])
 
@@ -127,13 +112,11 @@ class helper():
     return x[::-1]
 
   def looper_split(x, y, dtype=int32):
-    from lightnum.array import array, ndarray
     if not isinstance(y, list) and not isinstance(x, list): return [ndarray(x.tolist()[i:i+len(x.tolist())//y]) for i in range(0, len(x.tolist()), len(x.tolist())//y)]
     elif not isinstance(y, list): return [ndarray(x[i:i+(len(x)//y)]) for i in range(0, len(x), len(x)//y)]
     return [helper.looper_split(i, y) for i in x]
 
   def looper_tile(x, y, dtype=int32):
-    from lightnum.array import array, ndarray
     tmp, tmp2=[], []
     if not isinstance(y, tuple):
       for _ in range(y): tmp.extend(x)
@@ -213,16 +196,14 @@ class helper():
   def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
 
   def looper_matmul(x, y, dtype=int32):
-    from lightnum.lightnum import reshape
     if not isinstance(x, (list, tuple)):
       if x and y: return x * y
       elif x and not y: return x
       else: return y
     ret = [helper.looper_matmul(i, y=j) for i, j in zip(x, y)]
-    return reshape(ret, -1)
+    return helper.reshape(ret, -1)
 
   def looper_assert(x, y):
-    from lightnum.array import array, ndarray
     ret=[]
     for i in range(len(x)):
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
