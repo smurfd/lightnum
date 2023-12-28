@@ -13,15 +13,14 @@ class helper():
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
   def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
-  def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if not dtype(x) is dtype else dtype(x)
+  def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
 
   # helper functions to loop through multidimentional lists/tuples
   def looper_cast(x, dtype=float64):
-    if not isinstance(x, list):
-      if dtype in [float16, float32, float64]: return ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value if x != float(int(x)) else int(ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))),ctypes.POINTER(dtype(x))).contents.value)
-      return ctypes.cast(ctypes.pointer(dtype(x)(x)), ctypes.POINTER(dtype(x))).contents.value
-    return [helper.looper_cast(i, dtype) for i in x]
-
+    if isinstance(x, list): return [helper.looper_cast(i, dtype) for i in x]
+    a = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value
+    b = (not isinstance(x, list) and x != float(int(x)))
+    return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
   def looper_log(x, dtype=float64): return helper.cast(math.log(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
   def looper_exp(x, dtype=float64): return helper.cast(math.exp(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
   def looper_exp2(x, dtype=float32): return helper.cast(helper.exp2(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
@@ -31,14 +30,8 @@ class helper():
   def looper_ceil(x, dtype=float32): return helper.cast(math.ceil(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_ceil(i) for i in x]
   def looper_copy(x, dtype=float32): return helper.cast(cp.copy(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_copy(i) for i in x]
   def looper_where(condition, x, y, dtype=float32): return helper.cast([xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)], dtype=dtype) if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
-
-  def looper_sum(x, dtype=float32):# return helper.cast(builtins.sum(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
-    if not isinstance(x, list): return builtins.sum(x)
-    return [helper.looper_sum(i) for i in x]
-
-  def looper_mod(x, y, dtype=float32):#return helper.cast(helper.mod(x, y), dtype=dtype) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
-    if not isinstance(x, (list, tuple)): return helper.mod(x, y)
-    return [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
+  def looper_sum(x, dtype=float16): return helper.cast(builtins.sum(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
+  def looper_mod(x, y, dtype=float32): return helper.cast(helper.mod(x, y), dtype=dtype) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
 
   def looper_sqrt(x, dtype=float32):# return helper.cast(math.sqrt(x), dtype=dtype) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
     if not isinstance(x, list): return math.sqrt(x)
