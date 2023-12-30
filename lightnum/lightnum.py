@@ -75,6 +75,22 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 def frombuffer(buf, dtype=int32): return helper.looper_frombuffer(buf, dtype)
+def triu(x, l=0):
+  l = l - 1
+  if isinstance(x[0], list):
+    rr = []
+    if (l + 1) >= len(x[0]): l = len(x[0]) - 1
+    for i in range(len(x)):
+      rr.append(helper.zero_row_len(x[i], l:=l+1))
+    return rr
+  else:
+    r1, rr = [], []
+    for i in range(len(x)): r1.append(x)
+    for i in range(len(r1)):
+      f = []
+      f.extend(helper.zero_row_len(r1[i], l:=l+1))
+      rr.append(f)
+    return rr
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
@@ -84,7 +100,6 @@ class lib:
     def as_strided(self): pass
 
 def pad(): pass
-def triu(): pass
 def memmap(): pass
 def require(): pass
 def moveaxis(): pass

@@ -14,6 +14,10 @@ class helper():
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
   def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
   def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
+  def zero_row_len(x, l):
+    for i in range(l):
+      if i >= 0 and i < len(x): x[i] = 0
+    return x
 
   # helper functions to loop through multidimentional lists/tuples
   def looper_cast(x, dtype=float64):
