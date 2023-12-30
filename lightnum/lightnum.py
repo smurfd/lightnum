@@ -103,6 +103,19 @@ def newaxis(x, y): # if y is set, it represents [np.newaxis, :], if not [:, np.n
     for i in range(len(x)): ret.append([x[i]])
   return ret
 
+def meshgrid(x, y, indexing='xy'):
+  retx, rety = [], []
+  rx = reshape(x, -1)
+  ry = reshape(y, -1)
+  if indexing == 'xy':
+    for i in range(len(rx)): retx.append(rx)
+    for i in range(len(ry)): rety.append(full(ry, fill=ry[i]))
+  elif indexing == 'ij':
+    for i in range(len(rx)): retx.append(full(rx, fill=rx[i]))
+    for i in range(len(ry)): rety.append(ry)
+  else: pass
+  return retx, rety
+
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 
@@ -116,7 +129,6 @@ def require(): pass
 def moveaxis(): pass
 def rollaxis(): pass
 def argsort(): pass
-def meshgrid(): pass
 def delete(): pass
 def save(): pass
 def load(): pass

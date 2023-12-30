@@ -69,6 +69,7 @@ def test_squeeze(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 2], [3, 4, 5], [
 def test_clip(): lp.testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5), np.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5).tolist())
 def test_unique(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.squeeze([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
 def test_triu(): lp.testing.assert_equal(lp.triu([[1,2,3],[1,2,3],[1,2,3]], 1), np.triu([[1,2,3],[1,2,3],[1,2,3]], 1).tolist())
+def test_meshgrid(): lpx,lpy=lp.meshgrid([1,2,3], [4,5,6]); npx,npy=np.meshgrid([1,2,3], [4,5,6]); lp.testing.assert_equal(lpx, npx.tolist()); lp.testing.assert_equal(lpy, npy.tolist())
 def test_newaxis(): x = np.array([[1,2,3],[1,2,3]]);lp.testing.assert_equal(lp.newaxis([[1,2,3],[1,2,3]], 1), x[np.newaxis, :].tolist())
 def test_frombuffer(): lp.testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
 def test_promote_types(): assert(str(lp.promote_types(lp.uint8, lp.uint32)) == np.promote_types(np.uint8, np.uint32))
@@ -89,3 +90,5 @@ def test_assert_equal():
 
 if __name__ == '__main__':
   print("OK!")
+  print(lp.meshgrid([1,2,3], [4,5,6], indexing='xy'))
+  print(lp.meshgrid([1,2,3], [4,5,6], indexing='ij'))
