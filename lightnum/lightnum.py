@@ -92,6 +92,17 @@ def triu(x, l=0):
       rr.append(f)
     return rr
 
+def newaxis(x, y): # if y is set, it represents [np.newaxis, :], if not [:, np.newaxis]
+  ret = []
+  if y:
+    if not isinstance(x[0], list): ret = [x]
+    else:
+      for i in range(len(x)): ret += [x[i]]
+      ret = [ret]
+  else:
+    for i in range(len(x)): ret.append([x[i]])
+  return ret
+
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 
@@ -105,7 +116,6 @@ def require(): pass
 def moveaxis(): pass
 def rollaxis(): pass
 def argsort(): pass
-def newaxis(): pass
 def meshgrid(): pass
 def delete(): pass
 def save(): pass
