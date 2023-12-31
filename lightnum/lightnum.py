@@ -63,7 +63,8 @@ def unique(x): return helper.looper_unique(x)
 def vstack(x): return helper.looper_vstack(x)
 def nonzero(x): return helper.looper_nonzero(x)
 def promote_types(x, y): return dtype(x) if dtype(x) <= dtype(y) else dtype(y)
-def median(x, r=[]):
+def median(x):
+  r = []
   for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
 def concatenate(x): return helper.looper_concatenate(x)
