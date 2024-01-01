@@ -8,10 +8,18 @@ def scantree(path):
 
 def replace(rwith, rfind):
   for entry in scantree(os.path.dirname(os.path.abspath(__file__))):
-    if entry.is_file():
+    if entry.is_file() and os.fsdecode(entry).endswith('.py'):
+      found = False
       with open(entry) as f:
         content = f.readlines()
-        content = [rwith if line.find(rfind) != -1 else line for line in content]
+        for i, line in enumerate(content):
+          if line.lstrip().startswith(rfind):
+            found = True
+            content[i] = rwith + '\n'
+
+      if found:
+        with open(entry, 'w') as f:
+          f.write(''.join(content))
 
 if __name__ == '__main__':
   replace('import lightnum.lightnum as np', 'import numpy as np')
