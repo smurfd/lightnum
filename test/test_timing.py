@@ -9,7 +9,7 @@ def test_timing_mod():
   lp_s = time.time()
   for _ in range(100000): lp.mod([1, 2, 3, 4], [1, 2, 6, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy mod: {:.4f}ms Lightnum mod: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy mod: {:.4f}ms Lightnum mod: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   #assert(lp_t < np_t) # alot better but still to slow # TODO fast
   # Faster than numpy!!!
   # Numpy mod: 147.8453ms
@@ -21,7 +21,7 @@ def test_timing_sqrt():
   np_t = (time.time() - np_s) * 1000; lp_s = time.time()
   for _ in range(100000): lp.sqrt([1, 2, 3, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy sqrt: {:.4f}ms Lightnum sqrt: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy sqrt: {:.4f}ms Lightnum sqrt: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   #assert(lp_t < np_t) # alot better but still to slow # TODO fast
   # Faster than numpy!!!
   # Numpy sqrt: 93.0297ms
@@ -33,7 +33,7 @@ def test_timing_assert():
   np_t = (time.time() - np_s) * 1000; lp_s = time.time()
   for _ in range(100000): lp.testing.assert_equal([1, 2, 3, 4], [1, 2, 3, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy asseq: {:.4f}ms Lightnum asseq: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy asseq: {:.4f}ms Lightnum asseq: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   assert(lp_t < lp_s)
   # Faster than numpy!!!
   # Numpy assert_equal: 2682.8160ms
@@ -45,7 +45,7 @@ def test_timing_where():
   np_t = (time.time() - np_s) * 1000; lp_s = time.time()
   for _ in range(100000): lp.where([True, True, True, True, True, False, False, False, False, False], lp.arange(10), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy where: {:.4f}ms Lightnum where: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy where: {:.4f}ms Lightnum where: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   # slower
   # Numpy where: 201.0920ms
   # Lightnum where: 215.5871ms
@@ -56,7 +56,7 @@ def test_timing_max():
   np_t = (time.time() - np_s) * 1000; lp_s = time.time()
   for _ in range(100000): lp.max([[[[2, 2, 3, 4], [1, 2, 3, 4]],[[1, 2, 3, 4], [1, 2, 9, 4]]],[[[1, -1, 3, 4], [1, 2, 3, 4]],[[1, 2, 31, 4], [1, 2, 3, 4]]]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy max: {:.4f}ms Lightnum max: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy max: {:.4f}ms Lightnum max: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   # slower
   # Numpy max: 389.6551ms
   # Lightnum max: 604.5718ms
@@ -68,7 +68,7 @@ def test_timing_zeros():
   lp_s = time.time()
   for _ in range(100000): lp.zeros([4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy zeros: {:.4f}ms Lightnum zeros: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy zeros: {:.4f}ms Lightnum zeros: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_zeros_big():
   np_s = time.time()
@@ -77,7 +77,7 @@ def test_timing_zeros_big():
   lp_s = time.time()
   for _ in range(100000): lp.zeros([3, 3, 3, 3])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy zeros: {:.4f}ms Lightnum zeros: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy zeros: {:.4f}ms Lightnum zeros: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ones():
   np_s = time.time()
@@ -86,7 +86,7 @@ def test_timing_ones():
   lp_s = time.time()
   for _ in range(100000): lp.ones([4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ones: {:.4f}ms Lightnum ones: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ones: {:.4f}ms Lightnum ones: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ones_big():
   np_s = time.time()
@@ -95,7 +95,7 @@ def test_timing_ones_big():
   lp_s = time.time()
   for _ in range(100000): lp.ones([3, 3, 3, 3])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ones: {:.4f}ms Lightnum ones: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ones: {:.4f}ms Lightnum ones: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_zeros_like():
   np_s = time.time()
@@ -104,7 +104,7 @@ def test_timing_zeros_like():
   lp_s = time.time()
   for _ in range(100000): lp.zeros_like([4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_zeros_like_big():
   np_s = time.time()
@@ -113,7 +113,7 @@ def test_timing_zeros_like_big():
   lp_s = time.time()
   for _ in range(100000): lp.zeros_like([3, 3, 3, 3])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_zeros_like_array():
   np_s = time.time()
@@ -122,7 +122,7 @@ def test_timing_zeros_like_array():
   lp_s = time.time()
   for _ in range(100000): lp.zeros_like([[0, 1, 2],[3, 4, 5]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy zeros_like: {:.4f}ms Lightnum zeros_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ones_like():
   np_s = time.time()
@@ -131,7 +131,7 @@ def test_timing_ones_like():
   lp_s = time.time()
   for _ in range(100000): lp.ones_like([4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ones_like_big():
   np_s = time.time()
@@ -140,7 +140,7 @@ def test_timing_ones_like_big():
   lp_s = time.time()
   for _ in range(100000): lp.ones_like([3, 3, 3, 3])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ones_like_array():
   np_s = time.time()
@@ -149,7 +149,7 @@ def test_timing_ones_like_array():
   lp_s = time.time()
   for _ in range(100000): lp.ones_like([[0, 1, 2],[3, 4, 5]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ones_like: {:.4f}ms Lightnum ones_like: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_array():
   np_s = time.time()
@@ -158,7 +158,7 @@ def test_timing_array():
   lp_s = time.time()
   for _ in range(100000): lp.array([3,3,3])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy array: {:.4f}ms Lightnum array: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy array: {:.4f}ms Lightnum array: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_exp():
   np_s = time.time()
@@ -167,7 +167,7 @@ def test_timing_exp():
   lp_s = time.time()
   for _ in range(100000): lp.exp([2])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy exp: {:.4f}ms Lightnum exp: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy exp: {:.4f}ms Lightnum exp: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_exp2():
   np_s = time.time()
@@ -176,7 +176,7 @@ def test_timing_exp2():
   lp_s = time.time()
   for _ in range(100000): lp.exp2([2])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy exp2: {:.4f}ms Lightnum exp2: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy exp2: {:.4f}ms Lightnum exp2: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_log():
   np_s = time.time()
@@ -185,7 +185,7 @@ def test_timing_log():
   lp_s = time.time()
   for _ in range(100000): lp.log([1, 2, 3, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy log: {:.4f}ms Lightnum log: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy log: {:.4f}ms Lightnum log: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_log_array():
   np_s = time.time()
@@ -194,7 +194,7 @@ def test_timing_log_array():
   lp_s = time.time()
   for _ in range(100000): lp.log([[1, 2, 3, 4], [1, 2, 3, 4]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy log_array: {:.4f}ms Lightnum log_array: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy log_array: {:.4f}ms Lightnum log_array: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_sum():
   np_s = time.time()
@@ -203,7 +203,7 @@ def test_timing_sum():
   lp_s = time.time()
   for _ in range(100000): lp.sum((3,3))
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy sum: {:.4f}ms Lightnum sum: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy sum: {:.4f}ms Lightnum sum: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_sumf():
   np_s = time.time()
@@ -212,7 +212,7 @@ def test_timing_sumf():
   lp_s = time.time()
   for _ in range(100000): lp.sum((3.3,3.3))
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy sumf: {:.4f}ms Lightnum sumf: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy sumf: {:.4f}ms Lightnum sumf: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_min():
   np_s = time.time()
@@ -221,7 +221,7 @@ def test_timing_min():
   lp_s = time.time()
   for _ in range(100000): lp.min([[[[2, 2, 3, 4], [1, 2, 3, 4]],[[1, 2, 3, 4], [1, 2, 9, 4]]],[[[1, -1, 3, 4], [1, 2, 3, 4]],[[1, 2, 31, 4], [1, 2, 3, 4]]]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy min: {:.4f}ms Lightnum min: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy min: {:.4f}ms Lightnum min: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_maximum():
   np_s = time.time()
@@ -230,7 +230,7 @@ def test_timing_maximum():
   lp_s = time.time()
   for _ in range(100000): lp.maximum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy maximum: {:.4f}ms Lightnum maximum: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy maximum: {:.4f}ms Lightnum maximum: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_minimum():
   np_s = time.time()
@@ -239,7 +239,7 @@ def test_timing_minimum():
   lp_s = time.time()
   for _ in range(100000): lp.minimum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy minimum: {:.4f}ms Lightnum minimum: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy minimum: {:.4f}ms Lightnum minimum: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_full():
   np_s = time.time()
@@ -248,7 +248,7 @@ def test_timing_full():
   lp_s = time.time()
   for _ in range(100000): lp.full(6, 3)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy full: {:.4f}ms Lightnum full: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy full: {:.4f}ms Lightnum full: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_full_tuple():
   np_s = time.time()
@@ -257,7 +257,7 @@ def test_timing_full_tuple():
   lp_s = time.time()
   for _ in range(100000): lp.full((6,6,6), 4)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy full_tuple: {:.4f}ms Lightnum full_tuple: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy full_tuple: {:.4f}ms Lightnum full_tuple: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_modf():
   np_s = time.time()
@@ -266,7 +266,7 @@ def test_timing_modf():
   lp_s = time.time()
   for _ in range(100000): lp.mod([1.1, 2.2, 3.3, 4.4], [1.1, 2.2, 6.6, 4.4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy modf: {:.4f}ms Lightnum modf: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy modf: {:.4f}ms Lightnum modf: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_mod_array():
   np_s = time.time()
@@ -275,7 +275,7 @@ def test_timing_mod_array():
   lp_s = time.time()
   for _ in range(100000): lp.mod([[1, 2, 3, 4], [1, 2, 6, 4]], [[2, 1, 7, 4], [1, 3, 6, 9]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy mod_array: {:.4f}ms Lightnum mod_array: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy mod_array: {:.4f}ms Lightnum mod_array: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_cos():
   np_s = time.time()
@@ -284,7 +284,7 @@ def test_timing_cos():
   lp_s = time.time()
   for _ in range(100000): lp.cos([1, 2, 3, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy cos: {:.4f}ms Lightnum cos: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy cos: {:.4f}ms Lightnum cos: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_arctan2():
   np_s = time.time()
@@ -293,7 +293,7 @@ def test_timing_arctan2():
   lp_s = time.time()
   for _ in range(100000): lp.arctan2([1, 2, 3, 4], [1, 2, 6, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy arctan2: {:.4f}ms Lightnum arctan2: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy arctan2: {:.4f}ms Lightnum arctan2: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_amax():
   np_s = time.time()
@@ -302,7 +302,7 @@ def test_timing_amax():
   lp_s = time.time()
   for _ in range(100000): lp.amax([1, 2, 3, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy amax: {:.4f}ms Lightnum amax: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy amax: {:.4f}ms Lightnum amax: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_amax_array():
   np_s = time.time()
@@ -311,7 +311,7 @@ def test_timing_amax_array():
   lp_s = time.time()
   for _ in range(100000): lp.amax([(14, 29, 34), (41, 55, 46), (1, 38, 29), (5, 57, 52)])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy amax_array: {:.4f}ms Lightnum amax_array: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy amax_array: {:.4f}ms Lightnum amax_array: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_isin():
   np_s = time.time()
@@ -320,7 +320,7 @@ def test_timing_isin():
   lp_s = time.time()
   for _ in range(100000): lp.isin([1, 2, 3, 4], [1, 2, 6, 4])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy isin: {:.4f}ms Lightnum isin: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy isin: {:.4f}ms Lightnum isin: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_ceil():
   np_s = time.time()
@@ -329,7 +329,7 @@ def test_timing_ceil():
   lp_s = time.time()
   for _ in range(100000): lp.ceil([1.67, 4.5, 7, 9, 12])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy ceil: {:.4f}ms Lightnum ceil: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy ceil: {:.4f}ms Lightnum ceil: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_reshape():
   np_s = time.time()
@@ -338,7 +338,7 @@ def test_timing_reshape():
   lp_s = time.time()
   for _ in range(100000): lp.reshape([1, 2, 3, 4, 5, 6, 7, 8], (2, 4))
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy reshape: {:.4f}ms Lightnum reshape: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy reshape: {:.4f}ms Lightnum reshape: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_reshape_flat():
   np_s = time.time()
@@ -347,7 +347,7 @@ def test_timing_reshape_flat():
   lp_s = time.time()
   for _ in range(100000): lp.reshape([[1, 2, 3, 4], [5, 6, 7, 8]], -1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy reshape_flat: {:.4f}ms Lightnum reshape_flat: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy reshape_flat: {:.4f}ms Lightnum reshape_flat: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_reshape_flat_array():
   np_s = time.time()
@@ -356,7 +356,7 @@ def test_timing_reshape_flat_array():
   lp_s = time.time()
   for _ in range(100000): lp.reshape([[[1, 2, 3, 4], [5, 6, 7, 8]],[[1, 2, 3, 4], [5, 6, 7, 8]]], -1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy reshape_flat_array: {:.4f}ms Lightnum reshape_flat_array: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy reshape_flat_array: {:.4f}ms Lightnum reshape_flat_array: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_count_zero():
   np_s = time.time()
@@ -365,7 +365,7 @@ def test_timing_count_zero():
   lp_s = time.time()
   for _ in range(100000): lp.count_nonzero([[3,6,9], [3,0,9]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy count_nonzero: {:.4f}ms Lightnum count_nonzero: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy count_nonzero: {:.4f}ms Lightnum count_nonzero: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_count_zero2():
   np_s = time.time()
@@ -374,7 +374,7 @@ def test_timing_count_zero2():
   lp_s = time.time()
   for _ in range(100000): lp.count_nonzero([[3,5,9], [0,0,0]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy count_nonzero2: {:.4f}ms Lightnum count_nonzero2: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy count_nonzero2: {:.4f}ms Lightnum count_nonzero2: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_allclose():
   np_s = time.time()
@@ -383,7 +383,7 @@ def test_timing_allclose():
   lp_s = time.time()
   for _ in range(100000): lp.allclose([1e10,1e-7], [1.00001e10,1e-8])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy allclose: {:.4f}ms Lightnum allclose: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy allclose: {:.4f}ms Lightnum allclose: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_allclose2():
   np_s = time.time()
@@ -392,7 +392,7 @@ def test_timing_allclose2():
   lp_s = time.time()
   for _ in range(100000): lp.allclose([1e10,1e-8], [1.00001e10,1e-9])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy allclose2: {:.4f}ms Lightnum allclose2: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy allclose2: {:.4f}ms Lightnum allclose2: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_cbrt():
   np_s = time.time()
@@ -401,7 +401,7 @@ def test_timing_cbrt():
   lp_s = time.time()
   for _ in range(100000): lp.cbrt([1,8,27])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy cbrt: {:.4f}ms Lightnum cbrt: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy cbrt: {:.4f}ms Lightnum cbrt: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_copy():
   np_s = time.time()
@@ -410,7 +410,7 @@ def test_timing_copy():
   lp_s = time.time()
   for _ in range(100000): lp.copy([[1,2,3,4],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy copy: {:.4f}ms Lightnum copy: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy copy: {:.4f}ms Lightnum copy: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_median():
   np_s = time.time()
@@ -419,7 +419,7 @@ def test_timing_median():
   lp_s = time.time()
   for _ in range(100000): lp.median([[10, 7, 4], [3, 2, 1]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy median: {:.4f}ms Lightnum median: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy median: {:.4f}ms Lightnum median: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_arange():
   np_s = time.time()
@@ -428,7 +428,7 @@ def test_timing_arange():
   lp_s = time.time()
   for _ in range(100000): lp.arange(3, 7)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy arange: {:.4f}ms Lightnum arange: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy arange: {:.4f}ms Lightnum arange: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_flip():
   np_s = time.time()
@@ -437,7 +437,7 @@ def test_timing_flip():
   lp_s = time.time()
   for _ in range(100000): lp.flip([1,2,3,4,5,6])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy flip: {:.4f}ms Lightnum flip: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy flip: {:.4f}ms Lightnum flip: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_split():
   np_s = time.time()
@@ -446,7 +446,7 @@ def test_timing_split():
   lp_s = time.time()
   for _ in range(100000): lp.split(lp.arange(6), 2)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy split: {:.4f}ms Lightnum split: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy split: {:.4f}ms Lightnum split: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_tile():
   np_s = time.time()
@@ -455,7 +455,7 @@ def test_timing_tile():
   lp_s = time.time()
   for _ in range(100000): lp.tile([0,1,2,3,4,5], 2)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy tile: {:.4f}ms Lightnum tile: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy tile: {:.4f}ms Lightnum tile: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_concatenate():
   np_s = time.time()
@@ -464,7 +464,7 @@ def test_timing_concatenate():
   lp_s = time.time()
   for _ in range(100000): lp.concatenate(([1,2,3,4],[4,5,6]))
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy concatenate: {:.4f}ms Lightnum concatenate: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy concatenate: {:.4f}ms Lightnum concatenate: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_cumsum():
   np_s = time.time()
@@ -473,7 +473,7 @@ def test_timing_cumsum():
   lp_s = time.time()
   for _ in range(100000): lp.cumsum([[1,2,3], [4,5,6]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy cumsum: {:.4f}ms Lightnum cumsum: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy cumsum: {:.4f}ms Lightnum cumsum: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_matmul():
   np_s = time.time()
@@ -482,7 +482,7 @@ def test_timing_matmul():
   lp_s = time.time()
   for _ in range(100000): lp.matmul([[1, 0], [0, 1]], [[4, 1], [2, 2]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy matmul: {:.4f}ms Lightnum matmul: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy matmul: {:.4f}ms Lightnum matmul: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_broadcast_to():
   np_s = time.time()
@@ -491,7 +491,7 @@ def test_timing_broadcast_to():
   lp_s = time.time()
   for _ in range(100000): lp.broadcast_to([1, 2, 3], (3, 3))
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy broadcast_to: {:.4f}ms Lightnum broadcast_to: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy broadcast_to: {:.4f}ms Lightnum broadcast_to: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_outer():
   np_s = time.time()
@@ -500,7 +500,7 @@ def test_timing_outer():
   lp_s = time.time()
   for _ in range(100000): lp.outer([[1,2,3,4],[5,6,7,8]], [[9,10,11,12],[13,14,15,16]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy outer: {:.4f}ms Lightnum outer: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy outer: {:.4f}ms Lightnum outer: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_eye():
   np_s = time.time()
@@ -509,7 +509,7 @@ def test_timing_eye():
   lp_s = time.time()
   for _ in range(100000): lp.eye(4,4,k=-1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy eye: {:.4f}ms Lightnum eye: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy eye: {:.4f}ms Lightnum eye: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_expand_dims():
   np_s = time.time()
@@ -518,7 +518,7 @@ def test_timing_expand_dims():
   lp_s = time.time()
   for _ in range(100000): lp.expand_dims([[1,2,3,4],[5,6,7,8]], 2)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy expand_dims: {:.4f}ms Lightnum expand_dims: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy expand_dims: {:.4f}ms Lightnum expand_dims: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_argmax():
   np_s = time.time()
@@ -527,7 +527,7 @@ def test_timing_argmax():
   lp_s = time.time()
   for _ in range(100000): lp.argmax([[1,2,3,4],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy argmax: {:.4f}ms Lightnum argmax: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy argmax: {:.4f}ms Lightnum argmax: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_argmax_axis():
   np_s = time.time()
@@ -536,7 +536,7 @@ def test_timing_argmax_axis():
   lp_s = time.time()
   for _ in range(100000): lp.argmax([[1,2,3,4],[5,6,7,8]], axis=1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy argmax_axis: {:.4f}ms Lightnum argmax_axis: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy argmax_axis: {:.4f}ms Lightnum argmax_axis: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_transpose():
   np_s = time.time()
@@ -545,7 +545,7 @@ def test_timing_transpose():
   lp_s = time.time()
   for _ in range(100000): lp.transpose([[1,2,3,4],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy transpose: {:.4f}ms Lightnum transpose: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy transpose: {:.4f}ms Lightnum transpose: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_stack():
   np_s = time.time()
@@ -554,7 +554,7 @@ def test_timing_stack():
   lp_s = time.time()
   for _ in range(100000): lp.stack([[1,2,3,4],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy stack: {:.4f}ms Lightnum stack: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy stack: {:.4f}ms Lightnum stack: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_vstack():
   np_s = time.time()
@@ -563,7 +563,7 @@ def test_timing_vstack():
   lp_s = time.time()
   for _ in range(100000): lp.vstack([[1,2,3,4],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy vstack: {:.4f}ms Lightnum vstack: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy vstack: {:.4f}ms Lightnum vstack: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_nonzero():
   np_s = time.time()
@@ -572,7 +572,7 @@ def test_timing_nonzero():
   lp_s = time.time()
   for _ in range(100000): lp.nonzero([[1,2,3,0],[5,6,7,8]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy nonzero: {:.4f}ms Lightnum nonzero: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy nonzero: {:.4f}ms Lightnum nonzero: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_squeeze():
   np_s = time.time()
@@ -581,7 +581,7 @@ def test_timing_squeeze():
   lp_s = time.time()
   for _ in range(100000): lp.squeeze([[[0, 1, 2], [3, 4, 5], [6, 7, 8]]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy squeeze: {:.4f}ms Lightnum squeeze: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy squeeze: {:.4f}ms Lightnum squeeze: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_clip():
   np_s = time.time()
@@ -590,7 +590,7 @@ def test_timing_clip():
   lp_s = time.time()
   for _ in range(100000): lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy clip: {:.4f}ms Lightnum clip: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy clip: {:.4f}ms Lightnum clip: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_unique():
   np_s = time.time()
@@ -599,7 +599,7 @@ def test_timing_unique():
   lp_s = time.time()
   for _ in range(100000): lp.unique([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy unique: {:.4f}ms Lightnum unique: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy unique: {:.4f}ms Lightnum unique: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_triu():
   np_s = time.time()
@@ -608,7 +608,7 @@ def test_timing_triu():
   lp_s = time.time()
   for _ in range(100000): lp.triu([[1,2,3],[1,2,3],[1,2,3]], 1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy triu: {:.4f}ms Lightnum triu: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy triu: {:.4f}ms Lightnum triu: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_meshgrid():
   np_s = time.time()
@@ -617,7 +617,7 @@ def test_timing_meshgrid():
   lp_s = time.time()
   for _ in range(100000): lpx,lpy=lp.meshgrid([1,2,3], [4,5,6])
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy meshgrid: {:.4f}ms Lightnum meshgrid: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy meshgrid: {:.4f}ms Lightnum meshgrid: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_newaxis():
   np_s = time.time()
@@ -626,7 +626,7 @@ def test_timing_newaxis():
   lp_s = time.time()
   for _ in range(100000): lp.newaxis([[1,2,3],[1,2,3]], 1)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy newaxis: {:.4f}ms Lightnum newaxis: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy newaxis: {:.4f}ms Lightnum newaxis: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_frombuffer():
   np_s = time.time()
@@ -635,7 +635,7 @@ def test_timing_frombuffer():
   lp_s = time.time()
   for _ in range(100000): lp.frombuffer(b'smurfd', lp.uint8)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy frombuffer: {:.4f}ms Lightnum frombuffer: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy frombuffer: {:.4f}ms Lightnum frombuffer: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 def test_timing_promote_types():
   np_s = time.time()
@@ -644,7 +644,7 @@ def test_timing_promote_types():
   lp_s = time.time()
   for _ in range(100000): lp.promote_types(lp.uint8, lp.uint32)
   lp_t = (time.time() - lp_s) * 1000
-  print('Numpy promote_types: {:.4f}ms Lightnum promote_types: {:.4f}ms'.format(np_t, lp_t))
+  print('[{}] Numpy promote_types: {:.4f}ms Lightnum promote_types: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
 if __name__ == '__main__':
   test_timing_mod()
@@ -743,4 +743,148 @@ Numpy sqrt: 95.0959ms Lightnum sqrt: 80.1196ms
 Numpy asseq: 1933.2290ms Lightnum asseq: 197.1989ms
 Numpy where: 188.3349ms Lightnum where: 176.9741ms
 Numpy max: 388.0529ms Lightnum max: 412.5881ms
+"""
+
+"""
+# 3.8.18
+[False] Numpy mod: 155.8857ms Lightnum mod: 174.8359ms
+[False] Numpy sqrt: 75.2032ms Lightnum sqrt: 122.9270ms
+[True] Numpy asseq: 2711.1790ms Lightnum asseq: 268.5161ms
+[False] Numpy where: 203.7611ms Lightnum where: 238.7490ms
+[False] Numpy max: 398.2902ms Lightnum max: 608.9921ms
+[False] Numpy zeros: 11.5957ms Lightnum zeros: 132.7372ms
+[False] Numpy zeros: 14.7903ms Lightnum zeros: 131.9587ms
+[False] Numpy ones: 68.6829ms Lightnum ones: 184.5911ms
+[False] Numpy ones: 72.8891ms Lightnum ones: 184.3662ms
+[True] Numpy zeros_like: 143.8820ms Lightnum zeros_like: 78.6710ms
+[True] Numpy zeros_like: 173.2199ms Lightnum zeros_like: 125.7820ms
+[True] Numpy ones_like: 136.7123ms Lightnum ones_like: 76.9947ms
+[True] Numpy ones_like: 142.9889ms Lightnum ones_like: 78.4171ms
+[True] Numpy ones_like: 166.8339ms Lightnum ones_like: 124.7420ms
+[True] Numpy array: 20.2610ms Lightnum array: 15.9488ms
+[False] Numpy exp: 67.5669ms Lightnum exp: 84.0149ms
+[False] Numpy exp2: 66.3183ms Lightnum exp2: 94.5609ms
+[False] Numpy log: 74.3680ms Lightnum log: 125.8922ms
+[False] Numpy log_array: 122.2351ms Lightnum log_array: 213.9490ms
+[True] Numpy sum: 178.8290ms Lightnum sum: 67.8730ms
+[True] Numpy sumf: 176.9071ms Lightnum sumf: 69.6490ms
+[False] Numpy min: 395.7818ms Lightnum min: 587.7318ms
+[False] Numpy maximum: 160.9232ms Lightnum maximum: 392.0009ms
+[False] Numpy minimum: 161.1228ms Lightnum minimum: 389.6880ms
+[False] Numpy full: 64.5809ms Lightnum full: 121.9273ms
+[False] Numpy full_tuple: 71.6619ms Lightnum full_tuple: 1416.4591ms
+[False] Numpy modf: 104.3429ms Lightnum modf: 157.3431ms
+[False] Numpy mod_array: 162.1730ms Lightnum mod_array: 286.3388ms
+[False] Numpy cos: 74.9910ms Lightnum cos: 124.7740ms
+[False] Numpy arctan2: 136.2109ms Lightnum arctan2: 158.7331ms
+[True] Numpy amax: 182.0769ms Lightnum amax: 110.5902ms
+[False] Numpy amax_array: 238.9190ms Lightnum amax_array: 270.8321ms
+[True] Numpy isin: 1448.6721ms Lightnum isin: 232.7952ms
+[False] Numpy ceil: 67.1961ms Lightnum ceil: 139.2441ms
+[True] Numpy reshape: 123.6389ms Lightnum reshape: 118.6888ms
+[False] Numpy reshape_flat: 142.0639ms Lightnum reshape_flat: 181.1271ms
+[False] Numpy reshape_flat_array: 201.5591ms Lightnum reshape_flat_array: 419.7972ms
+[False] Numpy count_nonzero: 75.6023ms Lightnum count_nonzero: 129.8649ms
+[False] Numpy count_nonzero2: 76.4189ms Lightnum count_nonzero2: 126.7478ms
+[True] Numpy allclose: 1090.0052ms Lightnum allclose: 270.7860ms
+[True] Numpy allclose2: 1087.0240ms Lightnum allclose2: 263.4990ms
+[False] Numpy cbrt: 74.1611ms Lightnum cbrt: 153.7218ms
+[False] Numpy copy: 75.4828ms Lightnum copy: 279.3353ms
+[True] Numpy median: 634.4740ms Lightnum median: 147.6188ms
+[False] Numpy arange: 21.3697ms Lightnum arange: 72.3603ms
+[True] Numpy flip: 70.5721ms Lightnum flip: 70.3030ms
+[True] Numpy split: 404.5238ms Lightnum split: 355.6170ms
+[True] Numpy tile: 200.9149ms Lightnum tile: 143.1491ms
+[True] Numpy concatenate: 87.3339ms Lightnum concatenate: 47.1241ms
+[False] Numpy cumsum: 187.2370ms Lightnum cumsum: 346.4518ms
+[False] Numpy matmul: 174.7730ms Lightnum matmul: 505.2211ms
+[True] Numpy broadcast_to: 186.4452ms Lightnum broadcast_to: 36.0210ms
+[False] Numpy outer: 225.1151ms Lightnum outer: 557.7450ms
+[False] Numpy eye: 62.8102ms Lightnum eye: 143.0268ms
+[False] Numpy expand_dims: 178.6220ms Lightnum expand_dims: 206.5001ms
+[False] Numpy argmax: 172.5972ms Lightnum argmax: 207.4831ms
+[True] Numpy argmax_axis: 174.9299ms Lightnum argmax_axis: 79.0169ms
+[True] Numpy transpose: 125.0939ms Lightnum transpose: 89.0000ms
+[True] Numpy stack: 251.9240ms Lightnum stack: 27.1690ms
+[True] Numpy vstack: 231.4010ms Lightnum vstack: 26.2380ms
+[False] Numpy nonzero: 140.1560ms Lightnum nonzero: 255.1160ms
+[True] Numpy squeeze: 159.6859ms Lightnum squeeze: 50.1072ms
+[True] Numpy clip: 519.7151ms Lightnum clip: 163.7456ms
+[False] Numpy unique: 295.4640ms Lightnum unique: 355.2420ms
+[True] Numpy triu: 359.9141ms Lightnum triu: 118.8838ms
+[True] Numpy meshgrid: 759.0890ms Lightnum meshgrid: 548.7521ms
+[True] Numpy newaxis: 58.3360ms Lightnum newaxis: 36.3681ms
+[False] Numpy frombuffer: 18.1580ms Lightnum frombuffer: 67.8012ms
+[False] Numpy promote_types: 300.0209ms Lightnum promote_types: 320.0409ms
+
+# 3.12.1
+[True] Numpy mod: 230.2213ms Lightnum mod: 117.5480ms
+[True] Numpy sqrt: 99.6008ms Lightnum sqrt: 79.3762ms
+[True] Numpy asseq: 2093.8570ms Lightnum asseq: 261.2739ms
+[True] Numpy where: 195.2121ms Lightnum where: 147.3529ms
+[False] Numpy max: 415.4010ms Lightnum max: 417.7480ms
+[False] Numpy zeros: 12.5320ms Lightnum zeros: 94.1300ms
+[False] Numpy zeros: 14.5099ms Lightnum zeros: 92.8979ms
+[False] Numpy ones: 55.3379ms Lightnum ones: 131.5689ms
+[False] Numpy ones: 59.1400ms Lightnum ones: 130.0311ms
+[True] Numpy zeros_like: 84.7259ms Lightnum zeros_like: 55.9411ms
+[True] Numpy zeros_like: 119.9322ms Lightnum zeros_like: 78.2499ms
+[True] Numpy ones_like: 78.3811ms Lightnum ones_like: 55.7160ms
+[True] Numpy ones_like: 85.7489ms Lightnum ones_like: 56.5860ms
+[True] Numpy ones_like: 114.6021ms Lightnum ones_like: 77.7071ms
+[True] Numpy array: 22.5039ms Lightnum array: 12.8210ms
+[True] Numpy exp: 95.2294ms Lightnum exp: 58.2647ms
+[True] Numpy exp2: 92.9151ms Lightnum exp2: 57.5550ms
+[True] Numpy log: 102.6580ms Lightnum log: 76.8449ms
+[True] Numpy log_array: 151.5102ms Lightnum log_array: 126.3611ms
+[True] Numpy sum: 178.2589ms Lightnum sum: 48.4722ms
+[True] Numpy sumf: 176.3730ms Lightnum sumf: 50.2343ms
+[True] Numpy min: 417.0964ms Lightnum min: 413.1720ms
+[False] Numpy maximum: 222.5649ms Lightnum maximum: 387.3870ms
+[False] Numpy minimum: 223.8660ms Lightnum minimum: 383.6250ms
+[False] Numpy full: 50.2028ms Lightnum full: 90.4551ms
+[False] Numpy full_tuple: 58.1613ms Lightnum full_tuple: 1038.3990ms
+[True] Numpy modf: 156.8971ms Lightnum modf: 118.4969ms
+[True] Numpy mod_array: 224.3230ms Lightnum mod_array: 221.9081ms
+[True] Numpy cos: 102.2608ms Lightnum cos: 83.1761ms
+[True] Numpy arctan2: 187.4959ms Lightnum arctan2: 121.6571ms
+[True] Numpy amax: 184.9649ms Lightnum amax: 78.3322ms
+[True] Numpy amax_array: 243.3131ms Lightnum amax_array: 195.4248ms
+[True] Numpy isin: 1197.6879ms Lightnum isin: 215.4741ms
+[False] Numpy ceil: 91.9199ms Lightnum ceil: 92.8550ms
+[True] Numpy reshape: 126.0517ms Lightnum reshape: 67.0180ms
+[True] Numpy reshape_flat: 147.4030ms Lightnum reshape_flat: 122.9577ms
+[False] Numpy reshape_flat_array: 210.7940ms Lightnum reshape_flat_array: 286.7851ms
+[False] Numpy count_nonzero: 64.5962ms Lightnum count_nonzero: 87.5258ms
+[False] Numpy count_nonzero2: 64.8041ms Lightnum count_nonzero2: 87.6050ms
+[True] Numpy allclose: 908.7381ms Lightnum allclose: 236.7270ms
+[True] Numpy allclose2: 903.8949ms Lightnum allclose2: 218.8370ms
+[False] Numpy cbrt: 100.7290ms Lightnum cbrt: 119.3018ms
+[False] Numpy copy: 69.2298ms Lightnum copy: 165.5350ms
+[True] Numpy median: 502.7359ms Lightnum median: 91.7559ms
+[False] Numpy arange: 24.3723ms Lightnum arange: 38.4157ms
+[True] Numpy flip: 55.5589ms Lightnum flip: 53.7741ms
+[True] Numpy split: 327.6112ms Lightnum split: 206.4090ms
+[True] Numpy tile: 201.6542ms Lightnum tile: 92.9940ms
+[True] Numpy concatenate: 82.5069ms Lightnum concatenate: 26.5820ms
+[False] Numpy cumsum: 200.4020ms Lightnum cumsum: 242.6240ms
+[False] Numpy matmul: 232.4910ms Lightnum matmul: 348.3641ms
+[True] Numpy broadcast_to: 167.0630ms Lightnum broadcast_to: 16.8509ms
+[False] Numpy outer: 229.0981ms Lightnum outer: 350.9388ms
+[False] Numpy eye: 54.6749ms Lightnum eye: 62.5479ms
+[True] Numpy expand_dims: 131.4700ms Lightnum expand_dims: 89.9880ms
+[True] Numpy argmax: 178.2310ms Lightnum argmax: 141.2442ms
+[True] Numpy argmax_axis: 174.0441ms Lightnum argmax_axis: 52.5651ms
+[True] Numpy transpose: 131.6271ms Lightnum transpose: 43.7429ms
+[True] Numpy stack: 181.1671ms Lightnum stack: 17.2031ms
+[True] Numpy vstack: 169.5602ms Lightnum vstack: 17.0498ms
+[True] Numpy nonzero: 149.4930ms Lightnum nonzero: 140.5139ms
+[True] Numpy squeeze: 178.1471ms Lightnum squeeze: 27.9961ms
+[True] Numpy clip: 233.2160ms Lightnum clip: 78.1019ms
+[True] Numpy unique: 282.9480ms Lightnum unique: 247.2942ms
+[True] Numpy triu: 314.7509ms Lightnum triu: 59.4840ms
+[True] Numpy meshgrid: 701.7579ms Lightnum meshgrid: 399.4441ms
+[True] Numpy newaxis: 63.7310ms Lightnum newaxis: 29.3360ms
+[False] Numpy frombuffer: 22.1970ms Lightnum frombuffer: 36.0579ms
+[False] Numpy promote_types: 299.9942ms Lightnum promote_types: 300.9729ms
 """
