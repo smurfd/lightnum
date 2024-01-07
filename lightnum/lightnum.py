@@ -117,6 +117,19 @@ def meshgrid(x, y, indexing='xy'):
   else: pass
   return retx, rety
 
+def load(f):
+  if not helper.read_magic(f): print("no magic")
+  d1, d2 = helper.read_header(f, helper.read_header_type(f))
+  return helper.read_body(f, (d1[0])*8)
+
+def save(f, x):
+  hdr = "{{\'descr\': \'<i8\', \'fortran_order\': False, \'shape\': ({},), }}".format(len(x))
+  helper.write_magic(f)
+  helper.write_header_type(f, (1, 0))
+  helper.write_header_len(f, (1, 0), hdr.ljust(118))
+  helper.write_header(f, (1, 0), hdr.ljust(118))
+  helper.write_body(f, x)
+
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
 
@@ -131,5 +144,3 @@ def moveaxis(): pass
 def rollaxis(): pass
 def argsort(): pass
 def delete(): pass
-def save(): pass
-def load(): pass

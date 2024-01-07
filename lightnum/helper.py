@@ -3,9 +3,17 @@ from lightnum.array import ndarray, array
 import copy as cp
 import builtins
 import ctypes
+import struct
 import math
+import ast
 
 class helper():
+  MAGIC_PREFIX = b'\x93NUMPY'
+  _header_size_info = {
+    (1, 0): ('<H', 'latin1'),
+    (2, 0): ('<I', 'latin1'),
+    (3, 0): ('<I', 'utf8'),
+  }
   def typ(x, dtype=int32): return dtype(x).value if not isinstance(x, int) else x
   def sum(x, y): return x + y
   def mod(x, y): return x % y
@@ -215,3 +223,20 @@ class helper():
       if shape == -1: ret.extend(row)
       else: ret.append(row); row=[]
     return ret
+
+  def read_magic(f): return f.read(len(helper.MAGIC_PREFIX)) == helper.MAGIC_PREFIX
+  def read_header_type(f): return int.from_bytes(f.read(1), "big"), int.from_bytes(f.read(1), "big")
+  def read_header_pack(t): return helper._header_size_info.get(t)[0]
+  def read_header_enc(t): return helper._header_size_info.get(t)[1]
+  def read_header_len(f, p): return struct.unpack(helper.read_header_pack(p), f.read(2))[0]
+  def read_header(f, t):
+    h = f.read(helper.read_header_len(f, t)).decode(helper.read_header_enc(t))
+    return ast.literal_eval(h)['shape'], ast.literal_eval(h)['descr']
+  def read_body(f, l): return [int.from_bytes(f.read(8), "little") for _ in range(0, l, 8)]
+
+  def write_magic(f): f.write(helper.MAGIC_PREFIX)
+  def write_header_type(f, t): f.write(t[0].to_bytes(1, byteorder ='big')); f.write(t[1].to_bytes(1, byteorder ='big'))
+  def write_header_len(f, p, header): f.write(struct.pack('<H', len(header)))
+  def write_header(f, t, header): f.write(header.encode())
+  def write_body(f, x):
+    for i in x: f.write(i.to_bytes(8,'little'))

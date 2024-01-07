@@ -87,6 +87,29 @@ def test_assert_equal():
   lp.testing.assert_equal([[1, 2, 3, 4], [5, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]])
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
+def test_save_load():
+  x = [1,2,3,4,5,6,7,8,9]
+  y = [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111]
+  with open('testlp.npy', 'wb') as f:
+    lp.save(f, x)
+    lp.save(f, y)
+
+  with open('testlp.npy', 'rb') as f:
+    lpx = lp.load(f)
+    lpy = lp.load(f)
+
+  with open('testnp.npy', 'wb') as f:
+    np.save(f, x)
+    np.save(f, y)
+
+  with open('testnp.npy', 'rb') as f:
+    npx = lp.load(f)
+    npy = lp.load(f)
+
+  lp.testing.assert_equal(lpx, npx)
+  lp.testing.assert_equal(lpy, npy)
+  lp.testing.assert_equal(lpx, x)
+  lp.testing.assert_equal(lpy, y)
 
 if __name__ == '__main__':
   print("OK!")
