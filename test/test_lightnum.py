@@ -118,6 +118,8 @@ def test_load_z():
   npz = np.load('/tmp/testnp.npz')
   lp.testing.assert_equal(lpz['name1'], npz['name1'].tolist())
   lp.testing.assert_equal(lpz['name2'], npz['name2'].tolist())
+def test_delete():
+  lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
 
 if __name__ == '__main__':
   print("OK!")

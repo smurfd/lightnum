@@ -138,10 +138,7 @@ def load(f):
     if not helper.read_magic(f): print("no magic")
     d1, d2 = helper.read_header(f, helper.read_header_type(f))
     if len(d1) == 1: ret = helper.read_body(f, (d1[0])*8)
-    else:
-      x1=[]
-      for i in range(d1[0]): x1.append(helper.read_body(f, (d1[len(d1)-1])*8))
-      ret.extend(x1)
+    else: ret.extend([helper.read_body(f, (d1[len(d1)-1])*8) for _ in range(d1[0])])
   return ret
 
 def save(f, x):
@@ -151,6 +148,13 @@ def save(f, x):
   helper.write_header_len(f, (1, 0), hdr.ljust(118))
   helper.write_header(f, (1, 0), hdr.ljust(118))
   helper.write_body(f, x)
+
+def delete(x, y, axis=None): # kindof
+  if isinstance(y, int):
+    if axis is None:
+      z = reshape(x, -1)
+      return z[:y] + z[y + 1:]
+    return x[:y] + x[y + 1:]
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
@@ -165,4 +169,3 @@ def require(): pass
 def moveaxis(): pass
 def rollaxis(): pass
 def argsort(): pass
-def delete(): pass
