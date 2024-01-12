@@ -8,6 +8,7 @@ import array as arr
 import copy as cp
 import builtins
 import math
+import os
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
 
@@ -118,9 +119,30 @@ def meshgrid(x, y, indexing='xy'):
   return retx, rety
 
 def load(f):
-  if not helper.read_magic(f): print("no magic")
-  d1, d2 = helper.read_header(f, helper.read_header_type(f))
-  return helper.read_body(f, (d1[0])*8)
+  ret = []
+  if isinstance(f, str) and f.endswith('npz'):
+    from zipfile import ZipFile
+    with open(f, 'rb') as ff:
+      with ZipFile(ff) as myzipfile:
+        rett = []
+        for x in myzipfile.filelist:
+          foofile = myzipfile.open(x.filename)
+          ret = load(foofile)
+          s = (os.path.splitext(x.filename)[0], ret)
+          rett.append((s[0], s[1]))
+        return dict(rett)
+  elif isinstance(f, str):
+    with open(f, 'rb') as ff:
+      ret.append(load(ff))
+  else:
+    if not helper.read_magic(f): print("no magic")
+    d1, d2 = helper.read_header(f, helper.read_header_type(f))
+    if len(d1) == 1: ret = helper.read_body(f, (d1[0])*8)
+    else:
+      x1=[]
+      for i in range(d1[0]): x1.append(helper.read_body(f, (d1[len(d1)-1])*8))
+      ret.extend(x1)
+  return ret
 
 def save(f, x):
   hdr = "{{\'descr\': \'<i8\', \'fortran_order\': False, \'shape\': ({},), }}".format(len(x))

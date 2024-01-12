@@ -110,6 +110,14 @@ def test_save_load():
   lp.testing.assert_equal(lpy, npy)
   lp.testing.assert_equal(lpx, x)
   lp.testing.assert_equal(lpy, y)
+def test_load_z():
+  arr1 = np.arange(8).reshape(2, 4).tolist()
+  arr2 = np.arange(10).reshape(2, 5).tolist()
+  np.savez('/tmp/testnp.npz', name1=arr1, name2=arr2)
+  lpz = lp.load('/tmp/testnp.npz')
+  npz = np.load('/tmp/testnp.npz')
+  lp.testing.assert_equal(lpz['name1'], npz['name1'].tolist())
+  lp.testing.assert_equal(lpz['name2'], npz['name2'].tolist())
 
 if __name__ == '__main__':
   print("OK!")
