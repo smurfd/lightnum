@@ -124,18 +124,12 @@ def load(f):
     from zipfile import ZipFile
     with open(f, 'rb') as ff:
       with ZipFile(ff) as myzipfile:
-        rett = []
-        for x in myzipfile.filelist:
-          foofile = myzipfile.open(x.filename)
-          ret = load(foofile)
-          s = (os.path.splitext(x.filename)[0], ret)
-          rett.append((s[0], s[1]))
-        return dict(rett)
+        for x in myzipfile.filelist: ret.append((os.path.splitext(x.filename)[0], load(myzipfile.open(x.filename))))
+        return dict(ret)
   elif isinstance(f, str):
-    with open(f, 'rb') as ff:
-      ret.append(load(ff))
+    with open(f, 'rb') as ff: ret.append(load(ff))
   else:
-    if not helper.read_magic(f): print("no magic")
+    if not helper.read_magic(f): raise TypeError("Not a magic file")
     d1, d2 = helper.read_header(f, helper.read_header_type(f))
     if len(d1) == 1: ret = helper.read_body(f, (d1[0])*8)
     else: ret.extend([helper.read_body(f, (d1[len(d1)-1])*8) for _ in range(d1[0])])
@@ -155,6 +149,46 @@ def delete(x, y, axis=None): # kindof
       z = reshape(x, -1)
       return z[:y] + z[y + 1:]
     return x[:y] + x[y + 1:]
+def helper_pad(x, y, mode='constant', **kwargs):
+  pass
+def pad(x, y, mode='constant', **kwargs):
+  ret = []
+  if mode == 'constant':
+    ret.extend(kwargs['constant_values'][0] for i in range(y[0] if isinstance(y, tuple) else y))
+    ret.extend(x[i] for i in range(len(x)))
+    ret.extend(kwargs['constant_values'][1] for i in range(y[1] if isinstance(y, tuple) else y))
+  elif mode == 'edge':
+    ret.extend(x[0] for i in range(y[0] if isinstance(y, tuple) else y))
+    ret.extend(x[i] for i in range(len(x)))
+    ret.extend(x[len(x)-1]for i in range(y[1] if isinstance(y, tuple) else y))
+  elif mode == 'linear_ramp':
+    l1 = y[0] if isinstance(y, tuple) else y
+    l2 = y[1] if isinstance(y, tuple) else y
+    step=int(kwargs['end_values'][0] / l1)
+    start=x[0] if x[0] > kwargs['end_values'][0] else kwargs['end_values'][0]
+    end=kwargs['end_values'][0] if kwargs['end_values'][0] < x[0] else x[0]
+    if start > end: step = -1*step
+    print("x0", x[0], kwargs['end_values'][0], "step", int(kwargs['end_values'][0] / l1))
+    print("s", start, end, step)
+    ret.extend(i for i in range(start, end, step))
+    ret.extend(x[i] for i in range(len(x)))
+    step=int((x[len(x)-1]-kwargs['end_values'][1]) / l2)
+    start=x[len(x)-1] if x[len(x)-1] > kwargs['end_values'][1] else kwargs['end_values'][1]
+    end=kwargs['end_values'][1]
+    start = (start-step)
+    if start > end: step = -1*step
+    md = list(range(start, end, step))
+    md1 = (md[len(md)-1]-end) if md[len(md)-1] > end else (end-md[len(md)-1])
+    ret.extend(i for i in range(start-md1, end-md1, step))
+  elif mode == 'maximum': pass
+  elif mode == 'mean': pass
+  elif mode == 'median': pass
+  elif mode == 'minimum': pass
+  elif mode == 'reflect': pass
+  elif mode == 'symmetric': pass
+  elif mode == 'wrap': pass
+  elif mode == 'empty': pass
+  return ret
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
@@ -163,7 +197,6 @@ class lib:
   class stride_tricks:
     def as_strided(self): pass
 
-def pad(): pass
 def memmap(): pass
 def require(): pass
 def moveaxis(): pass

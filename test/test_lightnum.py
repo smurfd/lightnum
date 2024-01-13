@@ -122,4 +122,11 @@ def test_delete():
   lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
 
 if __name__ == '__main__':
+  a = [1, 2, 3, 4, 5]
+  print(lp.pad(a, 2, 'constant', constant_values=(4, 6)))
+  print(lp.pad(a, 2, 'edge'))
+  print(lp.pad(a, 2, 'linear_ramp', end_values=(5, -11)))
+  print(lp.pad(a, 2, 'linear_ramp', end_values=(5, -4)))
+
+
   print("OK!")
