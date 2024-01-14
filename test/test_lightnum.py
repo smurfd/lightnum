@@ -118,15 +118,12 @@ def test_load_z():
   npz = np.load('/tmp/testnp.npz')
   lp.testing.assert_equal(lpz['name1'], npz['name1'].tolist())
   lp.testing.assert_equal(lpz['name2'], npz['name2'].tolist())
-def test_delete():
-  lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
+def test_delete(): lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
+def test_pad():
+  a = [1, 2, 3, 4, 5]
+  lp.testing.assert_equal(lp.pad(a, 2, 'constant', constant_values=(4, 6)), np.pad(a, 2, 'constant', constant_values=(4, 6)))
+  lp.testing.assert_equal(lp.pad(a, 2, 'edge'), np.pad(a, 2, 'edge'))
+  lp.testing.assert_equal(lp.pad(a, 2, 'linear_ramp', end_values=(5, -4)), np.pad(a, 2, 'linear_ramp', end_values=(5, -4)))
 
 if __name__ == '__main__':
-  a = [1, 2, 3, 4, 5]
-  print(lp.pad(a, 2, 'constant', constant_values=(4, 6)))
-  print(lp.pad(a, 2, 'edge'))
-  print(lp.pad(a, 2, 'linear_ramp', end_values=(5, -11)))
-  print(lp.pad(a, 2, 'linear_ramp', end_values=(5, -4)))
-
-
   print("OK!")
