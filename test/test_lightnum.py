@@ -73,6 +73,17 @@ def test_meshgrid(): lpx,lpy=lp.meshgrid([1,2,3], [4,5,6]); npx,npy=np.meshgrid(
 def test_newaxis(): x = np.array([[1,2,3],[1,2,3]]);lp.testing.assert_equal(lp.newaxis([[1,2,3],[1,2,3]], 1), x[np.newaxis, :].tolist())
 def test_frombuffer(): lp.testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
 def test_promote_types(): assert(str(lp.promote_types(lp.uint8, lp.uint32)) == np.promote_types(np.uint8, np.uint32))
+def test_delete(): lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
+def test_pad_constant(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'constant', constant_values=(4, 6)), np.pad([1, 2, 3, 4, 5], 2, 'constant', constant_values=(4, 6)))
+def test_pad_edge(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'edge'), np.pad([1, 2, 3, 4, 5], 2, 'edge'))
+def test_pad_linear_ramp(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'linear_ramp', end_values=(5, -4)), np.pad([1, 2, 3, 4, 5], 2, 'linear_ramp', end_values=(5, -4)))
+def test_pad_maximum(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'maximum'), np.pad([1, 2, 3, 4, 5], 2, 'maximum'))
+def test_pad_mean(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'mean'), np.pad([1, 2, 3, 4, 5], 2, 'mean'))
+def test_pad_median(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'median'), np.pad([1, 2, 3, 4, 5], 2, 'median'))
+def test_pad_minimum(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'minimum'), np.pad([1, 2, 3, 4, 5], 2, 'minimum'))
+def test_pad_reflect(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'reflect'), np.pad([1, 2, 3, 4, 5], 2, 'reflect').tolist())
+def test_pad_symmetric(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'symmetric'), np.pad([1, 2, 3, 4, 5], 2, 'symmetric'))
+def test_pad_wrap(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'wrap'), np.pad([1, 2, 3, 4, 5], 2, 'wrap'))
 def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.int32); lp.random.randn((2,4), dtype=lp.int32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6, dtype=lp.int32), np.empty(6, dtype=np.int32))
@@ -88,42 +99,19 @@ def test_assert_equal():
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
 def test_save_load():
-  x = [1,2,3,4,5,6,7,8,9]
-  y = [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111]
-  with open('/tmp/testlp.npy', 'wb') as f:
-    lp.save(f, x)
-    lp.save(f, y)
-
-  with open('/tmp/testlp.npy', 'rb') as f:
-    lpx = lp.load(f)
-    lpy = lp.load(f)
-
-  with open('/tmp/testnp.npy', 'wb') as f:
-    np.save(f, x)
-    np.save(f, y)
-
-  with open('/tmp/testnp.npy', 'rb') as f:
-    npx = lp.load(f)
-    npy = lp.load(f)
-
+  with open('/tmp/testlp.npy', 'wb') as f: lp.save(f, [1,2,3,4,5,6,7,8,9]); lp.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
+  with open('/tmp/testlp.npy', 'rb') as f: lpx = lp.load(f); lpy = lp.load(f)
+  with open('/tmp/testnp.npy', 'wb') as f: np.save(f, [1,2,3,4,5,6,7,8,9]); np.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
+  with open('/tmp/testnp.npy', 'rb') as f: npx = np.load(f); npy = np.load(f)
   lp.testing.assert_equal(lpx, npx)
   lp.testing.assert_equal(lpy, npy)
-  lp.testing.assert_equal(lpx, x)
-  lp.testing.assert_equal(lpy, y)
+  lp.testing.assert_equal(lpx, [1,2,3,4,5,6,7,8,9])
+  lp.testing.assert_equal(lpy, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
 def test_load_z():
-  arr1 = np.arange(8).reshape(2, 4).tolist()
-  arr2 = np.arange(10).reshape(2, 5).tolist()
-  np.savez('/tmp/testnp.npz', name1=arr1, name2=arr2)
-  lpz = lp.load('/tmp/testnp.npz')
-  npz = np.load('/tmp/testnp.npz')
+  np.savez('/tmp/testnp.npz', name1=np.arange(8).reshape(2, 4).tolist(), name2=np.arange(10).reshape(2, 5).tolist())
+  lpz = lp.load('/tmp/testnp.npz'); npz = np.load('/tmp/testnp.npz')
   lp.testing.assert_equal(lpz['name1'], npz['name1'].tolist())
   lp.testing.assert_equal(lpz['name2'], npz['name2'].tolist())
-def test_delete(): lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
-def test_pad():
-  a = [1, 2, 3, 4, 5]
-  lp.testing.assert_equal(lp.pad(a, 2, 'constant', constant_values=(4, 6)), np.pad(a, 2, 'constant', constant_values=(4, 6)))
-  lp.testing.assert_equal(lp.pad(a, 2, 'edge'), np.pad(a, 2, 'edge'))
-  lp.testing.assert_equal(lp.pad(a, 2, 'linear_ramp', end_values=(5, -4)), np.pad(a, 2, 'linear_ramp', end_values=(5, -4)))
 
 if __name__ == '__main__':
   print("OK!")

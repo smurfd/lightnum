@@ -150,84 +150,8 @@ def delete(x, y, axis=None): # kindof
       return z[:y] + z[y + 1:]
     return x[:y] + x[y + 1:]
 
-# BARF
-# TODO : refactor, needs to work on +3D arrays
-def pad(x, y, mode='constant', **kwargs):
-  ret = []
-  if mode == 'constant':
-    ret.extend(kwargs['constant_values'][0] for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(kwargs['constant_values'][1] for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'edge':
-    ret.extend(x[0] for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(x[len(x)-1] for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'linear_ramp':
-    l1 = y[0] if isinstance(y, tuple) else y
-    l2 = y[1] if isinstance(y, tuple) else y
-    step=int(kwargs['end_values'][0] / l1)
-    start=x[0] if x[0] > kwargs['end_values'][0] else kwargs['end_values'][0]
-    end=kwargs['end_values'][0] if kwargs['end_values'][0] < x[0] else x[0]
-    if start > end: step = -1*step
-    print("x0", x[0], kwargs['end_values'][0], "step", int(kwargs['end_values'][0] / l1))
-    print("s", start, end, step)
-    ret.extend(i for i in range(start, end, step))
-    ret.extend(x[i] for i in range(len(x)))
-    step=int((x[len(x)-1]-kwargs['end_values'][1]) / l2)
-    start=x[len(x)-1] if x[len(x)-1] > kwargs['end_values'][1] else kwargs['end_values'][1]
-    end=kwargs['end_values'][1]
-    start = (start-step)
-    if start > end: step = -1*step
-    md = list(range(start, end, step))
-    md1 = (md[len(md)-1]-end) if md[len(md)-1] > end else (end-md[len(md)-1])
-    ret.extend(i for i in range(start-md1, end-md1, step))
-  elif mode == 'maximum':
-    maxv = x[0]
-    for i in range(len(x)):
-      if maxv < x[i]: maxv = x[i]
-    ret.extend(maxv for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(maxv for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'mean':
-    meanv = 0
-    for i in range(len(x)): meanv += x[i]
-    meanv = int(meanv / len(x))
-    ret.extend(meanv for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(meanv for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'median':
-    if isinstance(len(x)/2, int): meadv = x[len(x)/2]
-    else:
-      m1 = x[int(len(x)/2)]
-      m2 = x[int(len(x)/2)-1]
-      meadv = (m1+m2) / 2
-    ret.extend(meadv for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(meadv for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'minimum':
-    minv = x[0]
-    for i in range(len(x)):
-      if minv > x[i]: minv = x[i]
-    ret.extend(minv for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(minv for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'reflect': # TODO reflect_type
-    ret.extend(x[(y[0] if isinstance(y, tuple) else y)-i] for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(x[(y[1] if isinstance(y, tuple) else y)+i] for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'symmetric': # TODO reflect_type
-    ret.extend(x[(y[0] if isinstance(y, tuple) else y)+i+1] for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(x[(y[1] if isinstance(y, tuple) else y)-i-1] for i in range(y[1] if isinstance(y, tuple) else y))
-  elif mode == 'wrap':
-    ret.extend(x[len(x)-1-i] for i in range(y[1] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(x[i] for i in range(y[0] if isinstance(y, tuple) else y))
-  elif mode == 'empty':
-    ret.extend(None for i in range(y[0] if isinstance(y, tuple) else y))
-    ret.extend(x[i] for i in range(len(x)))
-    ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
-  return ret
+# TODO : needs to work on +3D arrays
+def pad(x, y, mode='constant', **kwargs): return helper.looper_pad(x, y, mode, **kwargs)
 
 class ctypeslib: # kindof
   def as_array(x, shape): return arr.array('i', x)
