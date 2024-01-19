@@ -77,6 +77,8 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 def frombuffer(buf, dtype=int32): return helper.looper_frombuffer(buf, dtype)
+def sin(x, dtype=float64): return helper.looper_sin(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sin(x, dtype=dtype), dtype=dtype)
+def reciprocal(x, dtype=float64): return helper.looper_reciprocal(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_reciprocal(x, dtype=dtype), dtype=dtype)
 def triu(x, l=0):
   l = l - 1
   if isinstance(x[0], list):

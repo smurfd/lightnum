@@ -58,6 +58,8 @@ class helper():
   def looper_broadcast_to(x, y): return x if len(y) == 1 else [x for i in range(y[0])]
   def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
   def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
+  def looper_sin(x, dtype=float64): return math.sin(x) if not isinstance(x, list) else [helper.looper_sin(i) for i in x]
+  def looper_reciprocal(x, dtype=float64): return 1/(x) if not isinstance(x, list) else [helper.looper_reciprocal(i) for i in x]
   def looper_nonzero(x):
     ret1, ret2 = [], []
     if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)]
