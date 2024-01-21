@@ -55,7 +55,7 @@ class ctstruct(ctypes.Structure):
 
 class dtype(ctstruct):
   _fields_: list = []
-  def __init__(self, dtype=ctypes.c_uint8): self._fields_ = [dtype, dtype]
+  def __init__(self, dtype=ctypes.c_uint8): self._fields_ = [dtype, dtype]; self.type = self._fields_[1]
   def __repr__(self): return repr(types[self._fields_[1]]).replace("'", "") if (self._fields_[1] and str(self._fields_[1]) not in types) else str(self._fields_[1])
   def __call__(self, x): return self._fields_[1]
   def value(self): return self._fields_[0] if not isinstance(tuple(self._fields_), tuple(cts)) else self._fields_[1]

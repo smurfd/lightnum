@@ -34,11 +34,14 @@ class helper():
     b = (not isinstance(x, list) and x != float(int(x)))
     return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
   def looper_log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
+  def looper_log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [helper.looper_log2(i) for i in x]
   def looper_exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
   def looper_exp2(x, dtype=float32): return helper.exp2(x) if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
   def looper_cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
   def looper_sum(x, dtype=float16): return builtins.sum(x) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
   def looper_mod(x, y, dtype=float32): return helper.mod(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
+  def looper_add(x, y, dtype=float32): return helper.sum(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_add(i, y=j) for i, j in zip(x, y)]
+  def looper_subtract(x, y, dtype=float32): return x - y if not isinstance(x, (list, tuple)) else [helper.looper_subtract(i, y=j) for i, j in zip(x, y)]
   def looper_prod(x, dtype=int32): return math.prod(x) if not isinstance(x, list) else [helper.looper_prod(i) for i in x]
   def looper_cos(x, dtype=float64): return math.cos(x) if not isinstance(x, list) else [helper.looper_cos(i) for i in x]
   def looper_ceil(x, dtype=float32): return math.ceil(x) if not isinstance(x, list) else [helper.looper_ceil(i) for i in x]
@@ -79,9 +82,9 @@ class helper():
     a = helper.reshape(x, -1)
     return [builtins.sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]
 
-  def looper_add(x, dtype=int32, ret=0):
+  def looper_median(x, dtype=int32, ret=0):
     for i in range(len(x)):
-      if isinstance(x[i], (list, tuple)): ret = helper.looper_add(x[i], ret)
+      if isinstance(x[i], (list, tuple)): ret = helper.looper_median(x[i], ret)
       else: ret += x[i]
     return ret
 

@@ -15,11 +15,14 @@ import os
 # math
 # if str(dtype) == types[dtype(x)] checks if the dtype of x is the same as the dtype argument, if not then cast it
 def log(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log(x, dtype=dtype), dtype=dtype)
+def log2(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log2(x, dtype=dtype), dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp(x, dtype=dtype), dtype=dtype)
 def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp2(x, dtype=dtype), dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cbrt(x, dtype=dtype), dtype=dtype)
 def sum(x, dtype=float16): return helper.looper_sum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sum(x, dtype=dtype), dtype=dtype)
 def mod(x, y, dtype=float32): return helper.looper_mod(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_mod(x, y=y, dtype=dtype), dtype=dtype)
+def add(x, y, dtype=float32): return helper.looper_add(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_add(x, y=y, dtype=dtype), dtype=dtype)
+def subtract(x, y, dtype=float32): return helper.looper_subtract(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_subtract(x, y=y, dtype=dtype), dtype=dtype)
 def prod(x, dtype=int32): return helper.looper_prod(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_prod(x, dtype=dtype), dtype=dtype)
 def cos(x, dtype=int32): return helper.looper_cos(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cos(x, dtype=dtype), dtype=dtype)
 def ceil(x, dtype=int32): return helper.looper_ceil(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_ceil(x, dtype=dtype), dtype=dtype)
@@ -35,7 +38,6 @@ def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill, dt
 def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=0, dtype=dtype), dtype=dtype)
 def ones(x, fill=1, dtype=float64): return zeros(x, fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(zeros(x, fill, dtype=dtype), dtype=dtype)
 def ones_like(x, fill=1, dtype=float32): return helper.looper_empty_like(x, fill=1, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=1, dtype=dtype), dtype=dtype)
-def arange(start, stop=0, step=1, dtype=int32): return helper.looper_arange(start, stop, step, dtype)
 def max(x): return helper.looper_max(x)
 def min(x): return helper.looper_min(x)
 def maximum(x, y): return helper.looper_maximum(x, y=y)
@@ -63,10 +65,12 @@ def clip(x, x_min, x_max): return helper.looper_clip(x, x_min, x_max)
 def unique(x): return helper.looper_unique(x)
 def vstack(x): return helper.looper_vstack(x)
 def nonzero(x): return helper.looper_nonzero(x)
+def less(x, y): return x < y
+def equal(x, y): return x == y
 def promote_types(x, y): return dtype(x) if dtype(x) <= dtype(y) else dtype(y)
 def median(x):
   r = []
-  for i in range(len(x)): r.append(helper.looper_add(x[i]) // len(x[i]))
+  for i in range(len(x)): r.append(helper.looper_median(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
 def concatenate(x): return helper.looper_concatenate(x)
 def copyto(x, y):
@@ -79,6 +83,11 @@ def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y 
 def frombuffer(buf, dtype=int32): return helper.looper_frombuffer(buf, dtype)
 def sin(x, dtype=float64): return helper.looper_sin(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sin(x, dtype=dtype), dtype=dtype)
 def reciprocal(x, dtype=float64): return helper.looper_reciprocal(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_reciprocal(x, dtype=dtype), dtype=dtype)
+class arange():
+  def __init__(self, start, stop=0, step=1, dtype=int32): self.ret = helper.looper_arange(start, stop, step, dtype)
+  def __call__(self): return self.ret
+  def reshape(self, s): return reshape(self.ret, s)
+  def tolist(self): return self.ret
 def triu(x, l=0):
   l = l - 1
   if isinstance(x[0], list):
