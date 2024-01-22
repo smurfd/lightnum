@@ -316,5 +316,4 @@ class helper():
   def write_header_type(f, t): f.write(t[0].to_bytes(1, byteorder ='big')); f.write(t[1].to_bytes(1, byteorder ='big'))
   def write_header_len(f, p, header): f.write(struct.pack('<H', len(header)))
   def write_header(f, t, header): f.write(header.encode())
-  def write_body(f, x):
-    for i in x: f.write(i.to_bytes(8,'little'))
+  def write_body(f, x): [f.write(i.to_bytes(8,'little')) for i in x]
