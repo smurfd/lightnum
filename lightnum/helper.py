@@ -238,9 +238,8 @@ class helper():
       end=kwargs['end_values'][1]
       start = (start-step)
       if start > end: step = -1*step
-      md = list(range(start, end, step))
-      md1 = (md[len(md)-1]-end) if md[len(md)-1] > end else (end-md[len(md)-1])
-      ret.extend(i for i in range(start-md1, end-md1, step))
+      md = (list(range(start, end, step))[len(list(range(start, end, step)))-1]-end) if list(range(start, end, step))[len(list(range(start, end, step)))-1] > end else (end-list(range(start, end, step))[len(list(range(start, end, step)))-1])
+      ret.extend(i for i in range(start - md, end - md, step))
     elif mode == 'maximum':
       maxv = x[0]
       for i in range(len(x)):

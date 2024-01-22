@@ -13,7 +13,6 @@ import os
 # TODO: add functionallity to functions with pass
 
 # math
-# if str(dtype) == types[dtype(x)] checks if the dtype of x is the same as the dtype argument, if not then cast it
 def log(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log(x, dtype=dtype), dtype=dtype)
 def log2(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log2(x, dtype=dtype), dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp(x, dtype=dtype), dtype=dtype)

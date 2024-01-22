@@ -22,6 +22,7 @@ class ndarray(array):
       else: self.x = [0 for a in range(len(x)) for b in range(len(x[a])) if a != b]
     else: self.x = [x[i] for i in range(len(x))]
   def __len__(self): return len(self.x)
-  def __truediv__(self, x): return [i // x for i in self.x]
+  def __truediv__(self, x): return [i / x for i in self.x]
+  def __floordiv__(self, x): return [i // x for i in self.x]
   #def __getitem__(self, itm): return ndarray(self.x.__getitem__(itm))
   def astype(self, x): return [0 for _ in range(self.x[0])] if len(self.x) == 1 else [x(self.x[i]).value for i in range(len(self.x))]
