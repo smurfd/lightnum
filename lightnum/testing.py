@@ -25,7 +25,6 @@ class testing:
     if miss != 0 and adiff != [] and rdiff != []:
       if not r: print("Mismatched elements: {} / {} ({}%)".format(miss, 1, round(miss / (1) * 100, 1)))
       else: print("Mismatched elements: {} / {} ({}%)".format(miss, len(r) // 3, round(miss / (len(r)//3) * 100, 1)))
-      print("Max absolute difference:", round(max(adiff), 10))
-      print("Max relative difference:", round(max(rdiff), 10))
+      print("Max absolute difference: {}\nMax relative difference: {}".format(round(max(adiff), 10), round(max(rdiff), 10)))
       raise AssertionError("Not equal to tolerance rtol={}, atol={}".format(rtol, atol))
     return True
