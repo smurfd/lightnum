@@ -9,15 +9,8 @@ import ast
 
 class helper():
   MAGIC_PREFIX = b'\x93NUMPY'
-  _header_size_info = {
-    (1, 0): ('<H', 'latin1'),
-    (2, 0): ('<I', 'latin1'),
-    (3, 0): ('<I', 'utf8'),
-  }
+  _header_size_info = {(1, 0): ('<H', 'latin1'), (2, 0): ('<I', 'latin1'), (3, 0): ('<I', 'utf8')}
   def typ(x, dtype=int32): return dtype(x).value if not isinstance(x, int) else x
-  def sum(x, y): return x + y
-  def mod(x, y): return x % y
-  def exp2(x): return 2 ** x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
   def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
@@ -36,17 +29,17 @@ class helper():
   def looper_log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
   def looper_log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [helper.looper_log2(i) for i in x]
   def looper_exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
-  def looper_exp2(x, dtype=float32): return helper.exp2(x) if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
+  def looper_exp2(x, dtype=float32): return 2 ** x if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
   def looper_cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
   def looper_sum(x, dtype=float16): return builtins.sum(x) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
-  def looper_mod(x, y, dtype=float32): return helper.mod(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
-  def looper_add(x, y, dtype=float32): return helper.sum(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_add(i, y=j) for i, j in zip(x, y)]
+  def looper_mod(x, y, dtype=float32): return (x%y) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
+  def looper_add(x, y, dtype=float32): return (x+y) if not isinstance(x, (list, tuple)) else [helper.looper_add(i, y=j) for i, j in zip(x, y)]
   def looper_subtract(x, y, dtype=float32): return x - y if not isinstance(x, (list, tuple)) else [helper.looper_subtract(i, y=j) for i, j in zip(x, y)]
   def looper_prod(x, dtype=int32): return math.prod(x) if not isinstance(x, list) else [helper.looper_prod(i) for i in x]
   def looper_cos(x, dtype=float64): return math.cos(x) if not isinstance(x, list) else [helper.looper_cos(i) for i in x]
   def looper_ceil(x, dtype=float32): return math.ceil(x) if not isinstance(x, list) else [helper.looper_ceil(i) for i in x]
   def looper_copy(x, dtype=float32): return cp.copy(x) if not isinstance(x, list) else [helper.looper_copy(i) for i in x]
-  def looper_where(condition, x, y, dtype=float32): return [xv if c else yv for c, xv, yv in zip(condition, x.tolist(), y)] if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
+  def looper_where(condition, x, y, dtype=float32): return [xv if c else yv for c, xv, yv in zip(condition, x, y)] if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
   def looper_sqrt(x, dtype=float32): return math.sqrt(x) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
   def looper_arctan2(x, y, dtype=float32): return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
   def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
@@ -216,14 +209,11 @@ class helper():
   # BARF
   def looper_pad(x, y, mode='constant', **kwargs):
     ret = []
+    app = [x[i] for i in range(len(x))]
     if mode == 'constant':
-      ret.extend(kwargs['constant_values'][0] for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(kwargs['constant_values'][1] for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(kwargs['constant_values'][0] for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(kwargs['constant_values'][1] for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'edge':
-      ret.extend(x[0] for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(x[len(x)-1] for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(x[0] for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(x[len(x)-1] for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'linear_ramp':
       l1 = y[0] if isinstance(y, tuple) else y
       l2 = y[1] if isinstance(y, tuple) else y
@@ -231,29 +221,24 @@ class helper():
       start=x[0] if x[0] > kwargs['end_values'][0] else kwargs['end_values'][0]
       end=kwargs['end_values'][0] if kwargs['end_values'][0] < x[0] else x[0]
       if start > end: step = -1*step
-      ret.extend(i for i in range(start, end, step))
-      ret.extend(x[i] for i in range(len(x)))
+      ret.extend(i for i in range(start, end, step)); ret.extend(app)
       step=int((x[len(x)-1]-kwargs['end_values'][1]) / l2)
       start=x[len(x)-1] if x[len(x)-1] > kwargs['end_values'][1] else kwargs['end_values'][1]
       end=kwargs['end_values'][1]
       start = (start-step)
-      if start > end: step = -1*step
+      if start > end: step = -1 * step
       md = (list(range(start, end, step))[len(list(range(start, end, step)))-1]-end) if list(range(start, end, step))[len(list(range(start, end, step)))-1] > end else (end-list(range(start, end, step))[len(list(range(start, end, step)))-1])
       ret.extend(i for i in range(start - md, end - md, step))
     elif mode == 'maximum':
       maxv = x[0]
       for i in range(len(x)):
         if maxv < x[i]: maxv = x[i]
-      ret.extend(maxv for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(maxv for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(maxv for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(maxv for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'mean':
       meanv = 0
       for i in range(len(x)): meanv += x[i]
       meanv = int(meanv / len(x))
-      ret.extend(meanv for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(meanv for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(meanv for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(meanv for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'median':
       if isinstance(len(x)/2, int): meadv = x[len(x)/2]
       else: meadv = int(math.ceil((x[int(len(x)/2)] + x[int(len(x)/2)-1]) / 2))
@@ -264,25 +249,15 @@ class helper():
       minv = x[0]
       for i in range(len(x)):
         if minv > x[i]: minv = x[i]
-      ret.extend(minv for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(minv for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(minv for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(minv for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'reflect': # TODO reflect_type
-      ret.extend(x[(y[0] if isinstance(y, tuple) else y)-i] for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(x[(y[1] if isinstance(y, tuple) else y)-i+1] for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(x[(y[0] if isinstance(y, tuple) else y)-i] for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(x[(y[1] if isinstance(y, tuple) else y)-i+1] for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'symmetric': # TODO reflect_type
-      ret.extend(x[(y[0] if isinstance(y, tuple) else y)-i-1] for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(x[len(x)-(y[1] if isinstance(y, tuple) else y)-i+1] for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(x[(y[0] if isinstance(y, tuple) else y)-i-1] for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(x[len(x)-(y[1] if isinstance(y, tuple) else y)-i+1] for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'wrap':
-      ret.extend(x[len(x)-i] for i in range(y[1] if isinstance(y, tuple) else y, 0, -1))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(x[i] for i in range(y[0] if isinstance(y, tuple) else y))
+      ret.extend(x[len(x)-i] for i in range(y[1] if isinstance(y, tuple) else y, 0, -1)); ret.extend(app); ret.extend(x[i] for i in range(y[0] if isinstance(y, tuple) else y))
     elif mode == 'empty':
-      ret.extend(None for i in range(y[0] if isinstance(y, tuple) else y))
-      ret.extend(x[i] for i in range(len(x)))
-      ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
+      ret.extend(None for i in range(y[0] if isinstance(y, tuple) else y)); ret.extend(app); ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
     return ret
 
   def reshape(col, shape):

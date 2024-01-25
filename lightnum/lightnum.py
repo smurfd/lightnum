@@ -14,7 +14,7 @@ import os
 
 # math
 def log(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log(x, dtype=dtype), dtype=dtype)
-def log2(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log2(x, dtype=dtype), dtype=dtype)
+def log2(x, dtype=float64): return helper.looper_log2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log2(x, dtype=dtype), dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp(x, dtype=dtype), dtype=dtype)
 def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp2(x, dtype=dtype), dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cbrt(x, dtype=dtype), dtype=dtype)
@@ -85,6 +85,7 @@ def reciprocal(x, dtype=float64): return helper.looper_reciprocal(x, dtype=dtype
 class arange():
   def __init__(self, start, stop=0, step=1, dtype=int32): self.ret = helper.looper_arange(start, stop, step, dtype)
   def __call__(self): return self.ret
+  def __mul__(self, x): return [i * x for i in self.x]
   def reshape(self, s): return reshape(self.ret, s)
   def tolist(self): return self.ret
 def triu(x, l=0):

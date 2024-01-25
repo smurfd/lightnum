@@ -43,7 +43,7 @@ def test_timing_where():
   np_s = time.time()
   for _ in range(100000): np.where(np.arange(10) < 5, np.arange(10), 10*np.arange(10))
   np_t = (time.time() - np_s) * 1000; lp_s = time.time()
-  for _ in range(100000): lp.where([True, True, True, True, True, False, False, False, False, False], lp.arange(10), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
+  for _ in range(100000): lp.where([True, True, True, True, True, False, False, False, False, False], lp.arange(10).tolist(), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
   lp_t = (time.time() - lp_s) * 1000
   print('[{}] Numpy where: {:.4f}ms Lightnum where: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
   # slower
@@ -646,6 +646,7 @@ def test_timing_promote_types():
   lp_t = (time.time() - lp_s) * 1000
   print('[{}] Numpy promote_types: {:.4f}ms Lightnum promote_types: {:.4f}ms'.format(np_t > lp_t, np_t, lp_t))
 
+
 if __name__ == '__main__':
   test_timing_mod()
   test_timing_sqrt()
@@ -887,4 +888,156 @@ Numpy max: 388.0529ms Lightnum max: 412.5881ms
 [True] Numpy newaxis: 63.7310ms Lightnum newaxis: 29.3360ms
 [False] Numpy frombuffer: 22.1970ms Lightnum frombuffer: 36.0579ms
 [False] Numpy promote_types: 299.9942ms Lightnum promote_types: 300.9729ms
+
+# 3.8 pre
+[False] Numpy mod: 147.2781ms Lightnum mod: 159.4989ms
+[False] Numpy sqrt: 72.5257ms Lightnum sqrt: 116.2860ms
+[True] Numpy asseq: 2680.2151ms Lightnum asseq: 267.5960ms
+[False] Numpy where: 195.6947ms Lightnum where: 303.8123ms
+[False] Numpy max: 390.9318ms Lightnum max: 604.8512ms
+[False] Numpy zeros: 11.5261ms Lightnum zeros: 131.2029ms
+[False] Numpy zeros: 14.1721ms Lightnum zeros: 131.5970ms
+[False] Numpy ones: 67.0598ms Lightnum ones: 181.0513ms
+[False] Numpy ones: 72.1509ms Lightnum ones: 181.9870ms
+[True] Numpy zeros_like: 145.4730ms Lightnum zeros_like: 76.8681ms
+[True] Numpy zeros_like: 178.3359ms Lightnum zeros_like: 123.8251ms
+[True] Numpy ones_like: 139.8020ms Lightnum ones_like: 77.5068ms
+[True] Numpy ones_like: 147.6448ms Lightnum ones_like: 78.8662ms
+[True] Numpy ones_like: 172.7190ms Lightnum ones_like: 124.0020ms
+[False] Numpy array: 20.3981ms Lightnum array: 53.1678ms
+[False] Numpy exp: 67.5001ms Lightnum exp: 85.7790ms
+[False] Numpy exp2: 66.5739ms Lightnum exp2: 99.5409ms
+[False] Numpy log: 75.2850ms Lightnum log: 127.7492ms
+[False] Numpy log_array: 119.1170ms Lightnum log_array: 216.9669ms
+Sum: 0.7937ms
+[True] Numpy sumf: 178.4530ms Lightnum sumf: 71.0390ms
+[False] Numpy min: 397.4752ms Lightnum min: 595.5269ms
+[False] Numpy maximum: 162.0259ms Lightnum maximum: 391.5682ms
+[False] Numpy minimum: 161.6659ms Lightnum minimum: 390.0521ms
+[False] Numpy full: 65.1281ms Lightnum full: 123.5578ms
+[False] Numpy full_tuple: 72.0301ms Lightnum full_tuple: 1407.9590ms
+[False] Numpy modf: 104.1100ms Lightnum modf: 159.0312ms
+[False] Numpy mod_array: 161.4001ms Lightnum mod_array: 289.3052ms
+[False] Numpy cos: 75.1290ms Lightnum cos: 124.6741ms
+[False] Numpy arctan2: 135.4840ms Lightnum arctan2: 157.8979ms
+[True] Numpy amax: 184.7906ms Lightnum amax: 111.4223ms
+[False] Numpy amax_array: 239.5473ms Lightnum amax_array: 272.3289ms
+[True] Numpy isin: 1444.6480ms Lightnum isin: 233.6414ms
+[False] Numpy ceil: 67.2441ms Lightnum ceil: 138.7720ms
+[True] Numpy reshape: 123.8439ms Lightnum reshape: 118.9532ms
+[False] Numpy reshape_flat: 139.3139ms Lightnum reshape_flat: 181.4661ms
+[False] Numpy reshape_flat_array: 198.4830ms Lightnum reshape_flat_array: 424.1359ms
+[False] Numpy count_nonzero: 75.3222ms Lightnum count_nonzero: 130.0602ms
+[False] Numpy count_nonzero2: 75.9900ms Lightnum count_nonzero2: 126.4172ms
+[True] Numpy allclose: 1092.8099ms Lightnum allclose: 269.4221ms
+[True] Numpy allclose2: 1085.5322ms Lightnum allclose2: 261.6110ms
+[False] Numpy cbrt: 74.8661ms Lightnum cbrt: 155.4909ms
+[False] Numpy copy: 74.6288ms Lightnum copy: 277.5140ms
+[True] Numpy median: 637.4211ms Lightnum median: 149.1289ms
+[False] Numpy arange: 22.6178ms Lightnum arange: 82.5562ms
+[False] Numpy flip: 70.4422ms Lightnum flip: 70.6539ms
+[True] Numpy split: 406.8999ms Lightnum split: 356.0231ms
+[True] Numpy tile: 200.5172ms Lightnum tile: 143.0249ms
+[True] Numpy concatenate: 86.3509ms Lightnum concatenate: 48.6550ms
+[False] Numpy cumsum: 193.1570ms Lightnum cumsum: 342.9999ms
+[False] Numpy matmul: 174.1722ms Lightnum matmul: 498.4679ms
+[True] Numpy broadcast_to: 191.2541ms Lightnum broadcast_to: 36.4249ms
+[False] Numpy outer: 226.2731ms Lightnum outer: 560.2522ms
+[False] Numpy eye: 61.4731ms Lightnum eye: 141.0189ms
+[False] Numpy expand_dims: 178.6702ms Lightnum expand_dims: 203.0249ms
+[False] Numpy argmax: 173.5692ms Lightnum argmax: 206.2919ms
+[True] Numpy argmax_axis: 174.3841ms Lightnum argmax_axis: 78.5832ms
+[True] Numpy transpose: 123.6238ms Lightnum transpose: 89.9000ms
+[True] Numpy stack: 257.4368ms Lightnum stack: 27.3900ms
+[True] Numpy vstack: 238.9488ms Lightnum vstack: 26.3491ms
+[False] Numpy nonzero: 140.1520ms Lightnum nonzero: 255.5709ms
+[True] Numpy squeeze: 161.9310ms Lightnum squeeze: 50.4360ms
+[True] Numpy clip: 518.4467ms Lightnum clip: 164.0410ms
+[False] Numpy unique: 298.4700ms Lightnum unique: 352.1080ms
+[True] Numpy triu: 356.8299ms Lightnum triu: 117.0278ms
+[True] Numpy meshgrid: 767.2489ms Lightnum meshgrid: 559.1249ms
+[True] Numpy newaxis: 57.5926ms Lightnum newaxis: 36.0932ms
+[False] Numpy frombuffer: 17.9431ms Lightnum frombuffer: 70.7338ms
+[False] Numpy promote_types: 319.8268ms Lightnum promote_types: 338.5842ms
+-----
+Sum helper: 8.5139ms
+Sum41: 6.4719ms
+Sum: 0.9258ms
+OK!
+
+# 3.12.1 pre
+[True] Numpy mod: 173.3971ms Lightnum mod: 116.5979ms
+[True] Numpy sqrt: 97.6567ms Lightnum sqrt: 78.6030ms
+[True] Numpy asseq: 2029.8092ms Lightnum asseq: 255.4951ms
+[False] Numpy where: 191.5371ms Lightnum where: 194.4542ms
+[True] Numpy max: 401.4180ms Lightnum max: 398.1128ms
+[False] Numpy zeros: 11.5211ms Lightnum zeros: 92.5219ms
+[False] Numpy zeros: 14.3659ms Lightnum zeros: 91.6979ms
+[False] Numpy ones: 51.6317ms Lightnum ones: 128.8321ms
+[False] Numpy ones: 55.5148ms Lightnum ones: 129.8671ms
+[True] Numpy zeros_like: 80.9133ms Lightnum zeros_like: 57.0719ms
+[True] Numpy zeros_like: 115.4077ms Lightnum zeros_like: 76.5841ms
+[True] Numpy ones_like: 74.5640ms Lightnum ones_like: 55.3832ms
+[True] Numpy ones_like: 82.1393ms Lightnum ones_like: 55.4869ms
+[True] Numpy ones_like: 108.9652ms Lightnum ones_like: 77.6472ms
+[False] Numpy array: 21.3120ms Lightnum array: 32.9480ms
+[True] Numpy exp: 89.2901ms Lightnum exp: 56.6938ms
+[True] Numpy exp2: 89.1657ms Lightnum exp2: 57.8771ms
+[True] Numpy log: 97.4991ms Lightnum log: 74.2199ms
+[True] Numpy log_array: 147.5441ms Lightnum log_array: 120.9841ms
+Sum: 0.8948ms
+[True] Numpy sumf: 172.9839ms Lightnum sumf: 50.1668ms
+[True] Numpy min: 400.6567ms Lightnum min: 393.4903ms
+[False] Numpy maximum: 215.2472ms Lightnum maximum: 382.1139ms
+[False] Numpy minimum: 215.0149ms Lightnum minimum: 381.0101ms
+[False] Numpy full: 48.1961ms Lightnum full: 89.7207ms
+[False] Numpy full_tuple: 55.7339ms Lightnum full_tuple: 977.0880ms
+[True] Numpy modf: 149.1511ms Lightnum modf: 113.0149ms
+[True] Numpy mod_array: 215.8163ms Lightnum mod_array: 210.1817ms
+[True] Numpy cos: 98.2308ms Lightnum cos: 81.8954ms
+[True] Numpy arctan2: 181.3369ms Lightnum arctan2: 117.5792ms
+[True] Numpy amax: 178.1681ms Lightnum amax: 77.3671ms
+[True] Numpy amax_array: 233.7279ms Lightnum amax_array: 186.9049ms
+[True] Numpy isin: 1148.0188ms Lightnum isin: 209.4259ms
+[False] Numpy ceil: 88.5608ms Lightnum ceil: 91.8581ms
+[True] Numpy reshape: 125.6719ms Lightnum reshape: 65.7442ms
+[True] Numpy reshape_flat: 146.2002ms Lightnum reshape_flat: 122.2341ms
+[False] Numpy reshape_flat_array: 207.1221ms Lightnum reshape_flat_array: 284.5118ms
+[False] Numpy count_nonzero: 62.3171ms Lightnum count_nonzero: 84.6782ms
+[False] Numpy count_nonzero2: 62.3000ms Lightnum count_nonzero2: 84.6179ms
+[True] Numpy allclose: 883.5859ms Lightnum allclose: 234.9513ms
+[True] Numpy allclose2: 878.7680ms Lightnum allclose2: 217.7241ms
+[False] Numpy cbrt: 95.9711ms Lightnum cbrt: 116.2589ms
+[False] Numpy copy: 66.9279ms Lightnum copy: 161.3910ms
+[True] Numpy median: 476.6688ms Lightnum median: 88.3119ms
+[False] Numpy arange: 22.0609ms Lightnum arange: 43.9310ms
+[True] Numpy flip: 54.0969ms Lightnum flip: 51.6140ms
+[True] Numpy split: 313.4842ms Lightnum split: 200.6500ms
+[True] Numpy tile: 198.8080ms Lightnum tile: 90.9240ms
+[True] Numpy concatenate: 78.9869ms Lightnum concatenate: 25.4159ms
+[False] Numpy cumsum: 192.6682ms Lightnum cumsum: 238.9719ms
+[False] Numpy matmul: 225.6279ms Lightnum matmul: 344.1629ms
+[True] Numpy broadcast_to: 166.2600ms Lightnum broadcast_to: 16.3360ms
+[False] Numpy outer: 223.6049ms Lightnum outer: 350.3411ms
+[False] Numpy eye: 52.4421ms Lightnum eye: 64.9960ms
+[True] Numpy expand_dims: 127.4760ms Lightnum expand_dims: 88.0351ms
+[True] Numpy argmax: 173.0938ms Lightnum argmax: 142.2579ms
+[True] Numpy argmax_axis: 169.8351ms Lightnum argmax_axis: 50.7021ms
+[True] Numpy transpose: 124.0981ms Lightnum transpose: 43.7288ms
+[True] Numpy stack: 175.6380ms Lightnum stack: 16.2768ms
+[True] Numpy vstack: 163.9807ms Lightnum vstack: 16.0251ms
+[True] Numpy nonzero: 141.9940ms Lightnum nonzero: 138.1409ms
+[True] Numpy squeeze: 171.9582ms Lightnum squeeze: 27.2367ms
+[True] Numpy clip: 226.1970ms Lightnum clip: 74.5130ms
+[True] Numpy unique: 277.0710ms Lightnum unique: 242.0230ms
+[True] Numpy triu: 309.2420ms Lightnum triu: 57.4811ms
+[True] Numpy meshgrid: 678.3907ms Lightnum meshgrid: 387.2702ms
+[True] Numpy newaxis: 62.3140ms Lightnum newaxis: 27.0519ms
+[False] Numpy frombuffer: 21.3158ms Lightnum frombuffer: 32.9971ms
+[False] Numpy promote_types: 308.2571ms Lightnum promote_types: 313.4711ms
+-----
+Sum helper: 3.7959ms
+Sum41: 3.4411ms
+Sum: 0.8738ms
+OK!
 """

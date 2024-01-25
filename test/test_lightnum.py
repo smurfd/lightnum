@@ -52,7 +52,7 @@ def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,
 def test_split(): lp.testing.assert_equal(lp.split(lp.arange(6), 2), np.split(np.arange(6), 2))
 def test_tile(): lp.testing.assert_equal(lp.tile([0,1,2,3,4,5], 2).tolist(), np.tile([0,1,2,3,4,5], 2).tolist())
 def test_concatenate(): lp.testing.assert_equal(lp.concatenate(([1,2,3,4],[4,5,6])), np.concatenate(([1,2,3,4],[4,5,6])))
-def test_where(): lp.testing.assert_equal(lp.where([True, True, True, True, True, False, False, False, False, False], lp.arange(10), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90]), np.where(np.arange(10) < 5, np.arange(10), 10*np.arange(10)))
+def test_where(): lp.testing.assert_equal(lp.where(np.arange(10) < 5, lp.arange(10).tolist(), [ 0, 10, 20, 30, 40, 50, 60, 70, 80, 90]), np.where(np.arange(10) < 5, np.arange(10), 10*np.arange(10)))
 def test_cumsum(): lp.testing.assert_equal(lp.cumsum([[1,2,3], [4,5,6]]), np.cumsum([[1,2,3], [4,5,6]]))
 def test_matmul(): lp.testing.assert_equal(lp.matmul([[1, 0], [0, 1]], [[4, 1], [2, 2]]), np.matmul([[1, 0], [0, 1]], [[4, 1], [2, 2]]).ravel())
 def test_broadcast_to(): lp.testing.assert_equal(lp.broadcast_to([1, 2, 3], (3, 3)), np.broadcast_to([1, 2, 3], (3, 3)).ravel())
