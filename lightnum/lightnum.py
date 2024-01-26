@@ -54,15 +54,15 @@ def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
 def cumsum(x, dtype=int32): return helper.looper_cumsum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cumsum(x, dtype=dtype), dtype=dtype)
-def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return helper.looper_outer(x, y=y)
+def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return [[x1*y1 for y1 in y] for x1 in x]
 def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
 def transpose(x, axes=None): return helper.looper_transpose(x, axes)
 def stack(x, axis=0): return helper.looper_stack(x, axis)
 def squeeze(x, axis=0): return helper.looper_squeeze(x, axis)
 def clip(x, x_min, x_max): return helper.looper_clip(x, x_min, x_max)
-def unique(x): return helper.looper_unique(x)
-def vstack(x): return helper.looper_vstack(x)
+def unique(x): return list(set(sorted(helper.reshape(x, -1))))
+def vstack(x): return [i for i in x]
 def nonzero(x): return helper.looper_nonzero(x)
 def less(x, y): return x < y
 def equal(x, y): return x == y
@@ -71,7 +71,7 @@ def median(x):
   r = []
   for i in range(len(x)): r.append(helper.looper_median(x[i]) // len(x[i]))
   return [r[i] / r[i + 1] for i in range(len(r) - 1)].pop()
-def concatenate(x): return helper.looper_concatenate(x)
+def concatenate(x): return [i for j in range(len(x)) for i in x[j]]
 def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass

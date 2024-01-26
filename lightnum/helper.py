@@ -44,15 +44,11 @@ class helper():
   def looper_arctan2(x, y, dtype=float32): return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [helper.looper_arctan2(i, y=j) for i, j in zip(x, y)]
   def looper_transpose(x, axes=None): return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
   def looper_stack(x, axis=0): return [i for i in x] #TODO: axis
-  def looper_vstack(x): return [i for i in x]
-  def looper_unique(x): return list(set(sorted(helper.reshape(x, -1))))
-  def looper_concatenate(x, dtype=int32): return [i for j in range(len(x)) for i in x[j]]
   def looper_expand_dims(x, axis, axisco=0): return [x] if axisco == axis else [helper.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
   def looper_flip(x, dtype=int32): return [helper.looper_flip(i) for i in x] if isinstance(x[0], list) else x[::-1]
   def looper_squeeze(x, axis=0): return x if not isinstance(x[0][0], list) else [helper.looper_squeeze(y, axis) for y in x].pop() #TODO: axis
   def looper_clip(x, x_min, x_max): return (x_min if x < x_min else x_max) if not isinstance(x, list) else [helper.looper_clip(y, x_min, x_max) for y in x]
   def looper_broadcast_to(x, y): return x if len(y) == 1 else [x for i in range(y[0])]
-  def looper_outer(x, y): return [[x1*y1 for y1 in y] for x1 in x]
   def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
   def looper_sin(x, dtype=float64): return math.sin(x) if not isinstance(x, list) else [helper.looper_sin(i) for i in x]
   def looper_reciprocal(x, dtype=float64): return 1/(x) if not isinstance(x, list) else [helper.looper_reciprocal(i) for i in x]
@@ -265,15 +261,20 @@ class helper():
     if shape == -1:
       if not isinstance(col, (list, tuple)): ncols, nrows = col, 1
       else: ncols, nrows = len(col), 1
-    elif isinstance(shape, tuple): nrows, ncols = shape
+      for r in range(nrows):
+        for c in range(ncols):
+          if isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(helper.reshape(col[c], -1))
+          else: row.extend(col); break
+        ret.extend(row)
+        row=[]
+      return ret
+    if isinstance(shape, tuple): nrows, ncols = shape
     else: ncols, nrows = len(col), 1
     for r in range(nrows):
       for c in range(ncols):
-        if shape == -1 and isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(helper.reshape(col[c], -1))
-        elif shape == -1: row.extend(col); break
-        else: row.append(col[ncols * r + c])
-      if shape == -1: ret.extend(row)
-      else: ret.append(row); row=[]
+        row.append(col[ncols * r + c])
+      ret.append(row)
+      row=[]
     return ret
 
   def read_magic(f): return f.read(len(helper.MAGIC_PREFIX)) == helper.MAGIC_PREFIX
