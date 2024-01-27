@@ -23,7 +23,7 @@ def test_min(): lp.testing.assert_equal(lp.min([[[[2, 2, 3, 4], [1, 2, 3, 4]],[[
 def test_maximum(): lp.testing.assert_equal(lp.maximum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]]), np.maximum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]]).ravel())
 def test_minimum(): lp.testing.assert_equal(lp.minimum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]]), np.minimum([[1, 2, 3, 4], [1, 2, 3, 4]], [[1, 2, 3, 4], [1, 2, 3, 4]]).ravel())
 def test_full(): lp.testing.assert_equal(lp.full(6, 3), np.full(6, 3))
-def test_full_tuple(): lp.testing.assert_equal(lp.full((6,6,6), 4), np.full((6,6,6), 4).ravel())
+def test_full_tuple(): lp.testing.assert_equal(lp.full((6,6,6), 4), np.full((6,6,6), 4).tolist())
 def test_mod(): lp.testing.assert_equal(lp.mod([1, 2, 3, 4], [1, 2, 6, 4]), np.mod([1, 2, 3, 4], [1, 2, 6, 4]))
 def test_modf(): lp.testing.assert_equal(lp.mod([1.1, 2.2, 3.3, 4.4], [1.1, 2.2, 6.6, 4.4]), np.mod([1.1, 2.2, 3.3, 4.4], [1.1, 2.2, 6.6, 4.4]))
 def test_mod_array(): lp.testing.assert_equal(lp.mod([[1, 2, 3, 4], [1, 2, 6, 4]], [[2, 1, 7, 4], [1, 3, 6, 9]]), np.mod([[1, 2, 3, 4], [1, 2, 6, 4]], [[2, 1, 7, 4], [1, 3, 6, 9]]).tolist())

@@ -1,6 +1,7 @@
 from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types
 from lightnum.array import ndarray, array
 import copy as cp
+import itertools
 import builtins
 import ctypes
 import struct
@@ -92,14 +93,17 @@ class helper():
       tmp.append(tmp2); tmp2=[]
     return tmp
 
-  # broken a.f
   def looper_empty(x, fill, dtype=int32):
     if isinstance(x, int): return helper.cast([fill] * x, dtype)
     elif isinstance(x, list):
       if len(x) == 1: return helper.cast([fill] * x[0], dtype)
       return helper.cast([fill] * len(x), dtype)
     elif len(x) <= 2: return helper.cast([fill] * (len(x) if not isinstance(x, int) else x), dtype) # if onedimentional [2, 4]
-    return helper.cast([[[fill] * (len(x) if not isinstance(x, int) else x) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop(), dtype)
+    rr, r2 = [], []
+    for j, idx in enumerate(itertools.product(*[range(s) for s in x[::len(x)-1]])):
+      if (j+1) % (x[len(x)-1]+1): rr.append([fill]*x[0])
+      else: r2.append(rr); rr=[]
+    return helper.cast(r2, dtype)
 
   def looper_empty_like(x, fill, dtype=int32):
     if isinstance(x, int): return [fill] * x
