@@ -12,7 +12,6 @@ class helper():
   _header_size_info = {(1, 0): ('<H', 'latin1'), (2, 0): ('<I', 'latin1'), (3, 0): ('<I', 'utf8')}
   def typ(x, dtype=int32): return dtype(x).value if not isinstance(x, int) else x
   def cbrt(x): return round(x**(1 / 3.), 2)
-  def getrow(self, x, fill=0): return [helper.looper_getrow(x[-1], fill=fill) for _ in range(x[len(x) - 2])]
   def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
   def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
   def zero_row_len(x, l):
@@ -93,25 +92,20 @@ class helper():
       tmp.append(tmp2); tmp2=[]
     return tmp
 
+  # broken a.f
   def looper_empty(x, fill, dtype=int32):
     if isinstance(x, int): return helper.cast([fill] * x, dtype)
-    if isinstance(x, list):
+    elif isinstance(x, list):
       if len(x) == 1: return helper.cast([fill] * x[0], dtype)
       return helper.cast([fill] * len(x), dtype)
-    if len(x) <= 2: return helper.cast(helper.getrow(helper, x, fill), dtype) # if onedimentional [2, 4]
-    return helper.cast([[helper.getrow(helper, x, fill) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop(), dtype)
+    elif len(x) <= 2: return helper.cast([fill] * (len(x) if not isinstance(x, int) else x), dtype) # if onedimentional [2, 4]
+    return helper.cast([[[fill] * (len(x) if not isinstance(x, int) else x) for i in range(x[l])] for l in range(len(x) - 2, -1, -1)].pop(), dtype)
 
   def looper_empty_like(x, fill, dtype=int32):
     if isinstance(x, int): return [fill] * x
-    if isinstance(x, list):
+    elif isinstance(x, list):
       if not isinstance(x[0], list): return [fill] * len(x)
       return [fill for a in range(len(x)) for b in range(len(x[a]))]
-
-  def looper_getrow(x, fill):
-    if isinstance(x, int): return [fill] * x
-    if isinstance(x, list):
-      if len(x) == 1: return [fill] * x[0]
-      return [fill] * len(x)
 
   def looper_max(x, ret=0):
     for i in range(len(x)):
