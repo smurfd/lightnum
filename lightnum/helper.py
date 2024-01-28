@@ -26,8 +26,6 @@ class helper():
     a = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value
     b = (not isinstance(x, list) and x != float(int(x)))
     return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
-  def looper_log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [helper.looper_log(i) for i in x]
-  def looper_log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [helper.looper_log2(i) for i in x]
   def looper_exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
   def looper_exp2(x, dtype=float32): return 2 ** x if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
   def looper_cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
@@ -163,6 +161,7 @@ class helper():
 
   def looper_assert(x, y):
     ret=[]
+    #if len(x) != len(y): return [False] # this fixes assert, got some errors need to fix
     for i in range(len(x)):
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)

@@ -581,7 +581,6 @@ def test_timing_promote_types():
   lp_t = time.perf_counter()
   print('[{}] Numpy promote_types: {:.4f}ms Lightnum promote_types: {:.4f}ms = {}%'.format((np_t - np_s) * 1000 > (lp_t - np_t) * 1000, (np_t - np_s) * 1000, (lp_t - np_t) * 1000, int((np_t - np_s) / (lp_t - np_t) * 100)))
 
-
 if __name__ == '__main__':
   test_timing_mod()
   test_timing_sqrt()

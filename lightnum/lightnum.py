@@ -7,14 +7,20 @@ import random as rnd
 import array as arr
 import copy as cp
 import builtins
+import ctypes
 import math
 import os
+
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
+def cast(x, dtype=float64):
+  if isinstance(x, list): return [cast(i, dtype) for i in x]
+  a, b = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value, (not isinstance(x, list) and x != float(int(x)))
+  return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
 
 # math
-def log(x, dtype=float64): return helper.looper_log(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log(x, dtype=dtype), dtype=dtype)
-def log2(x, dtype=float64): return helper.looper_log2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_log2(x, dtype=dtype), dtype=dtype)
+def log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [log(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log(x), dtype=dtype)
+def log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [log2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log2(x), dtype=dtype)
 def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp(x, dtype=dtype), dtype=dtype)
 def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp2(x, dtype=dtype), dtype=dtype)
 def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cbrt(x, dtype=dtype), dtype=dtype)
