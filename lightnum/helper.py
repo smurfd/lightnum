@@ -26,12 +26,6 @@ class helper():
     a = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value
     b = (not isinstance(x, list) and x != float(int(x)))
     return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
-  def looper_exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [helper.looper_exp(i) for i in x]
-  def looper_exp2(x, dtype=float32): return 2 ** x if not isinstance(x, list) else [helper.looper_exp2(i) for i in x]
-  def looper_cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [helper.looper_cbrt(i) for i in x]
-  def looper_sum(x, dtype=float16): return builtins.sum(x) if not isinstance(x, list) else [helper.looper_sum(i) for i in x]
-  def looper_mod(x, y, dtype=float32): return (x%y) if not isinstance(x, (list, tuple)) else [helper.looper_mod(i, y=j) for i, j in zip(x, y)]
-  def looper_add(x, y, dtype=float32): return (x+y) if not isinstance(x, (list, tuple)) else [helper.looper_add(i, y=j) for i, j in zip(x, y)]
   def looper_subtract(x, y, dtype=float32): return x - y if not isinstance(x, (list, tuple)) else [helper.looper_subtract(i, y=j) for i, j in zip(x, y)]
   def looper_prod(x, dtype=int32): return math.prod(x) if not isinstance(x, list) else [helper.looper_prod(i) for i in x]
   def looper_cos(x, dtype=float64): return math.cos(x) if not isinstance(x, list) else [helper.looper_cos(i) for i in x]

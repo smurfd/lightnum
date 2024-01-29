@@ -21,12 +21,14 @@ def cast(x, dtype=float64):
 # math
 def log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [log(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log(x), dtype=dtype)
 def log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [log2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log2(x), dtype=dtype)
-def exp(x, dtype=float32): return helper.looper_exp(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp(x, dtype=dtype), dtype=dtype)
-def exp2(x, dtype=int32): return helper.looper_exp2(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_exp2(x, dtype=dtype), dtype=dtype)
-def cbrt(x, dtype=int32): return helper.looper_cbrt(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cbrt(x, dtype=dtype), dtype=dtype)
-def sum(x, dtype=float16): return helper.looper_sum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sum(x, dtype=dtype), dtype=dtype)
-def mod(x, y, dtype=float32): return helper.looper_mod(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_mod(x, y=y, dtype=dtype), dtype=dtype)
-def add(x, y, dtype=float32): return helper.looper_add(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_add(x, y=y, dtype=dtype), dtype=dtype)
+
+def exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [exp(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(exp(x), dtype=dtype)
+def exp2(x, dtype=float32): return 2 ** x if not isinstance(x, list) else [exp2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(exp2(x), dtype=dtype)
+def cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [cbrt(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(cbrt(x), dtype=dtype)
+def sum(x, dtype=float16): return builtins.sum(x) if not isinstance(x, list) else [sum(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(sum(x), dtype=dtype)
+def mod(x, y, dtype=float32): return (x%y) if not isinstance(x, (list, tuple)) else [mod(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(mod(x), dtype=dtype)
+def add(x, y, dtype=float32): return (x+y) if not isinstance(x, (list, tuple)) else [add(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(add(x), dtype=dtype)
+
 def subtract(x, y, dtype=float32): return helper.looper_subtract(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_subtract(x, y=y, dtype=dtype), dtype=dtype)
 def prod(x, dtype=int32): return helper.looper_prod(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_prod(x, dtype=dtype), dtype=dtype)
 def cos(x, dtype=int32): return helper.looper_cos(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cos(x, dtype=dtype), dtype=dtype)
