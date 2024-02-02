@@ -86,16 +86,21 @@ class helper():
     return tmp
 
   def looper_empty(x, fill, dtype=int32):
-    if isinstance(x, int): return helper.cast([fill] * x, dtype)
-    elif isinstance(x, list):
-      if len(x) == 1: return helper.cast([fill] * x[0], dtype)
-      return helper.cast([fill] * len(x), dtype)
-    elif len(x) <= 2: return helper.cast([fill] * (len(x) if not isinstance(x, int) else x), dtype) # if onedimentional [2, 4]
-    rr, r2 = [], []
-    for j, idx in enumerate(itertools.product(*[range(s) for s in x[::len(x)-1]])):
-      if (j+1) % (x[len(x)-1]+1): rr.append([fill]*x[0])
-      else: r2.append(rr); rr=[]
-    return helper.cast(r2, dtype)
+    if isinstance(x, (int, float)): return [fill]*x
+    if isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [helper.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
+    r,ret,ret1=[],[],[]
+    if len(x)==1: return([fill]*x[0])
+    for j, idx in enumerate(itertools.product(*[range(s) for s in x[1::]])): #start from 1 since we will fill a row of x[0] len for each
+      if not j%(x[0]) and j: ret.append(ret1);ret1=[]
+      if not j%(x[0]*x[0]) and j: r.append(ret); ret=[]
+      ret1.append([fill]*x[0])
+    if r and x[0] > 2: ret.append(ret1); r.append(ret)
+
+    if not r and x[0] > 2:
+      for _ in range(x[0] - len(ret)): r.extend(ret)
+      r.append(ret1)
+    if not r and not ret: r.extend(ret1)
+    return r
 
   def looper_empty_like(x, fill, dtype=int32):
     if isinstance(x, int): return [fill] * x
@@ -115,18 +120,24 @@ class helper():
       elif ret >= x[i]: ret = x[i]
     return ret
 
-  def looper_maximum(x, y, ret=0):
+  def looper_maximum(x, y):
     tmp=[]; ret=[]
     for i in range(len(x)):
-      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maximum(x[i], y[i], ret))
-      else: tmp.append(y[i]); tmp.append(x[i]); ret.extend(tmp); tmp = []
+      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maximum(x[i], y[i]))
+      else:
+        if x[i] >= y[i]: tmp.extend([x[i]])
+        else: tmp.extend([y[i]])
+    ret.extend(tmp)
     return ret
 
-  def looper_minimum(x, y, ret=0):
+  def looper_minimum(x, y):
     tmp=[]; ret=[]
     for i in range(len(x)):
-      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_minimum(x[i], y[i], ret))
-      else: tmp.append(y[i]); tmp.append(x[i]); ret.extend(tmp); tmp = []
+      if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_minimum(x[i], y[i]))
+      else:
+        if x[i] <= y[i]: tmp.extend([x[i]])
+        else: tmp.extend([y[i]])
+    ret.extend(tmp)
     return ret
 
   def looper_isin(x, y, ret):
@@ -155,7 +166,7 @@ class helper():
 
   def looper_assert(x, y):
     ret=[]
-    #if len(x) != len(y): return [False] # this fixes assert, got some errors need to fix
+    if len(x) != len(y): return [False] # this fixes assert, got some errors need to fix
     for i in range(len(x)):
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)

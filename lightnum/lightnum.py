@@ -19,9 +19,8 @@ def cast(x, dtype=float64):
   return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
 
 # math
-def log(x, dtype=float64): return math.log(x) if not isinstance(x, list) else [log(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log(x), dtype=dtype)
-def log2(x, dtype=float64): return math.log2(x) if not isinstance(x, list) else [log2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log2(x), dtype=dtype)
-
+def log(x, dtype=float64): return round(math.log(x),8) if not isinstance(x, list) else [log(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log(x), dtype=dtype)
+def log2(x, dtype=float64): return round(math.log2(x),8) if not isinstance(x, list) else [log2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(log2(x), dtype=dtype)
 def exp(x, dtype=float64): return math.exp(x) if not isinstance(x, list) else [exp(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(exp(x), dtype=dtype)
 def exp2(x, dtype=float32): return 2 ** x if not isinstance(x, list) else [exp2(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(exp2(x), dtype=dtype)
 def cbrt(x, dtype=float32): return helper.cbrt(x) if not isinstance(x, list) else [cbrt(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(cbrt(x), dtype=dtype)
@@ -130,11 +129,10 @@ def meshgrid(x, y, indexing='xy'):
   ry = reshape(y, -1)
   if indexing == 'xy':
     for i in range(len(rx)): retx.append(rx)
-    for i in range(len(ry)): rety.append(full(ry, fill=ry[i]))
+    for i in range(len(ry)): rety.append([ry[i]]*len(ry))
   elif indexing == 'ij':
-    for i in range(len(rx)): retx.append(full(rx, fill=rx[i]))
+    for i in range(len(rx)): retx.append([rx[i]]*len(rx))
     for i in range(len(ry)): rety.append(ry)
-  else: pass
   return retx, rety
 
 def load(f):
