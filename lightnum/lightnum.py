@@ -45,7 +45,7 @@ def empty(x, fill=0, dtype=int32): return helper.looper_empty(x, fill=fill, dtyp
 def full(x, fill, dtype=float64): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
 def zeros(x, fill=0, dtype=float32): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
 def zeros_like(x, fill=0, dtype=int32): return helper.looper_empty_like(x, fill=0, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=0, dtype=dtype), dtype=dtype)
-def ones(x, fill=1, dtype=float64): return zeros(x, fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(zeros(x, fill, dtype=dtype), dtype=dtype)
+def ones(x, fill=1, dtype=float64): return helper.looper_empty(x, fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(zeros(x, fill, dtype=dtype), dtype=dtype)
 def ones_like(x, fill=1, dtype=float32): return helper.looper_empty_like(x, fill=1, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty_like(x, fill=1, dtype=dtype), dtype=dtype)
 def max(x): return helper.looper_max(x)
 def min(x): return helper.looper_min(x)
@@ -96,8 +96,7 @@ class arange():
   def __mul__(self, x): return [i * x for i in self.x]
   def reshape(self, s): return reshape(self.ret, s)
   def tolist(self): return self.ret
-def triu(x, l=0):
-  l = l - 1
+def triu(x, l=-1):
   if isinstance(x[0], list):
     rr = []
     if (l + 1) >= len(x[0]): l = len(x[0]) - 1

@@ -109,7 +109,7 @@ class helper():
     return ret
 
   def looper_maximum(x, y):
-    tmp=[]; ret=[]
+    tmp, ret = [], []
     for i in range(len(x)):
       if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maximum(x[i], y[i]))
       else:
@@ -119,7 +119,7 @@ class helper():
     return ret
 
   def looper_minimum(x, y):
-    tmp=[]; ret=[]
+    tmp, ret = [], []
     for i in range(len(x)):
       if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_minimum(x[i], y[i]))
       else:
@@ -248,9 +248,10 @@ class helper():
 
   def reshape(col, shape):
     ncols, nrows, ret, row = 0, 0, [], []
+    if isinstance(shape, tuple): nrows, ncols = shape
+    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1
+    else: ncols, nrows = len(col), 1
     if shape == -1:
-      if not isinstance(col, (list, tuple)): ncols, nrows = col, 1
-      else: ncols, nrows = len(col), 1
       for r in range(nrows):
         for c in range(ncols):
           if isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(helper.reshape(col[c], -1))
@@ -258,11 +259,8 @@ class helper():
         ret.extend(row)
         row=[]
       return ret
-    if isinstance(shape, tuple): nrows, ncols = shape
-    else: ncols, nrows = len(col), 1
     for r in range(nrows):
-      for c in range(ncols):
-        row.append(col[ncols * r + c])
+      for c in range(ncols): row.append(col[ncols * r + c])
       ret.append(row)
       row=[]
     return ret
