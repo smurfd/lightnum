@@ -28,15 +28,18 @@ def sum(x, dtype=float16): return builtins.sum(x) if not isinstance(x, list) els
 def sqrt(x, dtype=float64): return math.sqrt(x) if not isinstance(x, list) else [sqrt(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(sqrt(x), dtype=dtype)
 def mod(x, y, dtype=float32): return (x%y) if not isinstance(x, (list, tuple)) else [mod(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(mod(x, y), dtype=dtype)
 def add(x, y, dtype=float32): return (x+y) if not isinstance(x, (list, tuple)) else [add(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(add(x, y), dtype=dtype)
+def arctan2(x, y, dtype=float32): return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [arctan2(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(arctan2(x, y), dtype=dtype)
 def prod(x, dtype=float64): return math.prod(x) if not isinstance(x, list) else [prod(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(prod(x), dtype=dtype)
 def cos(x, dtype=float64): return math.cos(x) if not isinstance(x, list) else [cos(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(cos(x), dtype=dtype)
 def ceil(x, dtype=float64): return math.ceil(x) if not isinstance(x, list) else [ceil(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(ceil(x), dtype=dtype)
+def sin(x, dtype=float64): return math.sin(x) if not isinstance(x, list) else [sin(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(sin(x), dtype=dtype)
 def subtract(x, y, dtype=float32): return (x-y) if not isinstance(x, (list, tuple)) else [subtract(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(subtract(x, y), dtype=dtype)
+def copy(x, dtype=float64): return cp.copy(x) if not isinstance(x, list) else [copy(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(copy(x), dtype=dtype)
+def multiply(x, dtype=float64): return math.prod(x) if not isinstance(x, list) else [multiply(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(multiply(x), dtype=dtype)
+def reciprocal(x, dtype=float64): return 1/(x) if not isinstance(x, list) else [reciprocal(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(reciprocal(x), dtype=dtype)
+def frombuffer(x, dtype=float64): return [i for i in x] if not isinstance(x, list) else [frombuffer(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(frombuffer(x), dtype=dtype)
+def where(condition, x, y, dtype=int32): return [xv if c else yv for c, xv, yv in zip(condition, x, y)] if not isinstance(x, (list, tuple)) else [where(condition, i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(where(condition, x, y), dtype=dtype)
 
-def copy(x, dtype=int32): return helper.looper_copy(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_copy(x, dtype=dtype), dtype=dtype)
-def where(condition, x, y, dtype=int32): return helper.looper_where(condition, x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_where(condition, x, y), dtype=dtype)
-def arctan2(x, y, dtype=float32): return helper.looper_arctan2(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_arctan2(x, y=y, dtype=dtype), dtype=dtype)
-def multiply(x, dtype=int32): return helper.looper_prod(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_prod(x, dtype=dtype), dtype=dtype)
 def matmul(x, y, dtype=float32): return helper.looper_matmul(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_matmul(x, y=y, dtype=dtype), dtype=dtype)
 def empty(x, fill=0, dtype=int32): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
 def full(x, fill, dtype=float64): return helper.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
@@ -86,9 +89,7 @@ def allclose(x, y, rtol=1e-05, atol=1e-08):
   r = helper.looper_assert_close_cls(x, y)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
-def frombuffer(buf, dtype=int32): return helper.looper_frombuffer(buf, dtype)
-def sin(x, dtype=float64): return helper.looper_sin(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_sin(x, dtype=dtype), dtype=dtype)
-def reciprocal(x, dtype=float64): return helper.looper_reciprocal(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_reciprocal(x, dtype=dtype), dtype=dtype)
+
 class arange():
   def __init__(self, start, stop=0, step=1, dtype=int32): self.ret = helper.looper_arange(start, stop, step, dtype)
   def __call__(self): return self.ret
