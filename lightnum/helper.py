@@ -11,7 +11,6 @@ import ast
 class helper():
   MAGIC_PREFIX = b'\x93NUMPY'
   _header_size_info = {(1, 0): ('<H', 'latin1'), (2, 0): ('<I', 'latin1'), (3, 0): ('<I', 'utf8')}
-  def typ(x, dtype=int32): return dtype(x).value if not isinstance(x, int) else x
   def cbrt(x): return round(x**(1 / 3.), 2)
   def format_float(x): return float(('%i' if x == int(x) else '%s') % x)
   def cast(x, dtype=float64): return helper.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
@@ -26,10 +25,6 @@ class helper():
     a = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value
     b = (not isinstance(x, list) and x != float(int(x)))
     return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
-  def looper_subtract(x, y, dtype=float32): return x - y if not isinstance(x, (list, tuple)) else [helper.looper_subtract(i, y=j) for i, j in zip(x, y)]
-  def looper_prod(x, dtype=int32): return math.prod(x) if not isinstance(x, list) else [helper.looper_prod(i) for i in x]
-  def looper_cos(x, dtype=float64): return math.cos(x) if not isinstance(x, list) else [helper.looper_cos(i) for i in x]
-  def looper_ceil(x, dtype=float32): return math.ceil(x) if not isinstance(x, list) else [helper.looper_ceil(i) for i in x]
   def looper_copy(x, dtype=float32): return cp.copy(x) if not isinstance(x, list) else [helper.looper_copy(i) for i in x]
   def looper_where(condition, x, y, dtype=float32): return [xv if c else yv for c, xv, yv in zip(condition, x, y)] if not isinstance(x, list) else [helper.looper_where(condition, i, j) for i,j in zip(x, y)]
   def looper_sqrt(x, dtype=float32): return math.sqrt(x) if not isinstance(x, list) else [helper.looper_sqrt(i) for i in x]
@@ -41,7 +36,7 @@ class helper():
   def looper_squeeze(x, axis=0): return x if not isinstance(x[0][0], list) else [helper.looper_squeeze(y, axis) for y in x].pop() #TODO: axis
   def looper_clip(x, x_min, x_max): return (x_min if x < x_min else x_max) if not isinstance(x, list) else [helper.looper_clip(y, x_min, x_max) for y in x]
   def looper_broadcast_to(x, y): return x if len(y) == 1 else [x for i in range(y[0])]
-  def looper_frombuffer(buf, dtype=int32): return [helper.typ(i, dtype=dtype) for i in buf]
+  def looper_frombuffer(buf, dtype=int32): return [i for i in buf]
   def looper_sin(x, dtype=float64): return math.sin(x) if not isinstance(x, list) else [helper.looper_sin(i) for i in x]
   def looper_reciprocal(x, dtype=float64): return 1/(x) if not isinstance(x, list) else [helper.looper_reciprocal(i) for i in x]
   def looper_nonzero(x):
