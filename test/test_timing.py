@@ -559,7 +559,7 @@ def test_timing_meshgrid():
 
 def test_timing_newaxis():
   np_s = time.perf_counter()
-  for _ in range(100000): x = np.array([[1,2,3],[1,2,3]]);x[np.newaxis, :]
+  for _ in range(100000): x = np.array([[1,2,3],[1,2,3]]); x[np.newaxis, :]
   np_t = time.perf_counter()
   for _ in range(100000): lp.newaxis([[1,2,3],[1,2,3]], 1)
   lp_t = time.perf_counter()
@@ -575,7 +575,7 @@ def test_timing_frombuffer():
 
 def test_timing_promote_types():
   np_s = time.perf_counter()
-  for _ in range(100000): np.promote_types(lp.uint8, lp.uint32)
+  for _ in range(100000): np.promote_types(np.uint8, np.uint32)
   np_t = time.perf_counter()
   for _ in range(100000): lp.promote_types(lp.uint8, lp.uint32)
   lp_t = time.perf_counter()

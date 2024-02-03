@@ -9,7 +9,6 @@ import copy as cp
 import builtins
 import ctypes
 import math
-import os
 
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
@@ -55,11 +54,11 @@ def amax(x, dtype=int32): return helper.looper_max(x) if str(dtype) == types[dty
 def flip(x, dtype=int32): return helper.looper_flip(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_flip(x, dtype=dtype), dtype=dtype)
 def split(x, y, dtype=int32): return helper.looper_split(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_split(x, y, dtype=dtype), dtype=dtype)
 def tile(x, y, dtype=int32): return helper.looper_tile(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_tile(x, y, dtype=dtype), dtype=dtype)
-def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y, ret=[]) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_isin(x, y=y, ret=[]), dtype=dtype)
-def count_nonzero(x): return helper.looper_count(x, ret=0)
+def isin(x, y, dtype=int32): return helper.looper_isin(x, y=y) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_isin(x, y=y), dtype=dtype)
+def count_nonzero(x): return helper.looper_count(x)
 def broadcast_to(x, y): return helper.looper_broadcast_to(x, y)
-def any(x): return builtins.any(helper.looper_count(x, ret=0))
-def all(x): return builtins.all(helper.looper_count(x, ret=0))
+def any(x): return builtins.any(helper.looper_count(x))
+def all(x): return builtins.all(helper.looper_count(x))
 def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
@@ -136,6 +135,7 @@ def meshgrid(x, y, indexing='xy'):
   return retx, rety
 
 def load(f):
+  import os
   ret = []
   if isinstance(f, str) and f.endswith('npz'):
     from zipfile import ZipFile

@@ -1,10 +1,8 @@
-from __future__ import annotations
 import ctypes
 import math
 
 cts = [ctypes.c_float, ctypes.c_float, ctypes.c_double, ctypes.c_int8, ctypes.c_int16, ctypes.c_int32, ctypes.c_int64, ctypes.c_uint8, ctypes.c_uint16, ctypes.c_uint32, ctypes.c_uint64, ctypes.c_bool]
-
-class ctstruct(ctypes.Structure):
+class ctstruct:
   def __eq__(self, other): # ==
     for fld in self._fields_:
       if not isinstance(fld, tuple(cts)):

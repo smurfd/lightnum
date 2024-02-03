@@ -1,12 +1,10 @@
 from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types
 from lightnum.array import ndarray, array
-#import copy as cp
 import itertools
 import builtins
 import ctypes
 import struct
 import math
-import ast
 
 class helper():
   MAGIC_PREFIX = b'\x93NUMPY'
@@ -18,6 +16,13 @@ class helper():
     for i in range(l):
       if i >= 0 and i < len(x): x[i] = 0
     return x
+  def if_round_abs(x, y, ret, cls=False):
+    if round(x, 8) == round(y, 8): ret.append(True)
+    else: ret.append(False)
+    ret.append(abs(abs(x) - abs(y)))
+    if y: ret.append(abs(abs(x) - abs(y)) / abs(y))
+    if cls: ret.append(abs(y))
+    return ret
 
   # helper functions to loop through multidimentional lists/tuples
   def looper_cast(x, dtype=float64):
@@ -47,13 +52,14 @@ class helper():
       return y.index(max(y))
     return x.index(max(x)) if not isinstance(x[0], list) else [helper.looper_argmax(y, axis) for y in x]
 
-  def looper_cumsum(x, s=0,dtype=int32):
+  def looper_cumsum(x, s = 0, dtype = int32):
     a = helper.reshape(x, -1)
     return [builtins.sum(a[0:i:1]) for i in range(0, len(a)+1)][1:]
 
-  def looper_median(x, dtype=int32, ret=0):
+  def looper_median(x, dtype=int32):
+    ret = 0
     for i in range(len(x)):
-      if isinstance(x[i], (list, tuple)): ret = helper.looper_median(x[i], ret)
+      if isinstance(x[i], (list, tuple)): ret = helper.looper_median(x[i])
       else: ret += x[i]
     return ret
 
@@ -68,22 +74,21 @@ class helper():
       for _ in range(y): tmp.extend(x)
       return ndarray(tmp)
     a,b = y
-    for a1 in range(a):
-      for b1 in range(b): tmp2.extend(x)
+    for _ in range(a):
+      for _ in range(b): tmp2.extend(x)
       tmp.append(tmp2); tmp2=[]
     return tmp
 
   def looper_empty(x, fill, dtype=int32):
     if isinstance(x, (int, float)): return [fill]*x
-    if isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [helper.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
-    r,ret,ret1=[],[],[]
-    if len(x)==1: return([fill]*x[0])
+    elif isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [helper.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
+    elif len(x)==1: return([fill]*x[0])
+    r, ret, ret1 =[], [], []
     for j, idx in enumerate(itertools.product(*[range(s) for s in x[1::]])): #start from 1 since we will fill a row of x[0] len for each
-      if not j%(x[0]) and j: ret.append(ret1);ret1=[]
+      if not j%(x[0]) and j: ret.append(ret1); ret1=[]
       if not j%(x[0]*x[0]) and j: r.append(ret); ret=[]
       ret1.append([fill]*x[0])
     if r and x[0] > 2: ret.append(ret1); r.append(ret)
-
     if not r and x[0] > 2:
       for _ in range(x[0] - len(ret)): r.extend(ret)
       r.append(ret1)
@@ -112,9 +117,7 @@ class helper():
     tmp, ret = [], []
     for i in range(len(x)):
       if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_maximum(x[i], y[i]))
-      else:
-        if x[i] >= y[i]: tmp.extend([x[i]])
-        else: tmp.extend([y[i]])
+      else: tmp.extend([x[i]]) if x[i] >= y[i] else tmp.extend([y[i]])
     ret.extend(tmp)
     return ret
 
@@ -122,23 +125,20 @@ class helper():
     tmp, ret = [], []
     for i in range(len(x)):
       if builtins.all(isinstance(j, list) for j in [x[i],y[i]]): tmp.append(helper.looper_minimum(x[i], y[i]))
-      else:
-        if x[i] <= y[i]: tmp.extend([x[i]])
-        else: tmp.extend([y[i]])
+      else: tmp.extend([x[i]]) if x[i] <= y[i] else tmp.extend([y[i]])
     ret.extend(tmp)
     return ret
 
-  def looper_isin(x, y, ret):
+  def looper_isin(x, y):
+    ret = []
     for i in range(len(x)):
-      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_isin(x[i], y[i], ret)
-      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_isin(x[i], y, ret)
-      elif isinstance(x[i], tuple): ret = helper.looper_isin(x[i], y, ret)
-      else:
-        if x[i] == y[i]: ret.append(True)
-        else: ret.append(False)
+      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_isin(x[i], y[i])
+      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_isin(x[i], y)
+      elif isinstance(x[i], tuple): ret = helper.looper_isin(x[i], y)
+      else: ret.append(True) if x[i] == y[i] else ret.append(False)
     return ret
 
-  def looper_count(x, ret):
+  def looper_count(x, ret=0):
     for i in range(len(x)):
       if isinstance(x[i], (list, tuple)): ret = helper.looper_count(x[i], ret)
       elif (x[i] != 0 and x[i] is not False): ret += 1
@@ -160,9 +160,7 @@ class helper():
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)
       elif isinstance(x[i], tuple): ret = helper.looper_assert(x[i], y)
       elif isinstance(x[i], ndarray): ret = helper.looper_assert(x[i].tolist(), y[i].tolist())
-      else:
-        if round(x[i], 8) == round(y[i], 8): ret.append(True)
-        else: ret.append(False)
+      else: ret.append(True) if round(x[i], 8) == round(y[i], 8) else ret.append(False)
     return ret
 
   def looper_assert_close(x, y):
@@ -171,11 +169,7 @@ class helper():
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close(x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close(x[i], y)
       elif isinstance(x[i], tuple): ret = helper.looper_assert_close(x[i], y)
-      else:
-        if round(x[i], 8) == round(y[i], 8): ret.append(True)
-        else: ret.append(False)
-        ret.append(abs(abs(x[i]) - abs(y[i])))
-        if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
+      else: ret = helper.if_round_abs(x[i], y[i], ret)
     return ret
 
   def looper_assert_close_cls(x, y):
@@ -184,12 +178,7 @@ class helper():
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close_cls(x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close_cls(x[i], y)
       elif isinstance(x[i], tuple): ret = helper.looper_assert_close_cls(x[i], y)
-      else:
-        if round(x[i], 8) == round(y[i], 8): ret.append(True)
-        else: ret.append(False)
-        ret.append(abs(abs(x[i]) - abs(y[i])))
-        if y[i]: ret.append(abs(abs(x[i]) - abs(y[i])) / abs(y[i]))
-        ret.append(abs(y[i]))
+      else: ret = helper.if_round_abs(x[i], y[i], ret, cls=True)
     return ret
 
   # BARF
@@ -271,6 +260,7 @@ class helper():
   def read_header_enc(t): return helper._header_size_info.get(t)[1]
   def read_header_len(f, p): return struct.unpack(helper.read_header_pack(p), f.read(2))[0]
   def read_header(f, t):
+    import ast
     h = f.read(helper.read_header_len(f, t)).decode(helper.read_header_enc(t))
     return ast.literal_eval(h)['shape'], ast.literal_eval(h)['descr']
   def read_body(f, l): return [int.from_bytes(f.read(8), "little") for _ in range(0, l, 8)]
