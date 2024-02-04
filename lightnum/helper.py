@@ -80,8 +80,8 @@ class helper():
 
   def looper_empty(x, fill, dtype=int32):
     if isinstance(x, (int, float)): return [fill]*x
-    elif isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [helper.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
     elif len(x)==1: return([fill]*x[0])
+    elif isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [helper.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
     r, ret, ret1 =[], [], []
     for j, idx in enumerate(itertools.product(*[range(s) for s in x[1::]])): #start from 1 since we will fill a row of x[0] len for each
       if not j%(x[0]) and j: ret.append(ret1); ret1=[]
