@@ -3,12 +3,7 @@ from lightnum.random import random
 from lightnum.testing import testing
 from lightnum.helper import helper
 from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, dtype, types
-import random as rnd
-import array as arr
-import copy as cp
-import builtins
-import ctypes
-import math
+import random as rnd, array as arr, copy as cp, builtins, ctypes, math
 
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
@@ -85,7 +80,7 @@ def copyto(x, y):
   for i in range(len(y)): x[i] = copy(y)[i]
 def set_printoptions(): pass
 def allclose(x, y, rtol=1e-05, atol=1e-08):
-  r = helper.looper_assert_close_cls(x, y)
+  for i in range(len(x)): r = helper.if_round_abs(x[i], y[i], cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x, y=None, k=0): return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 

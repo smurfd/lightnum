@@ -13,9 +13,7 @@ class array(object):
   def astype(self, x): return [x(self.x[i]).value for i in range(len(self.x))]
   def tolist(self): return list(self.x)
   def numpy(self): return list(self.x)
-
 class asarray(array): pass
-
 class ndarray(array):
   def __init__(self, x=0):
     if len(x) == 1:
