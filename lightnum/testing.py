@@ -1,6 +1,6 @@
 from lightnum.helper import helper
 from lightnum.array import ndarray
-import builtins
+import builtins, time
 
 class testing:
   def looper_assert(x, y, close=False, cls=False):
@@ -44,3 +44,12 @@ class testing:
       print("Max absolute difference: {}\nMax relative difference: {}".format(round(max(adiff), 10), round(max(rdiff), 10)))
       raise AssertionError("Not equal to tolerance rtol={}, atol={}".format(rtol, atol))
     return True
+
+  def timing_test_looper(fn1, fn2, s, *args, **kwargs):
+    t1 = time.perf_counter()
+    for _ in range(100000): fn1(*args, **kwargs)
+    t2 = time.perf_counter()
+    t3 = time.perf_counter()
+    for _ in range(100000): fn2(*args, **kwargs)
+    t4 = time.perf_counter()
+    print('[{}] Numpy {}: {:.4f}ms Lightnum {}: {:.4f}ms = {}%'.format((t2 - t1) * 1000 > (t4 - t3) * 1000, s, (t2 - t1) * 1000, s, (t4 - t3) * 1000, int((t2 - t1) / (t4 - t3) * 100)))
