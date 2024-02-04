@@ -12,15 +12,13 @@ class helper():
     for i in range(l):
       if i >= 0 and i < len(x): x[i] = 0
     return x
-  def if_round_abs(x, y, cls=False):#, ret=[], cls=False):
-    print("IFS")
+  def if_round_abs(x, y, cls=False):
     ret = []
     if round(x, 8) == round(y, 8): ret.append(True)
     else: ret.append(False)
     ret.append(abs(abs(x) - abs(y)))
     if y: ret.append(abs(abs(x) - abs(y)) / abs(y))
     if cls: ret.append(abs(y))
-    print("IFS", ret)
     return ret
 
   # helper functions to loop through multidimentional lists/tuples
@@ -150,36 +148,7 @@ class helper():
       else: return y
     ret = [helper.looper_matmul(i, y=j) for i, j in zip(x, y)]
     return helper.reshape(ret, -1)
-  """
-  def looper_assert(x, y):
-    ret=[]
-    if len(x) != len(y): return [False] # this fixes assert, got some errors need to fix
-    for i in range(len(x)):
-      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert(x[i], y[i])
-      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert(x[i], y)
-      elif isinstance(x[i], tuple): ret = helper.looper_assert(x[i], y)
-      elif isinstance(x[i], ndarray): ret = helper.looper_assert(x[i].tolist(), y[i].tolist())
-      else: ret.append(True) if round(x[i], 8) == round(y[i], 8) else ret.append(False)
-    return ret
 
-  def looper_assert_close(x, y):
-    ret=[]
-    for i in range(len(x)):
-      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close(x[i], y[i])
-      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close(x[i], y)
-      elif isinstance(x[i], tuple): ret = helper.looper_assert_close(x[i], y)
-      else: ret = helper.if_round_abs(x[i], y[i])#, ret)
-    return ret
-
-  def looper_assert_close_cls(x, y):
-    ret=[]
-    for i in range(len(x)):
-      if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = helper.looper_assert_close_cls(x[i], y[i])
-      elif isinstance(x[i], list) and not isinstance(y, list): ret = helper.looper_assert_close_cls(x[i], y)
-      elif isinstance(x[i], tuple): ret = helper.looper_assert_close_cls(x[i], y)
-      else: ret = helper.if_round_abs(x[i], y[i],cls=True)#, ret, cls=True)
-    return ret
-  """
   # BARF
   def looper_pad(x, y, mode='constant', **kwargs):
     ret = []
