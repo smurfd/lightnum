@@ -1,5 +1,5 @@
-import numpy as np # only to compare
 import lightnum.lightnum as lp
+import numpy as np # only to compare
 
 def test_zeros(): lp.testing.assert_equal(lp.zeros([4]), np.zeros([4]).tolist())
 def test_zeros_big(): lp.testing.assert_equal(lp.zeros([3, 3, 3, 3]), np.zeros([3, 3, 3, 3]).tolist())

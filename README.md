@@ -12,16 +12,16 @@ python3 -m pip install -e '.[testing, linting]' --user
 ```
 ### Test
 ```
-python3 -m pytest
+python3 -m pytest lightnum/test
 ```
 ### Use in your project
 (After you have installed lightnum with `pip`. From your projects root path, run)
 ```
-python3 /path/to/lightnum/replace_np.py
+python3 /path/to/lightnum/lightnum/scripts/replace_np.py
 ```
 ### Create a portable version
 ```
-python3 scripts/create_portable.py
+python3 lightnum/scripts/create_portable.py
 ```
 Then copy `lightnum.py` to your project folder, and use with:
 ```
