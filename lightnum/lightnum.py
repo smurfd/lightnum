@@ -58,7 +58,10 @@ def not_equal(x, y): return not testing.assert_equal(x, y)
 def array_equal(x, y): return testing.assert_equal(x, y)
 def reshape(l, shape): return helper.reshape(l, shape)
 def cumsum(x, dtype=int32): return helper.looper_cumsum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else helper.cast(helper.looper_cumsum(x, dtype=dtype), dtype=dtype)
-def outer(x, y): x = reshape(x, -1); y = reshape(y, -1); return [[x1*y1 for y1 in y] for x1 in x]
+def outer(x, y):
+  x = reshape(x, -1)
+  y = reshape(y, -1)
+  return [[x1*y1 for y1 in y] for x1 in x]
 def expand_dims(x, axis): return helper.looper_expand_dims(x, axis)
 def argmax(x, axis=None): return helper.looper_argmax(x, axis)
 def transpose(x, axes=None): return helper.looper_transpose(x, axes)

@@ -8,7 +8,7 @@ class array(object):
   def __truediv__(self, x): return [i / x for i in self.x]
   def __floordiv__(self, x): return [i // x for i in self.x]
   def __call__(self, x): return ndarray(x)
-  def __mul__(self, x): print("MUL", x, self.x); print("MUL", [i * x for i in self.x]); return [i * x for i in self.x]
+  def __mul__(self, x): return [i * x for i in self.x]
   def __len__(self, x): return len(self.x) if "Image" not in str(type(x)) else len(x.size)
   def astype(self, x): return [x(self.x[i]).value for i in range(len(self.x))]
   def tolist(self): return list(self.x)

@@ -45,7 +45,13 @@ def test_allclose1(): lp.testing.assert_equal(lp.allclose([1e10,1e-7], [1.00001e
 def test_allclose2(): lp.testing.assert_equal(lp.allclose([1e10,1e-8], [1.00001e10,1e-9]), np.allclose([1e10,1e-8], [1.00001e10,1e-9]))
 def test_cbrt(): lp.testing.assert_equal(lp.cbrt([1,8,27]), np.cbrt([1,8,27]))
 def test_copy(): lp.testing.assert_equal(lp.copy([[1,2,3,4],[5,6,7,8]]), np.copy([[1,2,3,4],[5,6,7,8]]).tolist())
-def test_copyto(): b=[[0,0,0,0],[0,0,0,0]]; c=[[1, 2, 3, 4],[2,2,2,2]]; a=np.array(c); np.copyto(a, c); lp.copyto(b, c); lp.testing.assert_equal(b, a.tolist())
+def test_copyto():
+  b=[[0,0,0,0],[0,0,0,0]]
+  c=[[1, 2, 3, 4],[2,2,2,2]]
+  a=np.array(c)
+  np.copyto(a, c)
+  lp.copyto(b, c)
+  lp.testing.assert_equal(b, a.tolist())
 def test_median(): lp.testing.assert_equal(lp.median([[10, 7, 4], [3, 2, 1]]), np.median([[10, 7, 4], [3, 2, 1]]))
 def test_arange(): lp.testing.assert_equal(lp.arange(3, 7).tolist(), np.arange(3, 7).tolist())
 def test_flip(): lp.testing.assert_equal(lp.flip([1,2,3,4,5,6]), np.flip([1,2,3,4,5,6]))
@@ -69,8 +75,14 @@ def test_squeeze(): lp.testing.assert_equal(lp.squeeze([[[0, 1, 2], [3, 4, 5], [
 def test_clip(): lp.testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5), np.clip([[1, 2, 3, 4], [5, 6, 7, 8]], 2, 5).tolist())
 def test_unique(): lp.testing.assert_equal(lp.unique([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.unique([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
 def test_triu(): lp.testing.assert_equal(lp.triu([[1,2,3],[1,2,3],[1,2,3]], 1), np.triu([[1,2,3],[1,2,3],[1,2,3]], 1).tolist())
-def test_meshgrid(): lpx,lpy=lp.meshgrid([1,2,3], [4,5,6]); npx,npy=np.meshgrid([1,2,3], [4,5,6]); lp.testing.assert_equal(lpx, npx.tolist()); lp.testing.assert_equal(lpy, npy.tolist())
-def test_newaxis(): x = np.array([[1,2,3],[1,2,3]]);lp.testing.assert_equal(lp.newaxis([[1,2,3],[1,2,3]], 1), x[np.newaxis, :].tolist())
+def test_meshgrid():
+  lpx,lpy=lp.meshgrid([1,2,3], [4,5,6])
+  npx,npy=np.meshgrid([1,2,3], [4,5,6])
+  lp.testing.assert_equal(lpx, npx.tolist())
+  lp.testing.assert_equal(lpy, npy.tolist())
+def test_newaxis():
+  x = np.array([[1,2,3],[1,2,3]])
+  lp.testing.assert_equal(lp.newaxis([[1,2,3],[1,2,3]], 1), x[np.newaxis, :].tolist())
 def test_frombuffer(): lp.testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
 def test_promote_types(): assert(str(lp.promote_types(lp.uint8, lp.uint32)) == np.promote_types(np.uint8, np.uint32))
 def test_delete(): lp.testing.assert_equal(lp.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1), np.delete([[1,2,3],[4,5,6],[7, 8, 9]], 1))
@@ -84,7 +96,13 @@ def test_pad_minimum(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'mini
 def test_pad_reflect(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'reflect'), np.pad([1, 2, 3, 4, 5], 2, 'reflect').tolist())
 def test_pad_symmetric(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'symmetric'), np.pad([1, 2, 3, 4, 5], 2, 'symmetric'))
 def test_pad_wrap(): lp.testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'wrap'), np.pad([1, 2, 3, 4, 5], 2, 'wrap'))
-def test_show_randomusage(): np.random.seed(1337); lp.random.seed(1337); np.random.randn(2,4); lp.random.randn(2,4); lp.random.randn(2,4, dtype=lp.int32); lp.random.randn((2,4), dtype=lp.int32)
+def test_show_randomusage():
+  np.random.seed(1337)
+  lp.random.seed(1337)
+  np.random.randn(2,4)
+  lp.random.randn(2,4)
+  lp.random.randn(2,4, dtype=lp.int32)
+  lp.random.randn((2,4), dtype=lp.int32)
 def test_empty():
   try: lp.testing.assert_equal(lp.empty(6, dtype=lp.int32), np.empty(6, dtype=np.int32))
   except AssertionError as e: print("this is not the same since numpy uses random memory value and i force set to 0", str(e))
@@ -99,17 +117,26 @@ def test_assert_equal():
   try: lp.testing.assert_equal([[1, 2, 3, 4], [6, 6, 7, 8]], [[1, 2, 3, 4], [5, 6, 7, 8]]) # Assert failure
   except AssertionError as e: print(str(e), ", but that is expected")
 def test_save_load():
-  with open('/tmp/testlp.npy', 'wb') as f: lp.save(f, [1,2,3,4,5,6,7,8,9]); lp.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
-  with open('/tmp/testlp.npy', 'rb') as f: lpx = lp.load(f); lpy = lp.load(f)
-  with open('/tmp/testnp.npy', 'wb') as f: np.save(f, [1,2,3,4,5,6,7,8,9]); np.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
-  with open('/tmp/testnp.npy', 'rb') as f: npx = np.load(f); npy = np.load(f)
+  with open('/tmp/testlp.npy', 'wb') as f:
+    lp.save(f, [1,2,3,4,5,6,7,8,9])
+    lp.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
+  with open('/tmp/testlp.npy', 'rb') as f:
+    lpx = lp.load(f)
+    lpy = lp.load(f)
+  with open('/tmp/testnp.npy', 'wb') as f:
+    np.save(f, [1,2,3,4,5,6,7,8,9])
+    np.save(f, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
+  with open('/tmp/testnp.npy', 'rb') as f:
+    npx = np.load(f)
+    npy = np.load(f)
   lp.testing.assert_equal(lpx, npx)
   lp.testing.assert_equal(lpy, npy)
   lp.testing.assert_equal(lpx, [1,2,3,4,5,6,7,8,9])
   lp.testing.assert_equal(lpy, [10, 11, 12, 13, 14, 15, 16, 17, 18, 191111111111111111])
 def test_load_z():
   np.savez('/tmp/testnp.npz', name1=np.arange(8).reshape(2, 4).tolist(), name2=np.arange(10).reshape(2, 5).tolist())
-  lpz = lp.load('/tmp/testnp.npz'); npz = np.load('/tmp/testnp.npz')
+  lpz = lp.load('/tmp/testnp.npz')
+  npz = np.load('/tmp/testnp.npz')
   lp.testing.assert_equal(lpz['name1'], npz['name1'].tolist())
   lp.testing.assert_equal(lpz['name2'], npz['name2'].tolist())
 
