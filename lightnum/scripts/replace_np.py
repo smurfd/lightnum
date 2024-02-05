@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 from typing import Generator
-#from pathlib import Path
 import os
 
 # Run this in your source folder to replace "import numpy as np" with "import lightnum.lightnum as np"

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import lightnum.lightnum as lp
 import numpy as np # only to compare
 

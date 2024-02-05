@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import annotations
 from typing import List, Any, Callable, Type, Optional
 from lightnum.array import array, ndarray, asarray

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from lightnum.array import array, ndarray, asarray
 from lightnum.random import random
 from lightnum.testing import testing

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from __future__ import annotations
 from typing import List, Any, Callable, Type, Optional
 from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types, dtype
