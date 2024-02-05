@@ -1,6 +1,7 @@
+from typing import List
 import re
 
-def create_portable_getdata(fn):
+def create_portable_getdata(fn: str) -> List[str]:
   data = []
   with open(fn, "r") as f:
     for line in f:
@@ -10,7 +11,7 @@ def create_portable_getdata(fn):
         data.append(line)
   return data
 
-def create_portable_writedata(fn, data):
+def create_portable_writedata(fn: str, data: List[str]) -> None:
   imp, dat, fut = [], [], []
   for d in data:
     if d.startswith("from __future__"): fut.append(d)

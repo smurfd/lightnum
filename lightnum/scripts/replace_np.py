@@ -1,12 +1,14 @@
+from typing import Generator
+#from pathlib import Path
 import os
 
 # Run this in your source folder to replace "import numpy as np" with "import lightnum.lightnum as np"
-def scantree(path):
+def scantree(path: str) -> Generator[os.DirEntry[str], None, None]:
   for entry in os.scandir(path):
     if entry.is_dir(follow_symlinks=False): yield from scantree(entry.path)
     else: yield entry
 
-def replace(rwith, rfind):
+def replace(rwith: str, rfind: str) -> None:
   for entry in scantree(os.path.dirname(os.path.abspath(__file__))):
     if entry.is_file() and os.fsdecode(entry).endswith('.py'):
       found = False
