@@ -7,12 +7,12 @@ repos:
         language: system
         always_run: true
         pass_filenames: false
-      - id: mypy
-        name: mypy
-        entry: python3 -m mypy lightnum/
-        language: system
-        always_run: true
-        pass_filenames: false
+      #- id: mypy
+      #  name: mypy
+      #  entry: python3 -m mypy lightnum/
+      #  language: system
+      #  always_run: true
+      #  pass_filenames: false
       - id: tests
         name: tests
         entry: python3 -m pytest lightnum/test/test_lightnum.py

@@ -7,6 +7,7 @@ import random as rnd, array as arr, copy as cp, builtins, ctypes, math
 
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
+helper = helper()
 def cast(x, dtype=float64):
   if isinstance(x, list): return [cast(i, dtype) for i in x]
   a, b = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value, (not isinstance(x, list) and x != float(int(x)))
