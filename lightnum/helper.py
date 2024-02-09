@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict
+from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict, Iterable
 from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types, dtype
 from lightnum.array import ndarray, array
 import itertools, builtins, ctypes, struct, math
@@ -8,9 +8,10 @@ import itertools, builtins, ctypes, struct, math
 class helper:
   MAGIC_PREFIX = b'\x93NUMPY'
   _header_size_info: Dict[Tuple[int, int], Tuple[str, str]] = {(1, 0): ('<H', 'latin1'), (2, 0): ('<I', 'latin1'), (3, 0): ('<I', 'utf8')}
+  def __init__(self) -> None: pass
   def cbrt(self, x: int) -> Any: return round(x**(1 / 3.), 2)
   def format_float(self, x: float) -> Any: return float(('%i' if x == int(x) else '%s') % x)
-  def cast(self, x: List[Any], dtype:dtype = float64) -> Any: return self.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
+  def cast(self, x: Union[float, int, List[Any]], dtype:dtype = float64) -> Any: return self.looper_cast(x, dtype=dtype) if str(dtype) != types[dtype(x)] else x
   def zero_row_len(self, x: List[Any], l: int) -> List[Any]:
     for i in range(l):
       if i >= 0 and i < len(x): x[i] = 0
@@ -25,12 +26,12 @@ class helper:
     return ret
 
   # helper functions to loop through multidimentional lists/tuples
-  def looper_cast(self, x: List[Any], dtype: dtype = float64) -> Any:
+  def looper_cast(self, x: Union[float, int, List[Any]], dtype: dtype = float64) -> Any:
     if isinstance(x, list): return [self.looper_cast(i, dtype) for i in x]
     a = ctypes.cast(ctypes.pointer(dtype(x)(round(x, 8))), ctypes.POINTER(dtype(x))).contents.value
     b = (not isinstance(x, list) and x != float(int(x)))
     return (round(a, 8 if len(str(x)) > 8 else len(str(x))) if b else int(a) if dtype in [float16, float32, float64] else a)
-  def looper_transpose(self, x: List[Any], axes: Optional[List[Any]]=None) -> List[Any]: return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
+  def looper_transpose(self, x: List[Any], axes: Union[Any, int]=None) -> List[Any]: return [[row[i] for row in x] for i in range(len(x[0]))] #TODO: axes
   def looper_stack(self, x: List[Any], axis: int = 0) -> List[Any]: return [i for i in x] #TODO: axis
   def looper_expand_dims(self, x: List[Any], axis: int, axisco: int = 0) -> List[Any]: return [x] if axisco == axis else [self.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
   def looper_flip(self, x: List[Any], dtype: dtype = int32) -> List[Any]: return [self.looper_flip(i) for i in x] if isinstance(x[0], list) else x[::-1]
@@ -69,11 +70,11 @@ class helper:
     elif not isinstance(y, list): return [ndarray(x[i:i+(len(x)//y)]) for i in range(0, len(x), len(x)//y)]
     return [self.looper_split(i, y) for i in x]
 
-  def looper_tile(self, x: List[Any], y: Tuple[Any, Any], dtype: dtype = int32) -> List[Any]:
+  def looper_tile(self, x: List[Any], y: Union[List[Any], Tuple[Any, Any]], dtype: dtype = int32) -> List[Any]:
     tmp: List[Any] = []
     tmp2: List[Any] = []
     if not isinstance(y, tuple):
-      for _ in range(y): tmp.extend(x)
+      for _ in range(y if not isinstance(y, (list, tuple)) else len(y)): tmp.extend(x)
       return ndarray(tmp)
     a,b = y
     for _ in range(a):
@@ -149,7 +150,7 @@ class helper:
       else: ret.append(True) if x[i] == y[i] else ret.append(False)
     return ret
 
-  def looper_count(self, x: List[Any], ret: int = 0) -> int:
+  def looper_count(self, x: Union[int, Iterable[object], List[Any]], ret: int = 0) -> Union[int, Iterable[object]]:
     for i in range(len(x)):
       if isinstance(x[i], (list, tuple)): ret = self.looper_count(x[i], ret)
       elif (x[i] != 0 and x[i] is not False): ret += 1
@@ -236,7 +237,7 @@ class helper:
       ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
     return ret
 
-  def reshape(self, col: List[Any], shape: int | List[int]) -> List[Any]:
+  def reshape(self, col: Union[List[Any], ndarray], shape: int | List[int]) -> List[Any]:
     ncols: int = 0
     nrows: int = 0
     ret: List[Any] = []
@@ -272,9 +273,9 @@ class helper:
   def read_body(self, f: BinaryIO, l: int) -> List[int]: return [int.from_bytes(f.read(8), "little") for _ in range(0, l, 8)]
 
   def write_magic(self, f: BinaryIO) -> None: f.write(self.MAGIC_PREFIX)
-  def write_header_type(self, f: BinaryIO, t: List[Any]) -> None:
+  def write_header_type(self, f: BinaryIO, t: Tuple[int, int]) -> None:
     f.write(t[0].to_bytes(1, byteorder ='big'))
     f.write(t[1].to_bytes(1, byteorder ='big'))
-  def write_header_len(self, f: BinaryIO, p: int, header: str) -> None: f.write(struct.pack('<H', len(header)))
-  def write_header(self, f: BinaryIO, t: str, header: str) -> None: f.write(header.encode())
+  def write_header_len(self, f: BinaryIO, p: Tuple[int, int], header: str) -> None: f.write(struct.pack('<H', len(header)))
+  def write_header(self, f: BinaryIO, t: Tuple[int, int], header: str) -> None: f.write(header.encode())
   def write_body(self, f: BinaryIO, x: List[Any]) -> None: [f.write(i.to_bytes(8,'little')) for i in x]

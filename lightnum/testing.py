@@ -8,7 +8,7 @@ from typing import List, Callable, Any, Optional, SupportsAbs, SupportsRound, ov
 class testing:
   def looper_assert(self, x: List[Any[int, float]] | SupportsRound[Any], y: List[Optional[Any]] | SupportsRound[Any], close: bool=False, cls: bool=False) -> List[Any[int, float]]:
     ret=[]
-    if len(x) != len(y): return [False] # this fixes assert, got some errors need to fix
+    if len(list(x)) != len(list(y)): return [False] # this fixes assert, got some errors need to fix
     for i in range(len(x)):
       if isinstance(y, list) and builtins.all(isinstance(j, list) for j in [x[i],y[i]]): ret = testing.looper_assert(self, x[i], y[i])
       elif isinstance(x[i], list) and not isinstance(y, list): ret = testing.looper_assert(self, x[i], y)
@@ -28,7 +28,8 @@ class testing:
   def assert_array_equal(self, x: List[Any[int, float]], y: List[Any[int, float]]) -> None:
     if not builtins.all(testing.looper_assert(self, x, y)): raise AssertionError("Values in array are not equal")
 
-  def assert_allclose(self, x: List[Any[int, float]] | complex | SupportsAbs[float], y: List[Any[int, float]] | complex | SupportsAbs[float], rtol: float=1e-07, atol: int=0) -> bool:
+  #def assert_allclose(self, x: List[Any[int, float]] | complex | SupportsAbs[float], y: List[Any[int, float]] | complex | SupportsAbs[float], rtol: float=1e-07, atol: int=0) -> bool:
+  def assert_allclose(self, x: SupportsAbs[float], y: SupportsAbs[float], rtol: float=1e-07, atol: int=0) -> bool:
     miss, r, rdiff, adiff = 0, [], [], []
     if builtins.all(isinstance(i, int) for i in [x,y]):
       if x != y:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Optional, Any, Type
+from typing import List, Optional, Any, Type, Union, Tuple
 import ctypes, math
 
 cts = [ctypes.c_float, ctypes.c_float, ctypes.c_double, ctypes.c_int8, ctypes.c_int16, ctypes.c_int32, ctypes.c_int64, ctypes.c_uint8, ctypes.c_uint16, ctypes.c_uint32, ctypes.c_uint64, ctypes.c_bool]
@@ -63,7 +63,7 @@ class dtype(ctstruct):
     self._fields_ = [dtype, dtype]
     self.type = self._fields_[1]
   def __repr__(self) -> str: return repr(types[self._fields_[1]]).replace("'", "") if (self._fields_[1] and str(self._fields_[1]) not in types) else str(self._fields_[1])
-  def __call__(self, x: List[Any]) -> Any: return self._fields_[1]
+  def __call__(self, x: Union[float, int, List[Any], Tuple[Any, ...]]) -> Any: return self._fields_[1]
   def value(self) -> Any: return self._fields_[0] if not isinstance(tuple(self._fields_), tuple(cts)) else self._fields_[1]
 
 # types
