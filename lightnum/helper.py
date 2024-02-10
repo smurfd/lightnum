@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict, Iterable, Sized
-from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types, dtype
-from lightnum.array import ndarray, array
+from typing import List, Any, BinaryIO, Tuple, Union, Dict, Iterable, Sized
+from lightnum.dtypes import int32, float16, float32, float64, types, dtype
+from lightnum.array import ndarray
 import itertools, builtins, ctypes, struct, math
 
 class helper:

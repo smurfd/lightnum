@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Type, Optional, Union
-from lightnum.array import array, ndarray, asarray
+from typing import List, Any, Optional, Union
+from lightnum.array import ndarray
 from lightnum.helper import helper
 from lightnum.dtypes import int32, float32, dtype
 import random as rnd

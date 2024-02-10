@@ -3,11 +3,10 @@ from __future__ import annotations
 from lightnum.helper import helper
 from lightnum.array import ndarray
 import builtins, time
-from typing import List, Callable, Any, Optional, SupportsAbs, SupportsRound, overload, Union
+from typing import List, Callable, Any, SupportsAbs, Union
 
 h = helper()
 class testing:
-  #def looper_assert(self, x: Union[List[Any], complex, SupportsRound[float]], y: Union[List[Any], complex, SupportsRound[float]], close: bool=False, cls: bool=False) -> List[Any[int, float]]:
   def looper_assert(self, x: Union[int, List[Any], SupportsAbs[float]], y: Union[int, List[Any], SupportsAbs[float]], close: bool=False, cls: bool=False) -> List[Any[int, float]]:
     ret=[]
     if len(list(x)) != len(list(y)): return [False] # type: ignore
@@ -20,7 +19,6 @@ class testing:
       elif close: ret = h.if_round_abs(x[i], y[i]) # type: ignore
       else: ret.append(True) if round(x[i], 8) == round(y[i], 8) else ret.append(False) # type: ignore
     return ret
-  #def looper_assert_close(self, x: Union[List[Any[int, float]], complex, SupportsRound[float]], y: Union[List[Any[int, float]], complex, SupportsRound[float]]) -> List[Any[int, float]]: return self.looper_assert(x, y, close=True)
   def looper_assert_close(self, x: SupportsAbs[float], y: SupportsAbs[float]) -> List[Any[int, float]]: return self.looper_assert(x, y, close=True)
   def looper_assert_close_cls(self, x: List[Any[int, float]], y: List[Any[int, float]]) -> List[Any[int, float]]: return self.looper_assert(x, y, close=True, cls=True)
 

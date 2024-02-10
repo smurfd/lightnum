@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-from lightnum.array import array, ndarray, asarray
-from lightnum.random import random
+from lightnum.array import array, ndarray
 from lightnum.testing import testing
 from lightnum.helper import helper
-from lightnum.dtypes import int32, uint32, float16, float32, float64, uint8, dtype, types
-import random as rnd, array as arr, copy as cp, builtins, ctypes, math
-from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict, SupportsIndex, SupportsFloat, Iterable
+from lightnum.random import random
+from lightnum.dtypes import int32, float16, float32, float64, dtype, types, uint8, uint32
+import array as arr, copy as cp, builtins, ctypes, math
+from typing import List, Any, Type, BinaryIO, Tuple, Union, SupportsIndex, SupportsFloat, Iterable
 
 
 # TODO: make dtype=xxx do something
