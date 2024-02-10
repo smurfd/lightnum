@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict, Iterable
+from typing import List, Any, Callable, Type, Optional, BinaryIO, Tuple, Union, Dict, Iterable, Sized
 from lightnum.dtypes import int16, int32, uint32, float16, float32, float64, uint8, uint16, types, dtype
 from lightnum.array import ndarray, array
 import itertools, builtins, ctypes, struct, math
@@ -36,7 +36,7 @@ class helper:
   def looper_expand_dims(self, x: List[Any], axis: int, axisco: int = 0) -> List[Any]: return [x] if axisco == axis else [self.looper_expand_dims(x[i], axis, axisco + 1) for i in range(len(x))]
   def looper_flip(self, x: List[Any], dtype: dtype = int32) -> List[Any]: return [self.looper_flip(i) for i in x] if isinstance(x[0], list) else x[::-1]
   def looper_squeeze(self, x: List[Any], axis: int = 0) -> List[Any]: return x if not isinstance(x[0][0], list) else [self.looper_squeeze(y, axis) for y in x].pop() #TODO: axis
-  def looper_clip(self, x: List[Any]| int, x_min: int, x_max: int) -> Union[Any, Any]: return (x_min if x < x_min else x_max) if not isinstance(x, list) else [self.looper_clip(y, x_min, x_max) for y in x]
+  def looper_clip(self, x: Union[List[Any], int], x_min: int, x_max: int) -> Union[Any, Any]: return (x_min if x < x_min else x_max) if not isinstance(x, list) else [self.looper_clip(y, x_min, x_max) for y in x]
   def looper_broadcast_to(self, x: List[Any], y: List[Any]) -> List[Any]: return x if len(y) == 1 else [x for i in range(y[0])]
   def looper_nonzero(self, x: List[Any]) -> Tuple[ndarray, ...]:
     ret1: List[Any] = []
@@ -44,11 +44,11 @@ class helper:
     if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)] # type: ignore
     return tuple([ndarray(ret1)] + [ndarray(ret2)])
 
-  def looper_arange(self, start: int, stop: int = 0, step: int = 1, dtype: dtype = int32) -> List[Any] | ndarray:
+  def looper_arange(self, start: int, stop: int = 0, step: int = 1, dtype: dtype = int32) -> Union[List[Any], ndarray]:
     if stop: return ndarray([i for i in range(start, stop, step)])
     return ndarray([i for i in range(0, start, step)])
 
-  def looper_argmax(self, x: List[Any], axis: int = 0) -> int | List[Any]:
+  def looper_argmax(self, x: List[Any], axis: int = 0) -> Union[int, List[Any]]:
     if not axis:
       y = self.reshape(x, -1)
       return y.index(max(y))
@@ -75,7 +75,7 @@ class helper:
     tmp2: List[Any] = []
     if not isinstance(y, tuple):
       for _ in range(y if not isinstance(y, (list, tuple)) else len(y)): tmp.extend(x)
-      return ndarray(tmp)
+      return ndarray(tmp) # type: ignore
     a,b = y
     for _ in range(a):
       for _ in range(b): tmp2.extend(x)
@@ -83,7 +83,7 @@ class helper:
       tmp2=[]
     return tmp
 
-  def looper_empty(self, x: List[Any], fill: float| int, dtype: dtype = int32) -> List[Any]:
+  def looper_empty(self, x: List[Any], fill: Union[float, int], dtype: dtype = int32) -> List[Any]:
     if isinstance(x, (int, float)): return [fill]*x
     elif len(x)==1: return([fill]*x[0])
     elif isinstance(x, (list, tuple)) and isinstance(x[0], (list, tuple)): return [self.looper_empty(x[i], fill=fill, dtype=dtype) for i in range(len(x))]
@@ -107,19 +107,19 @@ class helper:
     if not r and not ret: r.extend(ret1)
     return r
 
-  def looper_empty_like(self, x: List[Any], fill: float | int, dtype: dtype = int32) -> List[Any]:
+  def looper_empty_like(self, x: List[Any], fill: Union[float, int], dtype: dtype = int32) -> List[Any]:
     if isinstance(x, int): return [fill] * x
     elif isinstance(x, list):
       if not isinstance(x[0], list): return [fill] * len(x)
       return [fill for a in range(len(x)) for b in range(len(x[a]))]
 
-  def looper_max(self, x: List[Any], ret: float | int | List[Any] = 0) -> float | int | List[Any]:
+  def looper_max(self, x: List[Any], ret: Union[float, int, List[Any]] = 0) -> Union[float, int, List[Any]]:
     for i in range(len(x)):
       if isinstance(x[i], (list, tuple)): ret = self.looper_max(x[i], ret)
       elif ret <= x[i]: ret = x[i]
     return ret
 
-  def looper_min(self, x: List[Any], ret: float | int | List[Any] = 0) -> float | int | List[Any]:
+  def looper_min(self, x: List[Any], ret: Union[float, int, List[Any]] = 0) -> Union[float, int, List[Any]]:
     for i in range(len(x)):
       if isinstance(x[i], (list, tuple)): ret = self.looper_min(x[i], ret)
       elif ret >= x[i]: ret = x[i]
@@ -150,10 +150,10 @@ class helper:
       else: ret.append(True) if x[i] == y[i] else ret.append(False)
     return ret
 
-  def looper_count(self, x: Union[int, Iterable[object], List[Any]], ret: int = 0) -> Union[int, Iterable[object]]:
-    for i in range(len(x)):
-      if isinstance(x[i], (list, tuple)): ret = self.looper_count(x[i], ret)
-      elif (x[i] != 0 and x[i] is not False): ret += 1
+  def looper_count(self, x: Union[int, Iterable[object], List[Any], Sized], ret: int = 0) -> Union[int, Iterable[object]]:
+    for i in range(len(x)): # type: ignore
+      if isinstance(x[i], (list, tuple)): ret = self.looper_count(x[i], ret) # type: ignore
+      elif (x[i] != 0 and x[i] is not False): ret += 1 # type: ignore
     return ret
 
   def looper_matmul(self, x: List[Any], y: List[Any], dtype: dtype = int32) -> List[Any]:
@@ -165,7 +165,7 @@ class helper:
     return self.reshape(ret, -1)
 
   # BARF
-  def looper_pad(self, x: List[Any], y: List[Any] | Tuple[Any, Any], mode: str ='constant', **kwargs: Any) -> List[Any]:
+  def looper_pad(self, x: List[Any], y: Union[List[Any], Tuple[Any, Any]], mode: str ='constant', **kwargs: Any) -> List[Any]:
     ret: List[Any] = []
     app = [x[i] for i in range(len(x))]
     if mode == 'constant':
@@ -200,7 +200,7 @@ class helper:
       ret.extend(app)
       ret.extend(maxv for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'mean':
-      meanv: int | float = 0
+      meanv: Union[int, float] = 0
       for i in range(len(x)): meanv += x[i]
       meanv = int(meanv / len(x))
       ret.extend(meanv for i in range(y[0] if isinstance(y, tuple) else y))
@@ -237,26 +237,26 @@ class helper:
       ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
     return ret
 
-  def reshape(self, col: Union[List[Any], ndarray], shape: int | List[int]) -> List[Any]:
+  def reshape(self, col: Union[List[Any], ndarray, int], shape: Union[Tuple[int, int], int, List[int]]) -> List[Any]:
     ncols: int = 0
     nrows: int = 0
     ret: List[Any] = []
     row: List[Any] = []
     if isinstance(shape, tuple): nrows, ncols = shape
-    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1
+    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1 # type: ignore
     else: ncols, nrows = len(col), 1
     if shape == -1:
       for r in range(nrows):
         for c in range(ncols):
           if isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(self.reshape(col[c], -1))
           else:
-            row.extend(col)
+            row.extend(col) # type: ignore
             break
         ret.extend(row)
         row=[]
       return ret
     for r in range(nrows):
-      for c in range(ncols): row.append(col[ncols * r + c])
+      for c in range(ncols): row.append(col[ncols * r + c]) # type: ignore
       ret.append(row)
       row=[]
     return ret

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Type, Optional
+from typing import List, Any, Callable, Type, Optional, Union
 from lightnum.array import array, ndarray, asarray
 from lightnum.helper import helper
 from lightnum.dtypes import int32, float32, dtype
 import random as rnd
 
+h = helper()
 class random():
   class default_rng():
     x: int = 0
@@ -37,12 +38,12 @@ class random():
         for i in range(len(args[0])): ret.append(i)
     else:
       for i in args: ret.append(i)
-    return ndarray(helper.looper_empty(helper, ret, fill=rnd.random(), dtype=float32))
+    return ndarray(h.looper_empty(ret, fill=rnd.random(), dtype=float32))
   def random(self, size:int, dtype: dtype=float32) -> Any: return random.randn(self, size)
   def rand(self, *args: Any, dtype: dtype=int32) -> Any: return random.randn(self, args, dtype=dtype)
   def RandomState(self, x:int, dtype: dtype=int32) -> Any: return random.randn(self, x)
   class uniform():
-    ret: List[Any] | int= []
+    ret: Union[List[Any], int] = []
     def __init__(self, x: int, y: int, size: int) -> None: self.ret = [rnd.randint(x, y) for _ in range(size)] if size else rnd.randint(x, y)
     def tolist(self) -> Any: return self.ret
   class choice():

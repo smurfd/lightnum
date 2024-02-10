@@ -27,7 +27,7 @@ def sum(x: Union[Any, List[Any]], dtype: dtype = float16) -> Union[Any, List[Any
 def sqrt(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return math.sqrt(x) if not isinstance(x, list) else [sqrt(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(sqrt(x), dtype=dtype)
 def mod(x: Union[Any, List[Any]], y: Union[Any, List[Any]], dtype: dtype = float32) -> Union[Any, List[Any]]: return (x%y) if not isinstance(x, (list, tuple)) else [mod(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(mod(x, y), dtype=dtype)
 def add(x: Union[Any, List[Any]], y: Union[Any, List[Any]], dtype: dtype = float32) -> Union[Any, List[Any]]: return (x+y) if not isinstance(x, (list, tuple)) else [add(i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(add(x, y), dtype=dtype)
-def arctan2(x: Union[Any, List[Any]], y: Union[SupportsFloat, SupportsIndex], dtype: dtype = float32) -> Union[Any, List[Any]]: return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [arctan2(i, y=j) for i, j in zip(list(x), list(y))] if repr(dtype) == types[dtype(x)] else cast(arctan2(x, y), dtype=dtype)
+def arctan2(x: Union[SupportsFloat, SupportsIndex, List[Any]], y: Union[SupportsFloat, SupportsIndex, List[Any]], dtype: dtype = float32) -> Union[Any, List[Any]]: return math.atan2(x, y) if not isinstance(x, (list, tuple)) else [arctan2(i, y=j) for i, j in zip(list(x), list(y))] if repr(dtype) == types[dtype(x)] else cast(arctan2(x, y), dtype=dtype) # type: ignore
 def prod(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return math.prod(x) if not isinstance(x, list) else [prod(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(prod(x), dtype=dtype)
 def cos(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return math.cos(x) if not isinstance(x, list) else [cos(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(cos(x), dtype=dtype)
 def ceil(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return math.ceil(x) if not isinstance(x, list) else [ceil(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(ceil(x), dtype=dtype)
@@ -55,10 +55,10 @@ def flip(x: List[Any], dtype: dtype = int32) -> Any: return h.looper_flip(x, dty
 def split(x: List[Any], y: List[Any], dtype: dtype = int32) -> Any: return h.looper_split(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_split(x, y, dtype=dtype), dtype=dtype)
 def tile(x: List[Any], y: List[Any], dtype: dtype = int32) -> Any: return h.looper_tile(x, y, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_tile(x, y, dtype=dtype), dtype=dtype)
 def isin(x: List[Any], y: List[Any], dtype: dtype = int32) -> Any: return h.looper_isin(x, y=y) if str(dtype) == types[dtype(x)] else h.cast(h.looper_isin(x, y=y), dtype=dtype)
-def count_nonzero(x: List[Any]) -> int: return h.looper_count(x)
+def count_nonzero(x: List[Any]) -> Union[int, Iterable[object]]: return h.looper_count(x)
 def broadcast_to(x: List[Any], y: List[Any]) -> List[Any]: return h.looper_broadcast_to(x, y)
-def any(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.any(h.looper_count(x))
-def all(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.all(h.looper_count(x))
+def any(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.any(h.looper_count(x)) # type: ignore
+def all(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.all(h.looper_count(x)) # type: ignore
 def not_equal(x: List[Any], y: List[Any]) -> None: t.assert_equal(x, y)
 def array_equal(x: List[Any], y: List[Any]) -> Any: return t.assert_equal(x, y)
 def reshape(l: Union[List[Any], ndarray], shape: Union[int, List[Any]]) -> List[Any]: return h.reshape(l, shape)
@@ -75,10 +75,10 @@ def squeeze(x: List[Any], axis: Union[Any, int] = 0) -> List[Any]: return h.loop
 def clip(x: List[Any], x_min: int, x_max: int) -> Any: return h.looper_clip(x, x_min, x_max)
 def unique(x: List[Any]) -> List[Any]: return list(set(sorted(h.reshape(x, -1))))
 def vstack(x: List[Any]) -> List[Any]: return [i for i in x]
-def nonzero(x: List[Any]) -> List[Any]: return h.looper_nonzero(x)
+def nonzero(x: List[Any]) -> Tuple[ndarray, ...]: return h.looper_nonzero(x)
 def less(x: List[Any], y: List[Any]) -> bool: return x < y
 def equal(x: List[Any], y: List[Any]) -> bool: return x == y
-def promote_types(x: List[Any], y: List[Any]) -> dtype: return dtype(x) if dtype(x) <= dtype(y) else dtype(y)
+def promote_types(x: Type[Any], y: Type[Any]) -> dtype: return dtype(x) if dtype(x) <= dtype(y) else dtype(y)
 def median(x: List[Any]) -> float:
   r = []
   for i in range(len(x)): r.append(h.looper_median(x[i]) // len(x[i]))
@@ -90,7 +90,7 @@ def set_printoptions() -> None: pass
 def allclose(x: List[Any], y: List[Any], rtol: float = 1e-05, atol: float = 1e-08) -> bool:
   for i in range(len(x)): r = h.if_round_abs(x[i], y[i], cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
-def eye(x: List[Any], y: List[Any] = None, k: int=0) -> List[Any]: return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
+def eye(x: int, y: int = 0, k: int=0) -> List[Any]: return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 
 class arange():
   def __init__(self, start: int, stop: int = 0, step: int = 1, dtype: dtype = int32) -> None:
@@ -154,7 +154,7 @@ def load(f: BinaryIO) -> List[Any]:
     if not h.read_magic(f): raise TypeError("Not a magic file")
     d1, d2 = h.read_header(f, h.read_header_type(f))
     if len(d1) == 1: ret = h.read_body(f, (d1[0])*8)
-    else: ret.extend((h.read_body(f, (d1[len(d1)-1])*8)) for _ in range(d1[0]))
+    else: ret.extend((h.read_body(f, (d1[len(d1)-1])*8)) for _ in range(d1[0])) # type: ignore
   return ret
 
 def save(f: BinaryIO, x: List[Any]) -> None:
@@ -178,7 +178,7 @@ def pad(x: List[Any], y: List[Any], mode: str='constant', **kwargs: Any) -> List
 
 # kindof
 class ctypeslib:
-  def as_array(self, x: List[Any], shape: List[Any]) -> Union[List[Any], Type[Any]]: return arr.array('i', x)
+  def as_array(self, x: List[Any], shape: List[Any]) -> Union[List[Any], Type[Any]]: return arr.array('i', x) # type: ignore
 
 class lib:
   class stride_tricks:
