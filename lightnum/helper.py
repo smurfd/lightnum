@@ -156,14 +156,6 @@ class helper:
       elif (x[i] != 0 and x[i] is not False): ret += 1 # type: ignore
     return ret
 
-  def looper_matmul(self, x: List[Any], y: List[Any], dtype: dtype = int32) -> List[Any]:
-    if not isinstance(x, (list, tuple)):
-      if x and y: return x * y
-      elif x and not y: return x
-      else: return y
-    ret = [self.looper_matmul(i, y=j) for i, j in zip(x, y)]
-    return self.reshape(ret, -1)
-
   # BARF
   def looper_pad(self, x: List[Any], y: Union[List[Any], Tuple[Any, Any]], mode: str ='constant', **kwargs: Any) -> List[Any]:
     ret: List[Any] = []

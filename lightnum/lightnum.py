@@ -38,8 +38,16 @@ def multiply(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, Lis
 def reciprocal(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return 1/(x) if not isinstance(x, list) else [reciprocal(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(reciprocal(x), dtype=dtype)
 def frombuffer(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return [i for i in x] if not isinstance(x, list) else [frombuffer(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(frombuffer(x), dtype=dtype)
 def where(condition: str, x: Union[Any, List[Any]], y: Union[Any, List[Any]], dtype: dtype = int32) -> Union[Any, List[Any]]: return [xv if c else yv for c, xv, yv in zip(condition, x, y)] if not isinstance(x, (list, tuple)) else [where(condition, i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(where(condition, x, y), dtype=dtype)
+def matmul(x: List[Any], y: List[Any], dtype: dtype = float32) -> Any:
+  if str(dtype) == types[dtype(x)]:
+    if not isinstance(x, (list, tuple)):
+      if x and y: return x * y
+      elif x and not y: return x
+      else: return y
+    ret = [matmul(i, y=j) for i, j in zip(x, y)]
+    return h.reshape(ret, -1)
+  else: h.cast(matmul(x, y=y, dtype=dtype), dtype=dtype)
 
-def matmul(x: List[Any], y: List[Any], dtype: dtype = float32) -> Any: return h.looper_matmul(x, y=y, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_matmul(x, y=y, dtype=dtype), dtype=dtype)
 def empty(x: List[Any], fill: Union[int, float] = 0, dtype: dtype = int32) -> Any: return h.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
 def full(x: List[Any], fill: Union[int, float], dtype: dtype = float64) -> Any: return h.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
 def zeros(x: List[Any], fill: Union[int, float] = 0, dtype: dtype = float32) -> Any: return h.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
@@ -63,10 +71,7 @@ def not_equal(x: List[Any], y: List[Any]) -> None: t.assert_equal(x, y)
 def array_equal(x: List[Any], y: List[Any]) -> Any: return t.assert_equal(x, y)
 def reshape(l: Union[List[Any], ndarray], shape: Union[int, List[Any]]) -> List[Any]: return h.reshape(l, shape)
 def cumsum(x: List[Any], dtype: dtype = int32) -> Any: return h.looper_cumsum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_cumsum(x, dtype=dtype), dtype=dtype)
-def outer(x: List[Any], y: List[Any]) -> List[Any]:
-  x = reshape(x, -1)
-  y = reshape(y, -1)
-  return [[x1*y1 for y1 in y] for x1 in x]
+def outer(x: List[Any], y: List[Any]) -> List[Any]: return [[x1*y1 for y1 in reshape(y, -1)] for x1 in reshape(x, -1)]
 def expand_dims(x: List[Any], axis: Union[Any, int]) -> List[Any]: return h.looper_expand_dims(x, axis)
 def argmax(x: List[Any], axis: Union[Any, int] = None) -> Union[int, List[Any]]: return h.looper_argmax(x, axis)
 def transpose(x: List[Any], axes: Union[Any, int] = None) -> List[Any]: return h.looper_transpose(x, axes)
