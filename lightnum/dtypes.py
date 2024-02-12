@@ -9,7 +9,7 @@ class ctstruct:
   def __init__(self, dtype: Type[Any]=ctypes.c_uint8) -> None:
     self._fields_ = list([dtype, dtype])
     self.type = self._fields_[1]
-  def __eq__(self, other: ctstruct) -> bool: # type: ignore[override] # ==
+  def __eq__(self, other: ctstruct) -> bool: #type: ignore[override] # ==
     for fld in self._fields_:
       if not isinstance(fld, tuple(cts)):
         if str(self._fields_[1]) == str(other._fields_[1]): return True
@@ -17,7 +17,7 @@ class ctstruct:
         if getattr(self, fld[0]) == getattr(other, fld[0]): return True
     return False
 
-  def __ne__(self, other: ctstruct) -> bool: # type: ignore[override] # !=
+  def __ne__(self, other: ctstruct) -> bool: #type: ignore[override] # !=
     for fld in self._fields_:
       if not isinstance(fld, tuple(cts)):
         if str(self._fields_[1]) != str(other._fields_[1]): return True

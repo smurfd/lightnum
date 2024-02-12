@@ -9,7 +9,7 @@ repos:
         pass_filenames: false
       - id: mypy
         name: mypy
-        entry: python3 -m mypy lightnum/array.py lightnum/dtypes.py lightnum/helper.py lightnum/lightnum.py lightnum/random.py lightnum/testing.py
+        entry: python3 -m mypy lightnum/array.py lightnum/dtypes.py lightnum/helper.py lightnum/lightnum.py lightnum/random.py lightnum/testing.py lightnum/test/test_lightnum.py lightnum/test/test_timing.py
         language: system
         always_run: true
         pass_filenames: false

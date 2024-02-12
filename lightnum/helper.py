@@ -37,11 +37,11 @@ class helper:
   def looper_flip(self, x: List[Any], dtype: dtype = int32) -> List[Any]: return [self.looper_flip(i) for i in x] if isinstance(x[0], list) else x[::-1]
   def looper_squeeze(self, x: List[Any], axis: int = 0) -> List[Any]: return x if not isinstance(x[0][0], list) else [self.looper_squeeze(y, axis) for y in x].pop() #TODO: axis
   def looper_clip(self, x: Union[List[Any], int], x_min: int, x_max: int) -> Union[Any, Any]: return (x_min if x < x_min else x_max) if not isinstance(x, list) else [self.looper_clip(y, x_min, x_max) for y in x]
-  def looper_broadcast_to(self, x: List[Any], y: List[Any]) -> List[Any]: return x if len(y) == 1 else [x for i in range(y[0])]
+  def looper_broadcast_to(self, x: List[Any], y: Union[List[Any], Tuple[int, int]]) -> List[Any]: return x if len(y) == 1 else [x for i in range(y[0])]
   def looper_nonzero(self, x: List[Any]) -> Tuple[ndarray, ...]:
     ret1: List[Any] = []
     ret2: List[Any] = []
-    if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)] # type: ignore
+    if isinstance(x[0], list): [[(ret1.append(i), ret2.append(ii)) for ii in range(len(x[i])) if x[i][ii]] for i in range(len(x)) if isinstance(x[i], list)] #type: ignore
     return tuple([ndarray(ret1)] + [ndarray(ret2)])
 
   def looper_arange(self, start: int, stop: int = 0, step: int = 1, dtype: dtype = int32) -> Union[List[Any], ndarray]:
@@ -75,7 +75,7 @@ class helper:
     tmp2: List[Any] = []
     if not isinstance(y, tuple):
       for _ in range(y if not isinstance(y, (list, tuple)) else len(y)): tmp.extend(x)
-      return ndarray(tmp) # type: ignore
+      return ndarray(tmp) #type: ignore
     a,b = y
     for _ in range(a):
       for _ in range(b): tmp2.extend(x)
@@ -151,9 +151,9 @@ class helper:
     return ret
 
   def looper_count(self, x: Union[int, Iterable[object], List[Any], Sized], ret: int = 0) -> Union[int, Iterable[object]]:
-    for i in range(len(x)): # type: ignore
-      if isinstance(x[i], (list, tuple)): ret = self.looper_count(x[i], ret) # type: ignore
-      elif (x[i] != 0 and x[i] is not False): ret += 1 # type: ignore
+    for i in range(len(x)): #type: ignore
+      if isinstance(x[i], (list, tuple)): ret = self.looper_count(x[i], ret) #type: ignore
+      elif (x[i] != 0 and x[i] is not False): ret += 1 #type: ignore
     return ret
 
   # BARF
@@ -199,7 +199,7 @@ class helper:
       ret.extend(app)
       ret.extend(meanv for i in range(y[1] if isinstance(y, tuple) else y))
     elif mode == 'median':
-      if isinstance(len(x)/2, int): meadv = x[len(x)/2] # type: ignore
+      if isinstance(len(x)/2, int): meadv = x[len(x)/2] #type: ignore
       else: meadv = int(math.ceil((x[int(len(x)/2)] + x[int(len(x)/2)-1]) / 2))
       ret.extend(meadv for i in range(y[0] if isinstance(y, tuple) else y))
       ret.extend(x[i] for i in range(len(x)))
@@ -235,28 +235,28 @@ class helper:
     ret: List[Any] = []
     row: List[Any] = []
     if isinstance(shape, tuple): nrows, ncols = shape
-    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1 # type: ignore
+    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1 #type: ignore
     else: ncols, nrows = len(col), 1
     if shape == -1:
       for r in range(nrows):
         for c in range(ncols):
           if isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(self.reshape(col[c], -1))
           else:
-            row.extend(col) # type: ignore
+            row.extend(col) #type: ignore
             break
         ret.extend(row)
         row=[]
       return ret
     for r in range(nrows):
-      for c in range(ncols): row.append(col[ncols * r + c]) # type: ignore
+      for c in range(ncols): row.append(col[ncols * r + c]) #type: ignore
       ret.append(row)
       row=[]
     return ret
 
   def read_magic(self, f: BinaryIO) -> Any: return f.read(len(self.MAGIC_PREFIX)) == self.MAGIC_PREFIX
   def read_header_type(self, f: BinaryIO) -> Tuple[int, int]: return int.from_bytes(f.read(1), "big"), int.from_bytes(f.read(1), "big")
-  def read_header_pack(self, t: Tuple[int, int]) -> str: return self._header_size_info.get(t)[0] # type: ignore
-  def read_header_enc(self, t: Tuple[int, int]) -> str: return self._header_size_info.get(t)[1] # type: ignore
+  def read_header_pack(self, t: Tuple[int, int]) -> str: return self._header_size_info.get(t)[0] #type: ignore
+  def read_header_enc(self, t: Tuple[int, int]) -> str: return self._header_size_info.get(t)[1] #type: ignore
   def read_header_len(self, f: BinaryIO, p: Tuple[int, int]) -> Any: return struct.unpack(self.read_header_pack(p), f.read(2))[0]
   def read_header(self, f: BinaryIO, t: Tuple[int, int]) -> Tuple[Any, Any]:
     import ast
