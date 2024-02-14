@@ -47,6 +47,6 @@ class random():
     def __init__(self, x: int, y: int, size: int) -> None: self.ret = [rnd.randint(x, y) for _ in range(size)] if size else rnd.randint(x, y)
     def tolist(self) -> Any: return self.ret
   class choice():
-    ret: List[Any] | int = []
+    ret: Union[List[Any], int] = []
     def __init__(self, x: Any, size: int=0, dtype: dtype=int32) -> None: self.ret = [rnd.choice(x) for _ in range(size)] if size else rnd.choice(x)
     def tolist(self) -> Any: return self.ret

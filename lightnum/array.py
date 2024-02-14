@@ -21,7 +21,7 @@ class array():
 class asarray(array): pass
 class ndarray(array):
   def __init__(self, x: List[Any]) -> None:
-    self.x: List[Any] | ndarray = []
+    self.x: Union[List[Any], ndarray] = []
     if len(x) == 1:
       if not isinstance(x, int) and not isinstance(x[0], list): self.x = [0 for _ in range(x[0])]
       else: self.x = [0 for a in range(len(x)) for b in range(len(x[a])) if a != b]
