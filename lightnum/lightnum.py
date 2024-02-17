@@ -7,7 +7,6 @@ from lightnum.random import random as random
 from lightnum.dtypes import int32 as int32, float16 as float16, float32 as float32, float64 as float64, dtype as dtype, types as types, uint8 as uint8, uint32 as uint32
 import array as arr, copy as cp, builtins, ctypes, math
 from typing import List, Any, Type, BinaryIO, Tuple, Union, SupportsIndex, SupportsFloat, Iterable
-
 # TODO: make dtype=xxx do something
 # TODO: add functionallity to functions with pass
 h = helper()
@@ -44,8 +43,7 @@ def matmul(x: List[Any], y: List[Any], dtype: dtype = float32) -> Any:
       if x and y: return x * y
       elif x and not y: return x
       else: return y
-    ret = [matmul(i, y=j) for i, j in zip(x, y)]
-    return h.reshape(ret, -1)
+    return reshape([matmul(i, y=j) for i, j in zip(x, y)], -1)
   else: h.cast(matmul(x, y=y, dtype=dtype), dtype=dtype)
 
 def empty(x: Union[Any, List[Any]], fill: Union[int, float] = 0, dtype: dtype = int32) -> Any: return h.looper_empty(x, fill=fill, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_empty(x, fill=fill, dtype=dtype), dtype=dtype)
@@ -69,7 +67,6 @@ def any(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.any
 def all(x: Union[int, Iterable[object], List[Any]]) -> bool: return builtins.all(h.looper_count(x)) #type: ignore
 def not_equal(x: List[Any], y: List[Any]) -> None: t.assert_equal(x, y)
 def array_equal(x: List[Any], y: List[Any]) -> Any: return t.assert_equal(x, y)
-def reshape(l: Union[List[Any], ndarray], shape: Union[int, List[Any], Tuple[int, int]]) -> List[Any]: return h.reshape(l, shape)
 def cumsum(x: List[Any], dtype: dtype = int32) -> Any: return h.looper_cumsum(x, dtype=dtype) if str(dtype) == types[dtype(x)] else h.cast(h.looper_cumsum(x, dtype=dtype), dtype=dtype)
 def outer(x: List[Any], y: List[Any]) -> List[Any]: return [[x1*y1 for y1 in reshape(y, -1)] for x1 in reshape(x, -1)]
 def expand_dims(x: List[Any], axis: Union[Any, int]) -> List[Any]: return h.looper_expand_dims(x, axis)
@@ -97,6 +94,18 @@ def allclose(x: List[Any], y: List[Any], rtol: float = 1e-05, atol: float = 1e-0
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x: int, y: int = 0, k: int=0) -> List[Any]: return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
 
+def reshape(ar: Union[List[Any], ndarray], n: Union[int, List[Any], Tuple[int, int]], ret: Union[List[Any], Any] = None) -> List[Any]:
+  if n == -1:
+    if not ret: ret = []
+    for i in list(ar):
+      if isinstance(i, list): ret = reshape(i, -1, ret)
+      else: ret.append(i)
+    return ret
+  l: int = int(str(n)) if not isinstance(n, tuple) else int(str(n[len(n) -1]))
+  if len(list(ar)) % l or len(n) <= 2: #type: ignore
+    return [ar[i: i + l] + [None] * (i + l - len(list(ar))) for i in range(0, len(list(ar)), l)] #type: ignore
+  return [(i + l - len(ar)) for i in range(0, len(ar), l)]
+
 class arange():
   def __init__(self, start: int, stop: int = 0, step: int = 1, dtype: dtype = int32) -> None:
     self.ret = h.looper_arange(start, stop, step, dtype)
@@ -105,6 +114,7 @@ class arange():
   def __mul__(self, x: List[Any]) -> List[Any]: return [i * x for i in self.x]
   def reshape(self, s: Union[int, List[Any]]) -> List[Any]: return reshape(self.ret, s)
   def tolist(self) -> Union[List[Any], ndarray]: return self.ret
+
 def triu(x: List[Any], l: int = -1) -> Union[List[Any], ndarray]:
   if isinstance(x[0], list):
     rr = []

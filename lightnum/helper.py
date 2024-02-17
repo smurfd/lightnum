@@ -229,29 +229,18 @@ class helper:
       ret.extend(None for i in range(y[1] if isinstance(y, tuple) else y))
     return ret
 
-  def reshape(self, col: Union[List[Any], ndarray, int], shape: Union[Tuple[int, int], int, List[int]]) -> List[Any]:
-    ncols: int = 0
-    nrows: int = 0
-    ret: List[Any] = []
-    row: List[Any] = []
-    if isinstance(shape, tuple): nrows, ncols = shape
-    elif not isinstance(col, (list, tuple)): ncols, nrows = col, 1 #type: ignore
-    else: ncols, nrows = len(col), 1
-    if shape == -1:
-      for r in range(nrows):
-        for c in range(ncols):
-          if isinstance(col, list) and not isinstance(col[c], (float, int)): row.extend(self.reshape(col[c], -1))
-          else:
-            row.extend(col) #type: ignore
-            break
-        ret.extend(row)
-        row=[]
+  def reshape(self, ar: Union[List[Any], ndarray], n: Union[int, List[Any], Tuple[int, int]], ret: Union[List[Any], Any] = None) -> List[Any]:
+    # TODO: remove, since duplicate from lightnum.py
+    if n == -1:
+      if not ret: ret = []
+      for i in list(ar):
+        if isinstance(i, list): ret = self.reshape(i, -1, ret)
+        else: ret.append(i)
       return ret
-    for r in range(nrows):
-      for c in range(ncols): row.append(col[ncols * r + c]) #type: ignore
-      ret.append(row)
-      row=[]
-    return ret
+    l: int = int(str(n)) if not isinstance(n, tuple) else int(str(n[len(n) -1]))
+    if len(list(ar)) % l or len(n) <= 2: #type: ignore
+      return [ar[i: i + l] + [None] * (i + l - len(list(ar))) for i in range(0, len(list(ar)), l)] #type: ignore
+    return [(i + l - len(ar)) for i in range(0, len(ar), l)]
 
   def read_magic(self, f: BinaryIO) -> Any: return f.read(len(self.MAGIC_PREFIX)) == self.MAGIC_PREFIX
   def read_header_type(self, f: BinaryIO) -> Tuple[int, int]: return int.from_bytes(f.read(1), "big"), int.from_bytes(f.read(1), "big")
