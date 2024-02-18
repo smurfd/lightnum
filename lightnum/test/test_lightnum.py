@@ -99,6 +99,7 @@ def test_pad_minimum() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 
 def test_pad_reflect() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'reflect'), np.pad([1, 2, 3, 4, 5], 2, 'reflect').tolist())
 def test_pad_symmetric() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'symmetric'), np.pad([1, 2, 3, 4, 5], 2, 'symmetric').tolist())
 def test_pad_wrap() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'wrap'), np.pad([1, 2, 3, 4, 5], 2, 'wrap').tolist())
+def test_argsort() -> None: testing.assert_equal(lp.argsort([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), np.argsort([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).tolist())
 def test_require() -> None:
   x = lp.require([1,2,3,5], lp.int32, requirements=['C'])
   y = np.require([1,2,3,5], np.int32, requirements=['C'])

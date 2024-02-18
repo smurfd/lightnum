@@ -37,6 +37,9 @@ def multiply(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, Lis
 def reciprocal(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return 1/(x) if not isinstance(x, list) else [reciprocal(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(reciprocal(x), dtype=dtype)
 def frombuffer(x: Union[Any, List[Any]], dtype: dtype = float64) -> Union[Any, List[Any]]: return [i for i in x] if not isinstance(x, list) else [frombuffer(i) for i in x] if repr(dtype) == types[dtype(x)] else cast(frombuffer(x), dtype=dtype)
 def where(condition: str, x: Union[Any, List[Any]], y: Union[Any, List[Any]], dtype: dtype = int32) -> Union[Any, List[Any]]: return [xv if c else yv for c, xv, yv in zip(condition, x, y)] if not isinstance(x, (list, tuple)) else [where(condition, i, y=j) for i, j in zip(x, y)] if repr(dtype) == types[dtype(x)] else cast(where(condition, x, y), dtype=dtype)
+def argsort(x: Union[Any, List[Any]]) -> Union[Any, List[Any]]:
+  if not isinstance(x[0], list): return sorted(range(len(x)), key=x.__getitem__)
+  else: return [argsort(x[i]) for i in range(len(x))]
 def matmul(x: List[Any], y: List[Any], dtype: dtype = float32) -> Any:
   if str(dtype) == types[dtype(x)]:
     if not isinstance(x, (list, tuple)):
@@ -210,4 +213,3 @@ class lib:
 
 def moveaxis() -> None: pass
 def rollaxis() -> None: pass
-def argsort() -> None: pass
