@@ -49,8 +49,8 @@ def test_allclose2() -> None: testing.assert_equal(lp.allclose([1e10,1e-8], [1.0
 def test_cbrt() -> None: testing.assert_equal(lp.cbrt([1,8,27]), np.cbrt([1,8,27]).tolist())
 def test_copy() -> None: testing.assert_equal(lp.copy([[1,2,3,4],[5,6,7,8]]), np.copy([[1,2,3,4],[5,6,7,8]]).tolist())
 def test_copyto() -> None:
-  b=[[0,0,0,0],[0,0,0,0]]
-  c=[[1, 2, 3, 4],[2,2,2,2]]
+  b=[[0, 0, 0, 0],[0, 0, 0, 0]]
+  c=[[1, 2, 3, 4],[2, 2, 2, 2]]
   a=np.array(c)
   np.copyto(a, c)
   lp.copyto(b, c)
@@ -79,12 +79,12 @@ def test_clip() -> None: testing.assert_equal(lp.clip([[1, 2, 3, 4], [5, 6, 7, 8
 def test_unique() -> None: testing.assert_equal(lp.unique([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]), np.unique([[[0, 1, 0, 2], [3, 4, 5, 2], [6, 7, 8, 4]]]).tolist())
 def test_triu() -> None: testing.assert_equal(lp.triu([[1,2,3],[1,2,3],[1,2,3]], 1), np.triu([[1,2,3],[1,2,3],[1,2,3]], 1).tolist())
 def test_meshgrid() -> None:
-  lpx,lpy=lp.meshgrid([1,2,3], [4,5,6])
-  npx,npy=np.meshgrid([1,2,3], [4,5,6])
+  lpx,lpy=lp.meshgrid([1, 2, 3], [4, 5, 6])
+  npx,npy=np.meshgrid([1, 2, 3], [4, 5, 6])
   testing.assert_equal(lpx, npx.tolist())
   testing.assert_equal(lpy, npy.tolist())
 def test_newaxis() -> None:
-  x = np.array([[1,2,3],[1,2,3]])
+  x = np.array([[1, 2, 3],[1, 2, 3]])
   testing.assert_equal(lp.newaxis([[1,2,3],[1,2,3]], 1), x[np.newaxis, :].tolist())
 def test_frombuffer() -> None: testing.assert_equal(lp.frombuffer(b'smurfd', lp.uint8), np.frombuffer(b'smurfd', np.uint8))
 def test_promote_types() -> None: assert(str(lp.promote_types(lp.uint8, lp.uint32)) == np.promote_types(np.uint8, np.uint32))
@@ -100,6 +100,8 @@ def test_pad_reflect() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 
 def test_pad_symmetric() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'symmetric'), np.pad([1, 2, 3, 4, 5], 2, 'symmetric').tolist())
 def test_pad_wrap() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'wrap'), np.pad([1, 2, 3, 4, 5], 2, 'wrap').tolist())
 def test_argsort() -> None: testing.assert_equal(lp.argsort([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), np.argsort([[1, 2, 3], [4, 5, 6], [7, 8, 9]]).tolist())
+def test_moveaxis() -> None: testing.assert_equal(lp.moveaxis([[1, 2, 3], [4, 5, 6], [7, 8, 9]], 0, 1), np.moveaxis(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), 0, 1).tolist())
+def test_rollaxis() -> None: testing.assert_equal(lp.rollaxis([[1, 2, 3], [4, 5, 6], [7, 8, 9]], 1), np.rollaxis(np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]), 1).tolist())
 def test_require() -> None:
   x = lp.require([1,2,3,5], lp.int32, requirements=['C'])
   y = np.require([1,2,3,5], np.int32, requirements=['C'])

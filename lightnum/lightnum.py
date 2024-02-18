@@ -96,6 +96,13 @@ def allclose(x: List[Any], y: List[Any], rtol: float = 1e-05, atol: float = 1e-0
   for i in range(len(x)): r = h.if_round_abs(x[i], y[i], cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x: int, y: int = 0, k: int=0) -> List[Any]: return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
+def moveaxis(x: List[Any], src: Union[int, List[Any]], dst: Union[int, List[Any]]) -> List[Any]:
+  # kindof
+  if src == -1 or dst == -1 or src == dst: return x
+  return [[x[i][j] for i in range(len(x))] for j in range(len(x[0]))]
+def rollaxis(x: List[Any], axis: int, start: int = 0) -> List[Any]:
+  # kindof
+  return moveaxis(x, start, axis)
 def require(x: List[Any], dtype: dtype = int32, requirements: List[str] = ['C']) -> ndarray:
   ret = ndarray(x)
   for i in requirements:
@@ -210,6 +217,3 @@ class ctypeslib:
 class lib:
   class stride_tricks:
     def as_strided(self) -> None: pass
-
-def moveaxis() -> None: pass
-def rollaxis() -> None: pass
