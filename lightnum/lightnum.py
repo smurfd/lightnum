@@ -7,8 +7,12 @@ from lightnum.random import random as random
 from lightnum.dtypes import int32 as int32, float16 as float16, float32 as float32, float64 as float64, dtype as dtype, types as types, uint8 as uint8, uint32 as uint32
 import array as arr, copy as cp, builtins, ctypes, math
 from typing import List, Any, Type, BinaryIO, Tuple, Union, SupportsIndex, SupportsFloat, Iterable
-# TODO: make dtype=xxx do something
-# TODO: add functionallity to functions with pass
+
+# TODO: Fix all kindofs
+# TODO: Compare arguments to functions towards numpy functions
+# TODO: Remove more helpers
+# TODO: See if speedups can be done
+# TODO: Integrate with tinygrad
 h = helper()
 t = testing()
 def cast(x: List[Any], dtype: dtype = float64) -> List[Any]:
