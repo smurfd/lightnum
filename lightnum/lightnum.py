@@ -93,7 +93,16 @@ def allclose(x: List[Any], y: List[Any], rtol: float = 1e-05, atol: float = 1e-0
   for i in range(len(x)): r = h.if_round_abs(x[i], y[i], cls=True)
   return not builtins.any((r[i] <= atol + rtol * r[i + 2]) is False for i in range(1, len(r), 4))
 def eye(x: int, y: int = 0, k: int=0) -> List[Any]: return [[1 if (xx-k)==yy else 0 for xx in range(y if y else x)] for yy in range(x)]
-
+def require(x: List[Any], dtype: dtype = int32, requirements: List[str] = ['C']) -> ndarray:
+  ret = ndarray(x)
+  for i in requirements:
+    if i == 'A' or i == 'ALIGNED': ret.flags['ALIGNED'] = True
+    elif i == 'W' or i == 'WRITEABLE': ret.flags['WRITEABLE'] = True
+    elif i == 'O' or i == 'OWNDATA': ret.flags['OWNDATA'] = True
+    elif i == 'E' or i == 'ENSUREARRAY': ret.flags['ENSUREARRAY'] = True
+    elif i == 'C' or i == 'C_CONTIGUOUS': ret.flags['C_CONTIGUOUS'] = True
+    elif i == 'F' or i == 'F_CONTIGUOUS': ret.flags['F_CONTIGUOUS'] = True
+  return ret
 def reshape(ar: Union[List[Any], ndarray], n: Union[int, List[Any], Tuple[int, int]], ret: Union[List[Any], Any] = None) -> List[Any]:
   if n == -1:
     if not ret: ret = []
@@ -199,8 +208,6 @@ class lib:
   class stride_tricks:
     def as_strided(self) -> None: pass
 
-def memmap() -> None: pass
-def require() -> None: pass
 def moveaxis() -> None: pass
 def rollaxis() -> None: pass
 def argsort() -> None: pass

@@ -99,6 +99,10 @@ def test_pad_minimum() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 
 def test_pad_reflect() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'reflect'), np.pad([1, 2, 3, 4, 5], 2, 'reflect').tolist())
 def test_pad_symmetric() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'symmetric'), np.pad([1, 2, 3, 4, 5], 2, 'symmetric').tolist())
 def test_pad_wrap() -> None: testing.assert_equal(lp.pad([1, 2, 3, 4, 5], 2, 'wrap'), np.pad([1, 2, 3, 4, 5], 2, 'wrap').tolist())
+def test_require() -> None:
+  x = lp.require([1,2,3,5], lp.int32, requirements=['C'])
+  y = np.require([1,2,3,5], np.int32, requirements=['C'])
+  for i in ['C_CONTIGUOUS', 'F_CONTIGUOUS', 'OWNDATA', 'ALIGNED', 'WRITEBACKIFCOPY']: assert(x.flags[i] == y.flags[i]) #type: ignore
 def test_show_randomusage() -> None:
   np.random.seed(1337)
   r.seed(1337)

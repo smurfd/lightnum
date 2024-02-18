@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-from typing import List, Any, Callable, Union
+from typing import List, Any, Callable, Union, Dict
 from lightnum.dtypes import dtype
 
 class array():
+  flags: Dict[str, bool] = {'C_CONTIGUOUS': True, 'F_CONTIGUOUS': True, 'OWNDATA': True, 'WRITABLE': True, 'ALIGNED': True, 'WRITEBACKIFCOPY': False, 'UPDATEIFCOPY': False}
   def __init__(self, x: List[Any]) -> None: self.x: Union[List[Any], ndarray] = ndarray(x)
   def __getattr__(self, name: str) -> Any: return getattr(self.x, name)
   def __repr__(self) -> Any: return repr(self.x)
